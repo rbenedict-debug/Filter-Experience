@@ -1,0 +1,32 @@
+// ── Global base styles ────────────────────────────────────────────────────
+// Do not add component-specific styles here.
+// All component styles come from the Onflo Design System.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--ref-typeface-brand, 'Proxima Nova', -apple-system, BlinkMacSystemFont, sans-serif);
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+// App shell fills the full viewport
+app-root {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+// Override the 640px preview height — in production the layout fills the viewport
+.ds-page-layout {
+  height: 100%;
+}
