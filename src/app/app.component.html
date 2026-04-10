@@ -91,11 +91,515 @@
 
     <!-- Page body -->
     <div class="ds-page-layout__body">
+
+      <!-- Sub-nav panel -->
+      <nav class="ds-subnav"
+           [class.is-collapsed]="!subNavOpen()"
+           role="navigation"
+           aria-label="Section navigation">
+
+        @if (activeSection() === 'assets') {
+          <ds-subnav-button label="Overview"
+            [selected]="assetsNavItem() === 'overview'"
+            (navClick)="assetsNavItem.set('overview')" />
+          <ds-subnav-button label="Asset Views"
+            [selected]="assetsNavItem() === 'asset-views'"
+            (navClick)="assetsNavItem.set('asset-views')" />
+          <ds-subnav-button label="Actions"
+            [selected]="assetsNavItem() === 'actions'"
+            (navClick)="assetsNavItem.set('actions')" />
+        }
+
+        @if (activeSection() === 'analytics') {
+          <ds-subnav-button label="Service Overview"
+            [selected]="analyticsNavItem() === 'service-overview'"
+            (navClick)="analyticsNavItem.set('service-overview')" />
+          <ds-subnav-button label="Chatbot"
+            [selected]="analyticsNavItem() === 'chatbot'"
+            (navClick)="analyticsNavItem.set('chatbot')" />
+          <ds-subnav-button label="Call Center"
+            [selected]="analyticsNavItem() === 'call-center'"
+            (navClick)="analyticsNavItem.set('call-center')" />
+          <ds-subnav-button label="Custom Reports"
+            [selected]="analyticsNavItem() === 'custom-reports'"
+            (navClick)="analyticsNavItem.set('custom-reports')" />
+          <ds-subnav-button label="Fees"
+            [selected]="analyticsNavItem() === 'fees'"
+            (navClick)="analyticsNavItem.set('fees')" />
+          <ds-subnav-header
+            text="Comparison"
+            icon="splitscreen_left"
+            [expanded]="comparisonExpanded()"
+            (expandedChange)="comparisonExpanded.set($event)">
+            <ds-subnav-button label="Users"
+              [selected]="analyticsNavItem() === 'comparison-users'"
+              (navClick)="analyticsNavItem.set('comparison-users')" />
+            <ds-subnav-button label="Categories"
+              [selected]="analyticsNavItem() === 'comparison-categories'"
+              (navClick)="analyticsNavItem.set('comparison-categories')" />
+            <ds-subnav-button label="Topics"
+              [selected]="analyticsNavItem() === 'comparison-topics'"
+              (navClick)="analyticsNavItem.set('comparison-topics')" />
+          </ds-subnav-header>
+          <ds-subnav-header
+            text="Saved Views"
+            icon="search"
+            [expanded]="savedViewsExpanded()"
+            (expandedChange)="savedViewsExpanded.set($event)">
+            <div class="saved-view-item"
+              dsTooltip="Q1 Chatbot CSAT — EN Only"
+              dsTooltipPosition="right">
+              <ds-subnav-button label="Q1 Chatbot CSAT — EN Only"
+                [selected]="analyticsNavItem() === 'sv-q1-chatbot-csat'"
+                (navClick)="analyticsNavItem.set('sv-q1-chatbot-csat')" />
+            </div>
+            <div class="saved-view-item"
+              dsTooltip="Call Center Volume — Last 30 Days"
+              dsTooltipPosition="right">
+              <ds-subnav-button label="Call Center Volume — Last 30 Days"
+                [selected]="analyticsNavItem() === 'sv-call-center-volume'"
+                (navClick)="analyticsNavItem.set('sv-call-center-volume')" />
+            </div>
+            <div class="saved-view-item"
+              dsTooltip="Weekend vs. Weekday Traffic"
+              dsTooltipPosition="right">
+              <ds-subnav-button label="Weekend vs. Weekday Traffic"
+                [selected]="analyticsNavItem() === 'sv-weekend-weekday'"
+                (navClick)="analyticsNavItem.set('sv-weekend-weekday')" />
+            </div>
+            <div class="saved-view-item"
+              dsTooltip="Escalation Rate by Category"
+              dsTooltipPosition="right">
+              <ds-subnav-button label="Escalation Rate by Category"
+                [selected]="analyticsNavItem() === 'sv-escalation-rate'"
+                (navClick)="analyticsNavItem.set('sv-escalation-rate')" />
+            </div>
+            <div class="saved-view-item"
+              dsTooltip="Peak Hours — March 2026"
+              dsTooltipPosition="right">
+              <ds-subnav-button label="Peak Hours — March 2026"
+                [selected]="analyticsNavItem() === 'sv-peak-hours-mar'"
+                (navClick)="analyticsNavItem.set('sv-peak-hours-mar')" />
+            </div>
+          </ds-subnav-header>
+        }
+
+        @if (activeSection() === 'tickets') {
+          <ds-subnav-button label="Inbox"
+            [selected]="ticketsNavItem() === 'inbox'"
+            (navClick)="ticketsNavItem.set('inbox')" />
+          <ds-subnav-button label="Bookmarks"
+            [selected]="ticketsNavItem() === 'bookmarks'"
+            (navClick)="ticketsNavItem.set('bookmarks')" />
+          <ds-subnav-button label="Spam"
+            [selected]="ticketsNavItem() === 'spam'"
+            (navClick)="ticketsNavItem.set('spam')" />
+          <ds-subnav-button label="Drafts"
+            [selected]="ticketsNavItem() === 'drafts'"
+            (navClick)="ticketsNavItem.set('drafts')" />
+          <ds-subnav-header
+            text="Saved Searches"
+            icon="search"
+            [expanded]="savedSearchesExpanded()"
+            (expandedChange)="savedSearchesExpanded.set($event)">
+            <ds-subnav-button label="High Priority — Open"
+              [selected]="ticketsNavItem() === 'ss-high-priority'"
+              (navClick)="ticketsNavItem.set('ss-high-priority')" />
+            <ds-subnav-button label="Unassigned — P1"
+              [selected]="ticketsNavItem() === 'ss-unassigned-p1'"
+              (navClick)="ticketsNavItem.set('ss-unassigned-p1')" />
+            <ds-subnav-button label="My Team's Queue"
+              [selected]="ticketsNavItem() === 'ss-my-team'"
+              (navClick)="ticketsNavItem.set('ss-my-team')" />
+            <ds-subnav-button label="Overdue This Week"
+              [selected]="ticketsNavItem() === 'ss-overdue'"
+              (navClick)="ticketsNavItem.set('ss-overdue')" />
+            <ds-subnav-button label="Waiting on Customer"
+              [selected]="ticketsNavItem() === 'ss-waiting'"
+              (navClick)="ticketsNavItem.set('ss-waiting')" />
+          </ds-subnav-header>
+        }
+
+        @if (activeSection() === 'settings') {
+          @let filter = settingsFilteredIds();
+          @let vis = settingsSectionVis();
+
+          <ds-search
+            placeholder="Search Settings"
+            ariaLabel="Search settings"
+            [value]="settingsSearchQuery()"
+            (valueChange)="settingsSearchQuery.set($event)"
+            (cleared)="settingsSearchQuery.set('')"
+          />
+
+          <!-- ── Global ────────────────────────────────────────────────────── -->
+          @if (vis.global) {
+            <ds-subnav-header
+              text="Global"
+              icon="language"
+              [expanded]="globalExpanded() || !!filter"
+              (expandedChange)="globalExpanded.set($event)">
+
+              @if (!filter || filter.has('district-profile')) {
+                <ds-subnav-button label="District Profile"
+                  [selected]="settingsNavItem() === 'district-profile'"
+                  (navClick)="settingsNavItem.set('district-profile')" />
+              }
+
+              @if (!filter || filter.has('activity-log') || filter.has('activity-log-onflo') || filter.has('activity-log-assets')) {
+                <ds-subnav-subheader
+                  text="Activity Log"
+                  [expanded]="activityLogExpanded() || !!filter"
+                  (expandedChange)="activityLogExpanded.set($event)">
+                  @if (!filter || filter.has('activity-log-onflo')) {
+                    <ds-subnav-button label="Onflo"
+                      [selected]="settingsNavItem() === 'activity-log-onflo'"
+                      (navClick)="settingsNavItem.set('activity-log-onflo')" />
+                  }
+                  @if (!filter || filter.has('activity-log-assets')) {
+                    <ds-subnav-button label="Assets"
+                      [selected]="settingsNavItem() === 'activity-log-assets'"
+                      (navClick)="settingsNavItem.set('activity-log-assets')" />
+                  }
+                </ds-subnav-subheader>
+              }
+
+              @if (!filter || filter.has('ai-training')) {
+                <ds-subnav-button label="AI Training Resources"
+                  [selected]="settingsNavItem() === 'ai-training'"
+                  (navClick)="settingsNavItem.set('ai-training')" />
+              }
+              @if (!filter || filter.has('chatbot')) {
+                <ds-subnav-button label="Chatbot"
+                  [selected]="settingsNavItem() === 'chatbot'"
+                  (navClick)="settingsNavItem.set('chatbot')" />
+              }
+
+              @if (!filter || filter.has('communications') || filter.has('cs-score-templates') || filter.has('email') || filter.has('response-templates')) {
+                <ds-subnav-subheader
+                  text="Communications"
+                  [expanded]="communicationsExpanded() || !!filter"
+                  (expandedChange)="communicationsExpanded.set($event)">
+                  @if (!filter || filter.has('cs-score-templates')) {
+                    <ds-subnav-button label="CS Score Templates"
+                      [selected]="settingsNavItem() === 'cs-score-templates'"
+                      (navClick)="settingsNavItem.set('cs-score-templates')" />
+                  }
+                  @if (!filter || filter.has('email')) {
+                    <ds-subnav-button label="Email"
+                      [selected]="settingsNavItem() === 'email'"
+                      (navClick)="settingsNavItem.set('email')" />
+                  }
+                  @if (!filter || filter.has('response-templates')) {
+                    <ds-subnav-button label="Response Templates"
+                      [selected]="settingsNavItem() === 'response-templates'"
+                      (navClick)="settingsNavItem.set('response-templates')" />
+                  }
+                </ds-subnav-subheader>
+              }
+
+              @if (!filter || filter.has('departments')) {
+                <ds-subnav-button label="Departments"
+                  [selected]="settingsNavItem() === 'departments'"
+                  (navClick)="settingsNavItem.set('departments')" />
+              }
+              @if (!filter || filter.has('keyword-alerts')) {
+                <ds-subnav-button label="Keyword Alerts"
+                  [selected]="settingsNavItem() === 'keyword-alerts'"
+                  (navClick)="settingsNavItem.set('keyword-alerts')" />
+              }
+              @if (!filter || filter.has('languages')) {
+                <ds-subnav-button label="Languages"
+                  [selected]="settingsNavItem() === 'languages'"
+                  (navClick)="settingsNavItem.set('languages')" />
+              }
+              @if (!filter || filter.has('live-agent')) {
+                <ds-subnav-button label="Live Agent"
+                  [selected]="settingsNavItem() === 'live-agent'"
+                  (navClick)="settingsNavItem.set('live-agent')" />
+              }
+              @if (!filter || filter.has('locations')) {
+                <ds-subnav-button label="Locations"
+                  [selected]="settingsNavItem() === 'locations'"
+                  (navClick)="settingsNavItem.set('locations')" />
+              }
+
+              @if (!filter || filter.has('tags') || filter.has('tags-tickets') || filter.has('tags-assets')) {
+                <ds-subnav-subheader
+                  text="Tags"
+                  [expanded]="tagsExpanded() || !!filter"
+                  (expandedChange)="tagsExpanded.set($event)">
+                  @if (!filter || filter.has('tags-tickets')) {
+                    <ds-subnav-button label="Tickets"
+                      [selected]="settingsNavItem() === 'tags-tickets'"
+                      (navClick)="settingsNavItem.set('tags-tickets')" />
+                  }
+                  @if (!filter || filter.has('tags-assets')) {
+                    <ds-subnav-button label="Assets"
+                      [selected]="settingsNavItem() === 'tags-assets'"
+                      (navClick)="settingsNavItem.set('tags-assets')" />
+                  }
+                </ds-subnav-subheader>
+              }
+
+              @if (!filter || filter.has('user-management')) {
+                <ds-subnav-button label="User Management"
+                  [selected]="settingsNavItem() === 'user-management'"
+                  (navClick)="settingsNavItem.set('user-management')" />
+              }
+            </ds-subnav-header>
+          }
+
+          <!-- ── Integration Hub ───────────────────────────────────────────── -->
+          @if (vis.integrationHub) {
+            <ds-subnav-header
+              text="Integration Hub"
+              icon="apps"
+              [expanded]="integrationHubExpanded() || !!filter"
+              (expandedChange)="integrationHubExpanded.set($event)">
+
+              @if (!filter || filter.has('api-tokens')) {
+                <ds-subnav-button label="API Tokens"
+                  [selected]="settingsNavItem() === 'api-tokens'"
+                  (navClick)="settingsNavItem.set('api-tokens')" />
+              }
+              @if (!filter || filter.has('webhooks')) {
+                <ds-subnav-button label="Webhooks"
+                  [selected]="settingsNavItem() === 'webhooks'"
+                  (navClick)="settingsNavItem.set('webhooks')" />
+              }
+              @if (!filter || filter.has('marketplace')) {
+                <ds-subnav-button label="Marketplace"
+                  [selected]="settingsNavItem() === 'marketplace'"
+                  (navClick)="settingsNavItem.set('marketplace')" />
+              }
+              @if (!filter || filter.has('installed-apps')) {
+                <ds-subnav-button label="Installed Apps"
+                  [selected]="settingsNavItem() === 'installed-apps'"
+                  (navClick)="settingsNavItem.set('installed-apps')" />
+              }
+            </ds-subnav-header>
+          }
+
+          <!-- ── Workflows ─────────────────────────────────────────────────── -->
+          @if (vis.workflows) {
+            <ds-subnav-header
+              text="Workflows"
+              icon="conversion_path"
+              [expanded]="workflowsExpanded() || !!filter"
+              (expandedChange)="workflowsExpanded.set($event)">
+
+              @if (!filter || filter.has('workflows-tickets')) {
+                <ds-subnav-button label="Tickets"
+                  [selected]="settingsNavItem() === 'workflows-tickets'"
+                  (navClick)="settingsNavItem.set('workflows-tickets')" />
+              }
+              @if (!filter || filter.has('workflows-assets')) {
+                <ds-subnav-button label="Assets"
+                  [selected]="settingsNavItem() === 'workflows-assets'"
+                  (navClick)="settingsNavItem.set('workflows-assets')" />
+              }
+              @if (!filter || filter.has('lookup-tables')) {
+                <ds-subnav-button label="Lookup Tables"
+                  [selected]="settingsNavItem() === 'lookup-tables'"
+                  (navClick)="settingsNavItem.set('lookup-tables')" />
+              }
+            </ds-subnav-header>
+          }
+
+          <!-- ── Tickets (settings) ────────────────────────────────────────── -->
+          @if (vis.ticketsSettings) {
+            <ds-subnav-header
+              text="Tickets"
+              icon="inbox"
+              [expanded]="ticketsSettingsExpanded() || !!filter"
+              (expandedChange)="ticketsSettingsExpanded.set($event)">
+
+              @if (!filter || filter.has('portals') || filter.has('portals-it-service') || filter.has('portals-landing-page')) {
+                <ds-subnav-subheader
+                  text="Portals"
+                  [expanded]="portalsExpanded() || !!filter"
+                  (expandedChange)="portalsExpanded.set($event)">
+                  @if (!filter || filter.has('portals-it-service')) {
+                    <ds-subnav-button label="IT Service"
+                      [selected]="settingsNavItem() === 'portals-it-service'"
+                      (navClick)="settingsNavItem.set('portals-it-service')" />
+                  }
+                  @if (!filter || filter.has('portals-landing-page')) {
+                    <ds-subnav-button label="Landing Page / Tab"
+                      [selected]="settingsNavItem() === 'portals-landing-page'"
+                      (navClick)="settingsNavItem.set('portals-landing-page')" />
+                  }
+                </ds-subnav-subheader>
+              }
+
+              @if (!filter || filter.has('forms')) {
+                <ds-subnav-button label="Forms"
+                  [selected]="settingsNavItem() === 'forms'"
+                  (navClick)="settingsNavItem.set('forms')" />
+              }
+              @if (!filter || filter.has('saved-exports')) {
+                <ds-subnav-button label="Saved Exports"
+                  [selected]="settingsNavItem() === 'saved-exports'"
+                  (navClick)="settingsNavItem.set('saved-exports')" />
+              }
+              @if (!filter || filter.has('slas')) {
+                <ds-subnav-button label="SLAs"
+                  [selected]="settingsNavItem() === 'slas'"
+                  (navClick)="settingsNavItem.set('slas')" />
+              }
+              @if (!filter || filter.has('ticket-schedules')) {
+                <ds-subnav-button label="Ticket Schedules"
+                  [selected]="settingsNavItem() === 'ticket-schedules'"
+                  (navClick)="settingsNavItem.set('ticket-schedules')" />
+              }
+
+              @if (!filter || filter.has('topics-manager') || filter.has('topics') || filter.has('success-messages')) {
+                <ds-subnav-subheader
+                  text="Topics Manager"
+                  [expanded]="topicsManagerExpanded() || !!filter"
+                  (expandedChange)="topicsManagerExpanded.set($event)">
+                  @if (!filter || filter.has('topics')) {
+                    <ds-subnav-button label="Topics"
+                      [selected]="settingsNavItem() === 'topics'"
+                      (navClick)="settingsNavItem.set('topics')" />
+                  }
+                  @if (!filter || filter.has('success-messages')) {
+                    <ds-subnav-button label="Success Messages"
+                      [selected]="settingsNavItem() === 'success-messages'"
+                      (navClick)="settingsNavItem.set('success-messages')" />
+                  }
+                </ds-subnav-subheader>
+              }
+            </ds-subnav-header>
+          }
+
+          <!-- ── Assets (settings) ─────────────────────────────────────────── -->
+          @if (vis.assetsSettings) {
+            <ds-subnav-header
+              text="Assets"
+              icon="desktop_mac"
+              [expanded]="assetsSettingsExpanded() || !!filter"
+              (expandedChange)="assetsSettingsExpanded.set($event)">
+
+              @if (!filter || filter.has('archived-assets')) {
+                <ds-subnav-button label="Archived Assets"
+                  [selected]="settingsNavItem() === 'archived-assets'"
+                  (navClick)="settingsNavItem.set('archived-assets')" />
+              }
+              @if (!filter || filter.has('asset-fields')) {
+                <ds-subnav-button label="Asset Fields"
+                  [selected]="settingsNavItem() === 'asset-fields'"
+                  (navClick)="settingsNavItem.set('asset-fields')" />
+              }
+              @if (!filter || filter.has('asset-hierarchy')) {
+                <ds-subnav-button label="Asset Hierarchy"
+                  [selected]="settingsNavItem() === 'asset-hierarchy'"
+                  (navClick)="settingsNavItem.set('asset-hierarchy')" />
+              }
+              @if (!filter || filter.has('funding-sources')) {
+                <ds-subnav-button label="Funding Sources"
+                  [selected]="settingsNavItem() === 'funding-sources'"
+                  (navClick)="settingsNavItem.set('funding-sources')" />
+              }
+              @if (!filter || filter.has('manufacturers')) {
+                <ds-subnav-button label="Manufacturers"
+                  [selected]="settingsNavItem() === 'manufacturers'"
+                  (navClick)="settingsNavItem.set('manufacturers')" />
+              }
+              @if (!filter || filter.has('models')) {
+                <ds-subnav-button label="Models"
+                  [selected]="settingsNavItem() === 'models'"
+                  (navClick)="settingsNavItem.set('models')" />
+              }
+              @if (!filter || filter.has('purchase-order-details')) {
+                <ds-subnav-button label="Purchase Order Details"
+                  [selected]="settingsNavItem() === 'purchase-order-details'"
+                  (navClick)="settingsNavItem.set('purchase-order-details')" />
+              }
+              @if (!filter || filter.has('statuses')) {
+                <ds-subnav-button label="Statuses"
+                  [selected]="settingsNavItem() === 'statuses'"
+                  (navClick)="settingsNavItem.set('statuses')" />
+              }
+              @if (!filter || filter.has('suppliers')) {
+                <ds-subnav-button label="Suppliers"
+                  [selected]="settingsNavItem() === 'suppliers'"
+                  (navClick)="settingsNavItem.set('suppliers')" />
+              }
+            </ds-subnav-header>
+          }
+
+          <!-- ── Call Center ────────────────────────────────────────────────── -->
+          @if (vis.callCenter) {
+            <ds-subnav-header
+              text="Call Center"
+              icon="headset_mic"
+              [expanded]="callCenterExpanded() || !!filter"
+              (expandedChange)="callCenterExpanded.set($event)">
+
+              @if (!filter || filter.has('business-hours')) {
+                <ds-subnav-button label="Business Hours"
+                  [selected]="settingsNavItem() === 'business-hours'"
+                  (navClick)="settingsNavItem.set('business-hours')" />
+              }
+              @if (!filter || filter.has('calendar')) {
+                <ds-subnav-button label="Calendar"
+                  [selected]="settingsNavItem() === 'calendar'"
+                  (navClick)="settingsNavItem.set('calendar')" />
+              }
+              @if (!filter || filter.has('call-notes')) {
+                <ds-subnav-button label="Call Notes"
+                  [selected]="settingsNavItem() === 'call-notes'"
+                  (navClick)="settingsNavItem.set('call-notes')" />
+              }
+              @if (!filter || filter.has('contact-numbers')) {
+                <ds-subnav-button label="Contact Numbers"
+                  [selected]="settingsNavItem() === 'contact-numbers'"
+                  (navClick)="settingsNavItem.set('contact-numbers')" />
+              }
+              @if (!filter || filter.has('greetings')) {
+                <ds-subnav-button label="Greetings"
+                  [selected]="settingsNavItem() === 'greetings'"
+                  (navClick)="settingsNavItem.set('greetings')" />
+              }
+              @if (!filter || filter.has('ivr')) {
+                <ds-subnav-button label="IVR"
+                  [selected]="settingsNavItem() === 'ivr'"
+                  (navClick)="settingsNavItem.set('ivr')" />
+              }
+              @if (!filter || filter.has('queues')) {
+                <ds-subnav-button label="Queues"
+                  [selected]="settingsNavItem() === 'queues'"
+                  (navClick)="settingsNavItem.set('queues')" />
+              }
+              @if (!filter || filter.has('texting')) {
+                <ds-subnav-button label="Texting"
+                  [selected]="settingsNavItem() === 'texting'"
+                  (navClick)="settingsNavItem.set('texting')" />
+              }
+            </ds-subnav-header>
+          }
+        }
+
+      </nav>
+
       <main class="ds-page-content" role="main">
         <router-outlet />
       </main>
+
     </div>
 
+  </div>
+
+  <!-- Expand / collapse toggle — positioned wrapper needed because ds-nav-expand
+       uses display:contents (host transparent), so positioning must come from a
+       real containing element rather than relying on the global CSS override -->
+  <div class="page-layout__expand-toggle" [class.is-collapsed]="!subNavOpen()">
+    <ds-nav-expand
+      [open]="subNavOpen()"
+      (toggle)="onToggleSubnav()"
+    />
   </div>
 
 </div>

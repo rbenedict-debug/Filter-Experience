@@ -20,6 +20,12 @@ Requires SSH access to the Onflo GitHub. See [SETUP.md in the Design System repo
 npm install
 ```
 
+> **If you get an `EACCES` permission error** pointing to `~/.npm/_cacache`, your npm cache has root-owned files from a previous `sudo npm` run. Fix it once with:
+> ```bash
+> sudo chown -R $(id -u):$(id -g) ~/.npm
+> ```
+> Then re-run `npm install` normally.
+
 **Step 3 — Start the dev server**
 
 ```bash

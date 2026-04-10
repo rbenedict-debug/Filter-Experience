@@ -1,4 +1,6 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+
+type TicketTab = 'my-tickets' | 'team' | 'all' | 'closed';
 
 @Component({
   selector: 'app-tickets',
@@ -7,4 +9,10 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./tickets.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TicketsComponent {}
+export class TicketsComponent {
+  activeTab = signal<TicketTab>('my-tickets');
+
+  setTab(tab: TicketTab): void {
+    this.activeTab.set(tab);
+  }
+}

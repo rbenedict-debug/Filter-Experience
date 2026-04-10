@@ -33,6 +33,7 @@
             ],
             "styles": [
               "node_modules/@onflo/design-system/tokens/css/index.css",
+              "node_modules/@onflo/design-system/dist/components.css",
               "src/styles.scss"
             ],
             "scripts": []
