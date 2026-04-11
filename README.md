@@ -73,15 +73,29 @@ src/
 
 ## Getting design system updates
 
-When Rebecca releases a new design system version, she will update this template.
-Pull the latest template changes and reinstall:
+When Rebecca releases a new design system version she will send you a new `.tgz` file.
+
+**Step 1 — Replace the file in your project**
+
+Drop the new `.tgz` file into your project's `vendor/` folder, replacing the old one.
+
+**Step 2 — Update `package.json`**
+
+Open `package.json` and update the filename in the design system line to match the new file:
+
+```json
+"@onflo/design-system": "file:./vendor/onflo-design-system-0.2.0.tgz"
+```
+
+**Step 3 — Reinstall**
 
 ```bash
-git pull
 npm install
 ```
 
-Restart Claude Code after updating. It picks up new component definitions immediately.
+**Step 4 — Restart Claude Code**
+
+If Claude Code is running, restart it. It picks up the new component definitions immediately.
 
 ---
 
