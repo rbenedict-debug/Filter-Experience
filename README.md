@@ -14,11 +14,11 @@ Then clone your new repo locally.
 
 **Step 2 — Install dependencies**
 
-Requires SSH access to the Onflo GitHub. See [SETUP.md in the Design System repo](https://github.com/rbenedict-debug/Design-System/blob/main/SETUP.md) if you haven't done this yet.
-
 ```bash
 npm install
 ```
+
+The design system is bundled directly in this template — no additional access or setup required.
 
 > **If you get an `EACCES` permission error** pointing to `~/.npm/_cacache`, your npm cache has root-owned files from a previous `sudo npm` run. Fix it once with:
 > ```bash
@@ -73,10 +73,12 @@ src/
 
 ## Getting design system updates
 
-When Rebecca pushes design system updates:
+When Rebecca releases a new design system version, she will update this template.
+Pull the latest template changes and reinstall:
 
 ```bash
-npm update @onflo/design-system
+git pull
+npm install
 ```
 
 Restart Claude Code after updating. It picks up new component definitions immediately.
