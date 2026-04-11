@@ -15,9 +15,9 @@
       role="tab"
       [attr.aria-selected]="activeTab() === 'team'"
       [attr.tabindex]="activeTab() === 'team' ? 0 : -1"
-      aria-label="Team, 5 new"
+      aria-label="Team, 99 or more new"
       (click)="setTab('team')"
-    >Team&nbsp;<span class="ds-badge-indicator" aria-hidden="true">5</span></button>
+    >Team&nbsp;<span class="ds-badge-indicator" aria-hidden="true">99+</span></button>
     <button
       class="ds-tabs__tab"
       [class.is-selected]="activeTab() === 'all'"

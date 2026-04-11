@@ -224,13 +224,18 @@
           @let filter = settingsFilteredIds();
           @let vis = settingsSectionVis();
 
-          <ds-search
-            placeholder="Search Settings"
-            ariaLabel="Search settings"
-            [value]="settingsSearchQuery()"
-            (valueChange)="settingsSearchQuery.set($event)"
-            (cleared)="settingsSearchQuery.set('')"
-          />
+          <div class="settings-subnav"
+               (mouseenter)="settingsSubnavHovered.set(true)"
+               (mouseleave)="settingsSubnavHovered.set(false)">
+            <ds-search
+              placeholder="Search Settings"
+              ariaLabel="Search settings"
+              [value]="settingsSearchQuery()"
+              (valueChange)="settingsSearchQuery.set($event)"
+              (cleared)="settingsSearchQuery.set('')"
+            />
+            <div class="settings-subnav__list"
+                 [class.is-hovered]="settingsSubnavHovered()">
 
           <!-- ── Global ────────────────────────────────────────────────────── -->
           @if (vis.global) {
@@ -238,7 +243,7 @@
               text="Global"
               icon="language"
               [expanded]="globalExpanded() || !!filter"
-              (expandedChange)="globalExpanded.set($event)">
+              (expandedChange)="onSettingsExpand('global', $event)">
 
               @if (!filter || filter.has('district-profile')) {
                 <ds-subnav-button label="District Profile"
@@ -250,7 +255,7 @@
                 <ds-subnav-subheader
                   text="Activity Log"
                   [expanded]="activityLogExpanded() || !!filter"
-                  (expandedChange)="activityLogExpanded.set($event)">
+                  (expandedChange)="onSettingsSubheaderExpand('activity-log', $event)">
                   @if (!filter || filter.has('activity-log-onflo')) {
                     <ds-subnav-button label="Onflo"
                       [selected]="settingsNavItem() === 'activity-log-onflo'"
@@ -279,7 +284,7 @@
                 <ds-subnav-subheader
                   text="Communications"
                   [expanded]="communicationsExpanded() || !!filter"
-                  (expandedChange)="communicationsExpanded.set($event)">
+                  (expandedChange)="onSettingsSubheaderExpand('communications', $event)">
                   @if (!filter || filter.has('cs-score-templates')) {
                     <ds-subnav-button label="CS Score Templates"
                       [selected]="settingsNavItem() === 'cs-score-templates'"
@@ -328,7 +333,7 @@
                 <ds-subnav-subheader
                   text="Tags"
                   [expanded]="tagsExpanded() || !!filter"
-                  (expandedChange)="tagsExpanded.set($event)">
+                  (expandedChange)="onSettingsSubheaderExpand('tags', $event)">
                   @if (!filter || filter.has('tags-tickets')) {
                     <ds-subnav-button label="Tickets"
                       [selected]="settingsNavItem() === 'tags-tickets'"
@@ -356,7 +361,7 @@
               text="Integration Hub"
               icon="apps"
               [expanded]="integrationHubExpanded() || !!filter"
-              (expandedChange)="integrationHubExpanded.set($event)">
+              (expandedChange)="onSettingsExpand('integration-hub', $event)">
 
               @if (!filter || filter.has('api-tokens')) {
                 <ds-subnav-button label="API Tokens"
@@ -387,7 +392,7 @@
               text="Workflows"
               icon="conversion_path"
               [expanded]="workflowsExpanded() || !!filter"
-              (expandedChange)="workflowsExpanded.set($event)">
+              (expandedChange)="onSettingsExpand('workflows', $event)">
 
               @if (!filter || filter.has('workflows-tickets')) {
                 <ds-subnav-button label="Tickets"
@@ -410,16 +415,17 @@
           <!-- ── Tickets (settings) ────────────────────────────────────────── -->
           @if (vis.ticketsSettings) {
             <ds-subnav-header
+              class="settings-tickets-header"
               text="Tickets"
               icon="inbox"
               [expanded]="ticketsSettingsExpanded() || !!filter"
-              (expandedChange)="ticketsSettingsExpanded.set($event)">
+              (expandedChange)="onSettingsExpand('tickets-settings', $event)">
 
               @if (!filter || filter.has('portals') || filter.has('portals-it-service') || filter.has('portals-landing-page')) {
                 <ds-subnav-subheader
                   text="Portals"
                   [expanded]="portalsExpanded() || !!filter"
-                  (expandedChange)="portalsExpanded.set($event)">
+                  (expandedChange)="onSettingsSubheaderExpand('portals', $event)">
                   @if (!filter || filter.has('portals-it-service')) {
                     <ds-subnav-button label="IT Service"
                       [selected]="settingsNavItem() === 'portals-it-service'"
@@ -458,7 +464,7 @@
                 <ds-subnav-subheader
                   text="Topics Manager"
                   [expanded]="topicsManagerExpanded() || !!filter"
-                  (expandedChange)="topicsManagerExpanded.set($event)">
+                  (expandedChange)="onSettingsSubheaderExpand('topics-manager', $event)">
                   @if (!filter || filter.has('topics')) {
                     <ds-subnav-button label="Topics"
                       [selected]="settingsNavItem() === 'topics'"
@@ -480,7 +486,7 @@
               text="Assets"
               icon="desktop_mac"
               [expanded]="assetsSettingsExpanded() || !!filter"
-              (expandedChange)="assetsSettingsExpanded.set($event)">
+              (expandedChange)="onSettingsExpand('assets-settings', $event)">
 
               @if (!filter || filter.has('archived-assets')) {
                 <ds-subnav-button label="Archived Assets"
@@ -533,10 +539,11 @@
           <!-- ── Call Center ────────────────────────────────────────────────── -->
           @if (vis.callCenter) {
             <ds-subnav-header
+              class="settings-call-center-header"
               text="Call Center"
               icon="headset_mic"
               [expanded]="callCenterExpanded() || !!filter"
-              (expandedChange)="callCenterExpanded.set($event)">
+              (expandedChange)="onSettingsExpand('call-center', $event)">
 
               @if (!filter || filter.has('business-hours')) {
                 <ds-subnav-button label="Business Hours"
@@ -580,6 +587,9 @@
               }
             </ds-subnav-header>
           }
+
+            </div><!-- /.settings-subnav__list -->
+          </div><!-- /.settings-subnav -->
         }
 
       </nav>
