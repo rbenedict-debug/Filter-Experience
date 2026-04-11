@@ -1,1 +1,15 @@
 :host { display: contents; }
+
+.ds-page-content__main {
+  overflow-y: auto;
+
+  // Using scrollbar-color (not ::-webkit-scrollbar) keeps macOS native overlay
+  // behavior — defining ::-webkit-scrollbar opts out of overlay mode and causes
+  // the scrollbar to push content.
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
+  &:hover {
+    scrollbar-color: var(--color-surface-scroll) transparent;
+  }
+}
