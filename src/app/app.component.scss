@@ -36,24 +36,19 @@
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--spacing-xs);
     margin-right: calc(-1 * var(--spacing-sm));
     padding-right: var(--spacing-sm);
 
-    // Firefox
+    // Overlay scrollbar — hidden until hover, no content push.
+    // scrollbar-color is intentional here (not ::-webkit-scrollbar),
+    // which preserves macOS native overlay scrollbar behavior.
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
 
-    // WebKit — using ::-webkit-scrollbar so we own visibility,
-    // not macOS (which only shows the native overlay on scroll).
-    &::-webkit-scrollbar        { width: 6px; }
-    &::-webkit-scrollbar-track  { background: transparent; }
-    &::-webkit-scrollbar-thumb  { background: transparent; border-radius: 3px; }
-  }
-
-  &__list.is-hovered {
-    scrollbar-color: var(--color-surface-scroll) transparent;
-    &::-webkit-scrollbar-thumb { background: var(--color-surface-scroll); }
+    &:hover {
+      scrollbar-color: var(--color-surface-scroll) transparent;
+    }
   }
 }
 
@@ -64,14 +59,17 @@
   }
 }
 
+// Expand/collapse toggle for the sub-nav panel — absolutely positioned at
+// the right edge of the subnav. Offsets are visual adjustments relative to
+// the design system layout tokens.
 .page-layout__expand-toggle {
   position: absolute;
-  top: 87px;
-  left: 270px;
+  top: calc(var(--top-nav-height) + var(--spacing-md) + 10px);
+  left: calc(var(--nav-sidebar-width) + var(--subnav-width) - 5px);
   z-index: 10;
-  transition: left .2s ease;
+  transition: left var(--motion-duration-medium) ease;
 
   &.is-collapsed {
-    left: 77px;
+    left: calc(var(--nav-sidebar-width) - 3px);
   }
 }
