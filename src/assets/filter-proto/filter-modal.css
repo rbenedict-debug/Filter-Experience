@@ -1,0 +1,2217 @@
+/* Filter Modal — prototype CSS (filter-specific styles only) */
+
+/* Restore [hidden] semantics — several elements here use display:flex which
+   would otherwise override the browser's UA [hidden] { display:none } rule. */
+[hidden] { display: none !important; }
+
+/* ============================================================
+   APPLIED FILTERS BAR
+   filter-applied-bar — strip between toolbar and table when filters are active
+   ds-card-item       — one card per active bucket (DS component, mirrored below)
+   ============================================================ */
+
+.filter-applied-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: 0 var(--spacing-lg) var(--spacing-sm);
+  background: var(--color-surface-page);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.filter-applied-bar__label {
+  display: none;
+}
+
+.filter-applied-bar__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── ds-card-item (mirrored from design-system/components/card/_card.scss) ── */
+.ds-card-item {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ds-card-item--no-leading  { padding-left:  var(--spacing-lg); }
+.ds-card-item--no-trailing { padding-right: var(--spacing-lg); }
+
+.ds-card-item--elevated {
+  border: 1px solid transparent;
+  box-shadow: 0 0 2px 0 var(--shadow-elevation-2), 0 2px 6px 2px var(--shadow-elevation-2);
+}
+
+.ds-card-item--interactive { cursor: pointer; }
+
+.ds-card-item--interactive::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: transparent;
+  pointer-events: none;
+  transition: background 0.12s ease;
+}
+
+.ds-card-item--interactive:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: 0 0 2px 0 var(--shadow-elevation-2), 0 2px 6px 2px var(--shadow-elevation-2);
+}
+.ds-card-item--interactive:hover::after    { background: var(--overlay-hovered); }
+
+.ds-card-item--interactive:active {
+  border-color: var(--color-border-active);
+  box-shadow: 0 0 2px 0 var(--shadow-elevation-2), 0 2px 6px 2px var(--shadow-elevation-2);
+}
+.ds-card-item--interactive:active::after   { background: var(--overlay-pressed); }
+
+.ds-card-item--interactive:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+.ds-card-item--interactive:focus-visible::after { background: var(--overlay-focused); }
+
+.ds-card-item.is-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+.ds-card-item.is-disabled .ds-card-item__primary,
+.ds-card-item.is-disabled .ds-card-item__secondary { color: var(--color-text-disabled); }
+.ds-card-item.is-disabled .ds-card-item__leading,
+.ds-card-item.is-disabled .ds-card-item__trailing  { color: var(--color-icon-disabled); }
+
+.ds-card-item__leading {
+  flex-shrink: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  color: var(--color-icon-default);
+  position: relative;
+  z-index: 1;
+}
+
+.ds-card-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--spacing-sm);
+  position: relative;
+  z-index: 1;
+}
+
+.ds-card-item__primary {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-body-medium-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: var(--ref-typescale-body-medium-line-height);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ds-card-item__secondary {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.ds-card-item__trailing {
+  flex-shrink: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  color: var(--color-icon-default);
+  position: relative;
+  z-index: 1;
+}
+
+.ds-card-item__action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-right: var(--spacing-sm);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── filter-applied-card: filter-specific extensions on top of ds-card-item ── */
+
+/* Width constraints + overflow:visible so the tooltip can escape the card */
+.filter-applied-bar__cards .ds-card-item {
+  width: auto;
+  min-width: 140px;
+  max-width: 220px;
+  overflow: visible;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+  gap: var(--spacing-sm);
+}
+
+/* Primary text — body small typescale instead of DS default body medium */
+/* Right padding clears the 24px absolute close button (card has 12px right padding + 12px here = 24px total) */
+.filter-applied-bar__cards .ds-card-item__primary {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight-prominent);
+  line-height: var(--ref-typescale-body-small-line-height);
+  letter-spacing: var(--ref-typescale-body-small-tracking);
+  padding-right: var(--spacing-md);
+}
+
+/* Remove body's horizontal padding — card-level padding handles all spacing */
+/* Align text to top so content sits flush regardless of card height */
+.filter-applied-bar__cards .ds-card-item__body {
+  padding: 0;
+  justify-content: flex-start;
+  align-self: flex-start;
+}
+
+/* Leading icon — top-aligned to match body text; color set per state below */
+.filter-applied-bar__cards .ds-card-item__leading {
+  align-self: flex-start;
+  color: var(--color-icon-brand);
+}
+.filter-applied-bar__cards .ds-card-item.filter-applied-card--excluded .ds-card-item__leading {
+  color: var(--color-icon-error);
+}
+
+
+/* Included state */
+.filter-applied-bar__cards .ds-card-item:not(.filter-applied-card--excluded) {
+  background: var(--color-surface-page);
+  border-color: var(--color-border-subtle);
+}
+
+/* Secondary text: multi-line clamp instead of the DS single-line truncation */
+.filter-applied-bar__cards .ds-card-item__secondary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+/* Excluded state — page surface + subtle border; title is struck through (no text badge needed) */
+.ds-card-item.filter-applied-card--excluded {
+  background: var(--color-surface-page);
+  border-color: var(--color-border-subtle);
+}
+.ds-card-item.filter-applied-card--excluded .ds-card-item__secondary { color: var(--color-text-secondary); }
+
+/* Restore DS hover border — our scoped border-subtle rules have higher specificity than the
+   DS interactive:hover rule, so we re-assert it here at equal specificity, later in the file */
+.filter-applied-bar__cards .ds-card-item--interactive:hover {
+  border-color: var(--color-border-hover);
+}
+
+/* Collapse the action wrapper out of the flex flow for applied cards */
+.filter-applied-bar__cards .ds-card-item__action {
+  display: contents;
+}
+
+/* Pin the remove button to the top-right corner as a floating overlay */
+.filter-applied-bar__cards .filter-applied-card__remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+}
+
+/* Remove button — hidden until card is hovered or the button itself is focused */
+.filter-applied-card__remove {
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--color-icon-default);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-duration-short), background var(--motion-duration-short), color var(--motion-duration-short);
+}
+
+.ds-card-item:hover .filter-applied-card__remove,
+.filter-applied-card__remove:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.filter-applied-card__remove:hover {
+  background: var(--overlay-hovered);
+  color: var(--color-text-primary);
+}
+
+.filter-applied-card__remove:focus         { outline: none; }
+.filter-applied-card__remove:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+/* Overflow tooltip — only rendered when secondary text is actually clamped.
+   Placed as a direct child of ds-card-item so top:100% is below the card,
+   not below the shorter __body text block. */
+.filter-applied-card__tooltip {
+  position: absolute;
+  top: calc(100% + var(--spacing-sm));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: var(--color-surface-tooltip);
+  color: var(--color-text-tooltip);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  line-height: 1.6;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px var(--shadow-elevation-2);
+  width: max-content;
+  max-width: 240px;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-duration-short);
+}
+
+
+.ds-card-item:hover .filter-applied-card__tooltip,
+.ds-card-item:focus-visible .filter-applied-card__tooltip {
+  opacity: 1;
+}
+
+
+/* ============================================================
+   FILTER OVERLAY
+   ============================================================ */
+
+.filter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-page);
+  background: var(--color-surface-scrim);
+  animation: overlay-in var(--motion-duration-medium) ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+/* ============================================================
+   FILTER MODAL
+   ============================================================ */
+
+.filter-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0px 1px 10px 4px var(--shadow-elevation-2),
+    0px 4px 3px  0px var(--shadow-elevation-2);
+  background: var(--color-surface-page);
+  animation: modal-in var(--motion-duration-medium) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* Close button — ds-icon-button--icon overlaying the dark navy header */
+.filter-modal__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  border-radius: 0 var(--radius-lg) 0 var(--radius-sm);
+  color: var(--color-icon-inverse);
+}
+.filter-modal__close:hover:not(:disabled) { background: var(--overlay-hovered); color: var(--color-text-on-brand); }
+
+.filter-modal__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+
+/* ============================================================
+   LEFT PANEL
+   ============================================================ */
+
+.filter-modal__left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-page);
+  overflow: hidden;
+}
+
+.filter-modal__header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-md);
+}
+
+.filter-modal__title {
+  margin: 0;
+  font-size: var(--ref-typescale-title-h2-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: var(--ref-typescale-title-h2-line-height);
+  letter-spacing: 0;
+  color: var(--color-text-primary);
+}
+
+.filter-modal__content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  overflow: hidden;
+}
+
+/* ── GROUP NAV ── */
+.filter-modal__nav {
+  flex-shrink: 0;
+  width: 238px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  overflow-y: auto;
+  scrollbar-color: var(--color-border-secondary) transparent;
+}
+
+.filter-modal__nav::-webkit-scrollbar { width: 4px; }
+.filter-modal__nav::-webkit-scrollbar-thumb {
+  background: var(--color-border-secondary);
+  border-radius: 2px;
+}
+
+.filter-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  height: 42px;
+  padding: 0 var(--spacing-sm) 0 var(--spacing-md);
+  border: none;
+  background: var(--color-surface-page);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ref-typescale-label-medium-tracking);
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  transition: background var(--motion-duration-short);
+}
+
+.filter-nav-item:hover:not(.filter-nav-item--active) {
+  background: color-mix(in srgb, var(--color-surface-nav) 60%, white);
+}
+
+.filter-nav-item--active { background: var(--color-surface-nav); }
+
+.filter-nav-item:focus { outline: none; }
+.filter-nav-item:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring) inset; }
+
+.filter-nav-item__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--spacing-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-brand-bold);
+  color: var(--color-text-on-brand);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-extra-bold);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── OPTIONS PANEL ── */
+.filter-modal__options {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: var(--color-surface-nav);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  scrollbar-color: var(--color-border-secondary) transparent;
+}
+
+/* Remove top-left radius only when the first nav item is the active one,
+   so the panel sits flush against the active tab with no visible gap. */
+.filter-modal__nav:has(.filter-nav-item:first-child.filter-nav-item--active) ~ .filter-modal__options {
+  border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+}
+
+.filter-modal__options::-webkit-scrollbar { width: 4px; }
+.filter-modal__options::-webkit-scrollbar-thumb {
+  background: var(--color-border-secondary);
+  border-radius: 2px;
+}
+
+/* Filter card grid */
+.filter-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.filter-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  min-width: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-body-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  line-height: var(--ref-typescale-body-medium-line-height);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ref-typescale-body-medium-tracking);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--motion-duration-short), background-color var(--motion-duration-short), box-shadow var(--motion-duration-short);
+}
+
+.filter-card > span:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-card:hover:not(.filter-card--selected) {
+  border-color: var(--color-border-input-hover);
+  background: var(--overlay-hovered);
+  box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+}
+
+.filter-card:focus { outline: none; }
+.filter-card:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+.filter-card--selected {
+  border-color: transparent;
+  box-shadow: inset 0 0 0 2px var(--color-border-brand);
+  background: var(--color-surface-brand);
+  color: var(--color-text-brand);
+  font-weight: var(--ref-typeface-weight-bold);
+}
+
+.filter-card__check {
+  visibility: hidden;
+  flex-shrink: 0;
+  color: var(--color-text-brand);
+}
+
+.filter-card--selected .filter-card__check { visibility: visible; }
+
+
+/* Invisible spacers — used by flex fallback, hidden in CSS Grid layout */
+.filter-card-spacer {
+  display: none;
+}
+
+/* ── TIER ACCORDION ── */
+.filter-tier {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.filter-tier + .filter-tier {
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.filter-tier__top-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.filter-tier__top-row .filter-tier__header {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-tier__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typescale-label-medium-weight-prominent);
+  line-height: var(--ref-typescale-label-medium-line-height);
+  color: var(--color-text-primary);
+  text-align: left;
+  border-radius: var(--radius-sm);
+}
+.filter-tier__header:focus { outline: none; }
+.filter-tier__header:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+.filter-tier__chevron {
+  color: var(--color-icon-default);
+  transition: transform var(--motion-duration-medium) ease;
+  flex-shrink: 0;
+}
+
+.filter-tier__end {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.filter-tier__header[aria-expanded="false"] .filter-tier__chevron {
+  transform: rotate(-90deg);
+}
+
+.filter-tier__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-brand-bold);
+  color: var(--color-text-on-brand);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-extra-bold);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── ADD ALL / REMOVE ALL BUTTON ── */
+/* Visual styles come from ds-button--xs + ds-button--text (add) or ds-button--destructive (remove). */
+
+/* The add-all tooltip uses position:fixed (set via JS) so it escapes the scroll
+   container's clipping boundary. JS writes --add-all-tip-top / --add-all-tip-left
+   on the wrapper; default -9999px keeps it off-screen before positioning fires. */
+.ds-tooltip-wrapper:has([data-add-all]) .ds-tooltip {
+  position: fixed;
+  bottom: auto;
+  top: var(--add-all-tip-top, -9999px);
+  left: var(--add-all-tip-left, -9999px);
+  transform: translateX(-50%);
+}
+
+/* Flat-group header row — positions the add-all button right-aligned above the grid */
+.filter-group-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 var(--spacing-xs);
+}
+
+/* ── SEARCH RESULTS ── */
+.search-results-header {
+  font-size: var(--ref-typescale-body-medium-size);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-xs) var(--spacing-xs) 0;
+}
+
+.search-result-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.search-result-group + .search-result-group {
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.search-result-group__label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typescale-label-medium-weight-prominent);
+  line-height: var(--ref-typescale-label-medium-line-height);
+  color: var(--color-text-primary);
+  padding: 0 var(--spacing-xs);
+}
+
+.search-result-group__label .ds-tooltip-wrapper:has([data-add-all]) {
+  margin-left: auto;
+}
+
+.search-result-group__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius-full);
+  background: var(--color-border-secondary);
+  color: var(--color-text-secondary);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-extra-bold);
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1;
+}
+
+/* search-show-more — DS: ds-button ds-button--text ds-button--sm; layout only */
+.search-show-more { width: 100%; }
+
+/* Search no results — ds-empty-state in the options panel */
+.filter-modal__options .ds-empty-state {
+  flex: 1;
+  padding: var(--spacing-page);
+}
+
+
+/* ============================================================
+   RIGHT PANEL — selected filters (navy)
+   ============================================================ */
+
+.filter-modal__right {
+  flex-shrink: 0;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-accent-navy-bold);
+  overflow: hidden;
+}
+
+.filter-modal__selected-header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl) var(--spacing-md) var(--spacing-sm) var(--spacing-lg);
+}
+
+.filter-modal__selected-header-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.filter-modal__selected-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ds-button--text and ds-button--outlined inside the dark navy right panel.
+   --color-text-brand is a light-background-only token — override with semantic
+   dark-surface tokens so colors resolve correctly on the navy background. */
+.filter-modal__right .ds-button--text,
+.filter-modal__right .ds-button--outlined {
+  color: var(--color-text-primary);
+}
+.filter-modal__right .ds-button--outlined {
+  border-color: var(--color-border-subtle);
+}
+.filter-modal__right .ds-button--text:hover:not(:disabled) {
+  background: var(--overlay-hovered);
+}
+.filter-modal__right .ds-button--outlined:hover:not(:disabled) {
+  background: var(--overlay-hovered);
+  border-color: var(--color-border-secondary);
+}
+
+.filter-modal__selected-title {
+  margin: 0;
+  font-size: var(--ref-typescale-title-h2-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: var(--ref-typescale-title-h2-line-height);
+  color: var(--color-text-on-brand);
+}
+
+.filter-modal__selected-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-lg);
+  border-top: 1px solid var(--color-border-subtle);
+  scrollbar-color: var(--color-border-secondary) transparent;
+}
+
+.filter-modal__selected-body::-webkit-scrollbar { width: 4px; }
+.filter-modal__selected-body::-webkit-scrollbar-thumb {
+  background: var(--color-border-secondary);
+  border-radius: 2px;
+}
+
+/* Tooltips inside the selected-body use position:fixed to escape the overflow-y:auto
+   scroll container clip (same pattern as the add-all tooltip in the options panel).
+   JS writes --sel-tip-top / --sel-tip-left on the wrapper;
+   default -9999px keeps them off-screen until positioning fires. */
+.filter-modal__selected-body .ds-tooltip-wrapper .ds-tooltip {
+  position: fixed;
+  bottom: auto;
+  top: var(--sel-tip-top, -9999px);
+  left: var(--sel-tip-left, -9999px);
+  transform: translateX(-50%);
+}
+/* Card overflow tooltip — also appears below the card and is clipped by the scroll container */
+.filter-modal__selected-body .filter-applied-card__tooltip {
+  position: fixed;
+  top: var(--sel-card-tip-top, -9999px);
+  left: var(--sel-card-tip-left, -9999px);
+}
+
+/* Empty state — ds-empty-state on dark navy right panel */
+#selected-empty.ds-empty-state {
+  height: 100%;
+  padding: var(--spacing-page) var(--spacing-xl);
+}
+
+/* Selected filter list */
+.selected-filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+}
+
+/* ── Selected bucket cards ── */
+.selected-bucket {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.selected-bucket--excluded {
+  background: var(--color-surface-error);
+  border-color: var(--color-border-error);
+}
+
+.selected-bucket__header {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-sm) var(--spacing-md);
+}
+
+/* Top row: collapse button + remove-section button */
+.selected-bucket__header-top {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.selected-bucket__collapse-btn {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: var(--spacing-sm);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+}
+
+.selected-bucket__collapse-btn:focus { outline: none; }
+.selected-bucket__collapse-btn:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+/* Chevron icon */
+.selected-bucket__chevron {
+  flex-shrink: 0;
+  color: var(--color-icon-inverse);
+  transition: transform var(--motion-duration-short) ease;
+}
+
+.selected-bucket--collapsed .selected-bucket__chevron {
+  transform: rotate(-90deg);
+}
+
+.selected-bucket--excluded .selected-bucket__chevron {
+  color: var(--color-icon-error);
+}
+
+/* Crumb label */
+.selected-bucket__crumb {
+  flex-shrink: 1;
+  min-width: 0;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typescale-label-medium-weight-prominent);
+  line-height: var(--ref-typescale-label-medium-line-height);
+  color: var(--color-text-inverse);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selected-bucket--excluded .selected-bucket__crumb {
+  color: var(--color-text-error);
+}
+
+/* Bottom row: count + actions */
+.selected-bucket__header-bottom {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Filter count label */
+.selected-bucket__count {
+  margin-left: auto;
+  font-family: var(--ref-typescale-label-small-font);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typescale-label-small-weight);
+  line-height: var(--ref-typescale-label-small-line-height);
+  letter-spacing: var(--ref-typescale-label-small-tracking);
+  color: var(--color-text-disabled);
+  padding: 0 var(--spacing-xs);
+}
+
+.selected-bucket--excluded .selected-bucket__count {
+  color: var(--color-icon-error);
+}
+
+/* selected-bucket__remove-btn — ds-icon-button--icon --sm, dark navy context */
+.selected-bucket__remove-btn {
+  color: var(--color-icon-disabled);
+  transition: background var(--motion-duration-short), color var(--motion-duration-short);
+}
+.selected-bucket__remove-btn:hover:not(:disabled) { background: var(--overlay-hovered); color: var(--color-icon-inverse); }
+.selected-bucket__remove-btn:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+/* Collapsed state — hide items list */
+.selected-bucket--collapsed .selected-bucket__items {
+  display: none;
+}
+
+.selected-bucket__items {
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.selected-bucket--excluded .selected-bucket__items {
+  border-top-color: var(--color-border-error);
+}
+
+.selected-bucket__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-md);
+  transition: background var(--motion-duration-short);
+}
+
+.selected-bucket__item:hover { background: var(--overlay-hovered); }
+
+.selected-bucket__item + .selected-bucket__item {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.selected-bucket__item-label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--ref-typescale-body-medium-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* selected-bucket__item-remove — DS: ds-icon-button ds-icon-button--icon ds-icon-button--sm; dark navy context overrides */
+.selected-bucket__item-remove { color: var(--color-icon-disabled); flex-shrink: 0; }
+.selected-bucket__item-remove:hover:not(:disabled) { background: var(--overlay-hovered); color: var(--color-icon-inverse); }
+.selected-bucket__item-remove:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.filter-modal__footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  background: var(--color-surface-page);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.filter-modal__footer-summary {
+  flex: 1;
+  font-size: var(--ref-typescale-body-medium-size);
+  color: var(--color-text-secondary);
+}
+
+.filter-modal__footer-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+
+/* ============================================================
+   DATE RANGE PICKER
+   Inline section in the Dates filter group options panel.
+   Mirrors Angular Material's date range picker, branded with
+   Onflo design system tokens.
+   ============================================================ */
+
+.date-range-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* ── Title row ── */
+.date-range-picker__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.date-range-picker__icon { color: var(--color-text-secondary); }
+
+.date-range-picker__title {
+  font-size: var(--ref-typescale-title-h4-size);
+  font-weight: var(--ref-typeface-weight-extra-bold);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--ref-typescale-label-medium-tracking);
+}
+
+/* ── DS-style input field(s) with trailing calendar icon ── */
+
+/* Label above the field — mirrors ds-input__label */
+.date-picker-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.date-picker-field-label {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typescale-label-medium-weight-prominent);
+  line-height: var(--ref-typescale-label-medium-line-height);
+  color: var(--color-text-secondary);
+  user-select: none;
+}
+
+/* Outlined field wrapper — mirrors ds-input__field.
+   overflow:hidden clips the calendar panel to the field's rounded corners. */
+.filter-date-range-field {
+  background: var(--color-surface-input);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: border-color var(--motion-duration-short) ease, box-shadow var(--motion-duration-short) ease;
+}
+
+.filter-date-range-field:hover { border-color: var(--color-border-input-hover); }
+
+/* box-shadow is drawn on the element itself, not clipped by overflow:hidden — focus ring is safe */
+.filter-date-range-field:focus-within {
+  border-color: var(--color-border-input-active);
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+
+/* When the calendar panel is visible the border stays active */
+.filter-date-range-field--open,
+.filter-date-range-field--open:hover {
+  border-color: var(--color-border-input-active);
+}
+
+/* Flex row: inputs + separator + calendar button */
+.filter-date-range-field__row {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 var(--spacing-xs) 0 var(--spacing-md);
+  gap: var(--spacing-xs);
+}
+
+/* Text inputs — no border of their own, inherits field styling */
+.filter-date-range-field__input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  line-height: var(--ref-typescale-label-medium-line-height);
+  color: var(--color-text-primary);
+  caret-color: var(--color-border-input-active);
+}
+
+.filter-date-range-field__input::placeholder { color: var(--color-text-placeholder); }
+
+/* Subtle underline on the input that will receive the next calendar click */
+.filter-date-range-field__input--active {
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-input-active);
+  text-underline-offset: 3px;
+}
+
+/* En-dash separator between range inputs — mirrors mat-date-range-input's separator */
+.filter-date-range-field__sep {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Format hint below the field — mirrors mat-hint / ds-input__helper */
+.date-picker-field-hint {
+  font-family: var(--ref-typeface-plain);
+  font-size: var(--ref-typescale-body-small-size);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+}
+
+/* ── Mode toggle — full-width ghost/filled pair, no outer container box ── */
+.date-mode-toggle {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.date-mode-toggle__btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  height: 36px;
+  padding: 0 var(--spacing-sm);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--ref-typescale-title-h4-tracking);
+  cursor: pointer;
+  transition: background var(--motion-duration-short), color var(--motion-duration-short);
+  white-space: nowrap;
+}
+
+.date-mode-toggle__btn:hover:not(.date-mode-toggle__btn--active) {
+  background: var(--overlay-hovered);
+  color: var(--color-text-primary);
+}
+
+.date-mode-toggle__btn:focus { outline: none; }
+.date-mode-toggle__btn:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+.date-mode-toggle__btn--active {
+  background: var(--color-surface-brand-bold);
+  color: var(--color-text-on-brand);
+  font-weight: var(--ref-typeface-weight-bold);
+  cursor: default;
+  pointer-events: none;
+}
+
+
+/* Calendar toggle button — mirrors mat-datepicker-toggle / ds-input__action */
+.filter-date-range-field__cal-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: var(--spacing-sm);
+  margin: 0; /* overrides ds-input__action's margin:-2px for this larger button */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-icon-subtle);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  transition: color var(--motion-duration-short) ease, background var(--motion-duration-short) ease;
+}
+
+.filter-date-range-field__cal-btn:hover { color: var(--color-icon-default); background: var(--overlay-hovered); }
+.filter-date-range-field__cal-btn:focus { outline: none; }
+.filter-date-range-field__cal-btn:focus-visible { box-shadow: 0 0 0 2px var(--color-border-ada-focus-ring); }
+
+/* Active state when calendar is open */
+.filter-date-range-field__cal-btn--open {
+  color: var(--color-icon-brand);
+}
+
+/* Calendar panel — rendered as a fixed overlay, floats above modal content */
+.filter-date-range-field__cal-panel {
+  position: fixed;
+  z-index: 1000;
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px var(--shadow-elevation-3);
+  overflow: hidden;
+}
+
+/* Calendar fills the panel; strip its own border/radius since the panel handles those */
+.filter-date-range-field__cal-panel .date-calendar {
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* .date-calendar */
+.date-calendar {
+  width: 296px;
+  flex: 0 0 296px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+}
+
+/* ── Calendar header ── */
+.date-cal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xs) 0;
+}
+
+/* Calendar nav — ds-icon-button--icon --sm */
+.date-cal__nav { color: var(--color-icon-subtle); }
+
+.date-cal__nav-placeholder {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.date-cal__month-label {
+  flex: 1;
+  text-align: center;
+  font-size: var(--ref-typescale-title-h4-size);
+  font-weight: var(--ref-typeface-weight-extra-bold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ref-typescale-title-h4-tracking);
+}
+
+/* ── Calendar grid (7 columns) ── */
+.date-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.date-cal__dow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-extra-bold);
+  color: var(--color-text-placeholder);
+  letter-spacing: var(--ref-typescale-body-small-tracking);
+  text-transform: uppercase;
+}
+
+/* ── Day cells — wrapper handles range band ── */
+.date-cal__cell {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-cal__cell--empty { pointer-events: none; }
+
+/* Confirmed range band */
+.date-cal__cell--in-range {
+  background: var(--color-surface-brand);
+}
+
+.date-cal__cell--range-start {
+  background: linear-gradient(to right, transparent 50%, var(--color-surface-brand) 50%);
+}
+
+.date-cal__cell--range-end {
+  background: linear-gradient(to left, transparent 50%, var(--color-surface-brand) 50%);
+}
+
+/* Hover preview band */
+.date-cal__cell--preview-range {
+  background: color-mix(in srgb, var(--color-surface-brand) 55%, transparent);
+}
+
+.date-cal__cell--preview-start {
+  background: linear-gradient(
+    to right,
+    transparent 50%,
+    color-mix(in srgb, var(--color-surface-brand) 55%, transparent) 50%
+  );
+}
+
+.date-cal__cell--preview-end {
+  background: linear-gradient(
+    to left,
+    transparent 50%,
+    color-mix(in srgb, var(--color-surface-brand) 55%, transparent) 50%
+  );
+}
+
+/* Day button — circle */
+.date-cal__day {
+  position: relative;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--motion-duration-short), color var(--motion-duration-short);
+}
+
+.date-cal__day:hover:not(.date-cal__day--endpoint):not(.date-cal__day--preview-endpoint) {
+  background: var(--overlay-hovered);
+}
+
+.date-cal__day:focus { outline: none; }
+.date-cal__day:focus-visible { box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+
+/* Today dot */
+.date-cal__day--today:not(.date-cal__day--endpoint) {
+  font-weight: var(--ref-typeface-weight-extra-bold);
+  color: var(--color-text-brand);
+}
+
+.date-cal__day--today:not(.date-cal__day--endpoint)::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-text-brand);
+}
+
+/* Start / end endpoint — filled brand circle */
+.date-cal__day--endpoint {
+  background: var(--color-surface-brand-bold);
+  color: var(--color-text-on-brand);
+  font-weight: var(--ref-typeface-weight-extra-bold);
+}
+
+.date-cal__day--endpoint:hover {
+  background: color-mix(in srgb, var(--color-surface-brand-bold) 88%, black);
+  color: var(--color-text-on-brand);
+}
+
+/* Preview endpoint — semi-transparent brand circle */
+.date-cal__day--preview-endpoint:not(.date-cal__day--endpoint) {
+  background: color-mix(in srgb, var(--color-surface-brand-bold) 55%, transparent);
+  color: var(--color-text-on-brand);
+}
+
+/* ── Actions row ── */
+.date-range-picker__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* ── Added ranges chips ── */
+.date-range-picker__chips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.date-range-picker__chips-label {
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  color: var(--color-text-placeholder);
+  letter-spacing: var(--ref-typescale-body-small-tracking);
+  text-transform: uppercase;
+  padding: 0 var(--spacing-xs);
+}
+
+/* ============================================================
+   SAVED FILTER SETS
+   ============================================================ */
+
+/* "Saved sets" toggle button — count badge */
+
+/* "Saved sets" toggle button active state */
+.saved-sets-toggle-btn[aria-pressed="true"] {
+  background: var(--overlay-hovered);
+  color: var(--color-text-brand);
+}
+
+/* Divider between Saved sets and other footer actions */
+.filter-modal__footer-divider {
+  display: block;
+  width: 1px;
+  height: 20px;
+  background: var(--color-border-subtle);
+  margin: 0 var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+
+/* Active set chip — shown at the top of the selected-body, below the divider */
+.active-set-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--ref-typescale-label-small-size);
+  color: var(--color-text-secondary);
+  min-width: 0;
+  padding-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+#active-set-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Update icon button — inline at the right of the active-set-chip name */
+/* Keep it in layout flow when hidden so the chip height stays consistent */
+.active-set-update-btn[hidden] {
+  display: inline-flex !important;
+  visibility: hidden;
+}
+
+.active-set-update-btn {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-icon-disabled);
+  transition: background var(--motion-duration-short), color var(--motion-duration-short);
+}
+
+.active-set-update-btn:hover {
+  background: var(--overlay-hovered);
+  color: var(--color-icon-inverse);
+}
+
+.active-set-update-btn:focus { outline: none; }
+.active-set-update-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-border-ada-focus-ring);
+}
+
+.active-set-update-btn .ds-icon {
+  font-size: var(--ref-typescale-label-small-size);
+}
+
+/* Right panel needs position:relative so the overlay panel can fill it */
+.filter-modal__right {
+  position: relative;
+}
+
+/* ── Saved sets overlay panel ── */
+.saved-sets-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-accent-navy-bold);
+}
+
+.saved-sets-panel__header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.saved-sets-panel__title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--ref-typescale-title-h2-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: var(--ref-typescale-title-h2-line-height);
+  color: var(--color-text-on-brand);
+}
+
+.saved-sets-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  scrollbar-color: var(--color-border-secondary) transparent;
+}
+
+.saved-sets-back-row {
+  margin-bottom: calc(var(--spacing-sm) * -1);
+}
+
+.saved-sets-back-btn {
+  padding: 0 var(--spacing-md);
+}
+
+.saved-sets-panel__body::-webkit-scrollbar { width: 4px; }
+.saved-sets-panel__body::-webkit-scrollbar-thumb {
+  background: var(--color-border-secondary);
+  border-radius: 2px;
+}
+
+/* ── Save form ── */
+.saved-sets-save-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.saved-sets-save-form__label {
+  margin: 0;
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  color: var(--color-text-on-brand);
+}
+
+.saved-sets-save-form__row {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.saved-sets-save-form__input-wrap {
+  flex: 1;
+}
+
+.saved-sets-save-form__hint {
+  margin: 0;
+  font-size: var(--ref-typescale-label-small-size);
+  color: var(--color-text-disabled);
+}
+
+/* ── Saved sets list ── */
+.saved-sets-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.saved-set-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-secondary);
+  border: 1px solid transparent;
+  transition: background var(--motion-duration-short);
+}
+
+.saved-set-item:hover {
+  background: var(--overlay-hovered);
+}
+
+.saved-set-item--active {
+  background: var(--overlay-hovered);
+  border-color: var(--color-border-secondary);
+}
+
+.saved-set-item__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.saved-set-item__name {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  color: var(--color-text-on-brand);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.saved-set-item__loaded-badge {
+  display: inline-block;
+  flex-shrink: 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-secondary);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ref-typescale-body-small-tracking);
+  text-transform: uppercase;
+}
+
+.saved-set-item__meta {
+  font-size: var(--ref-typescale-label-small-size);
+  color: var(--color-text-disabled);
+}
+
+.saved-set-item__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+
+/* ── Empty state — ds-empty-state on dark navy panel ── */
+.saved-sets-panel .ds-empty-state { padding: var(--spacing-xl) var(--spacing-lg); }
+
+
+/* ============================================================
+   FILTER: DATE FIELD PICKER
+   filter-date-field — field-specific From / To date selector
+   Renders inside a collapsible filter-tier__body.
+   Angular migration: replace with <mat-date-range-input>
+   ============================================================ */
+
+.filter-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+}
+
+.filter-date-field__row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.filter-date-field__group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.filter-date-field__label {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--ref-typescale-label-small-tracking);
+}
+
+/* Style <input type="date"> to match ds-input */
+.filter-date-field .ds-input__control[type="date"] {
+  cursor: pointer;
+  padding-right: var(--spacing-sm);
+}
+
+.filter-date-field__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+}
+
+/* Applied confirmation row — shown once the range is committed */
+.filter-date-field__applied {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-surface-brand);
+  border-radius: var(--radius-sm);
+  font-size: var(--ref-typescale-label-small-size);
+  color: var(--color-text-brand);
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.filter-date-field__applied .ds-icon {
+  font-size: var(--ref-typescale-label-large-size);
+  color: var(--color-text-brand);
+}
+
+
+/* ============================================================
+   FILTER: COST RANGE SLIDER
+   filter-cost-range — dual-thumb range input for total cost
+   Styled to match Angular Material mat-slider with brand tokens.
+   Angular migration: replace with <mat-slider [min] [max] [step]>
+   ============================================================ */
+
+.filter-cost-range {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+}
+
+/* Value readout: $200 – $1,500 */
+.filter-cost-range__values {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  justify-content: center;
+}
+
+.filter-cost-range__value {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-large-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  color: var(--color-text-primary);
+  min-width: 64px;
+  text-align: center;
+}
+
+.filter-cost-range__dash {
+  color: var(--color-text-secondary);
+  font-size: var(--ref-typescale-label-medium-size);
+}
+
+/* ── Slider track + fill + thumbs ── */
+.filter-cost-range__slider-wrap {
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  /* --cr-min and --cr-max are set inline by JS */
+}
+
+/* Static base track */
+.filter-cost-range__track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--color-border-subtle);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Filled region between the two thumbs */
+.filter-cost-range__fill {
+  position: absolute;
+  top: 0;
+  left: var(--cr-min, 0%);
+  right: calc(100% - var(--cr-max, 100%));
+  height: 100%;
+  background: var(--color-surface-brand-bold);
+  border-radius: 2px;
+}
+
+/* Both range inputs share the same track */
+.filter-cost-range__thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}
+
+/* Thumb knob — brand-colored circle */
+.filter-cost-range__thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface-brand-bold);
+  border: 2px solid var(--color-surface-overlay);
+  box-shadow: 0 1px 4px var(--shadow-elevation-2);
+  cursor: pointer;
+  pointer-events: all;
+  transition: transform var(--motion-duration-short) ease, box-shadow var(--motion-duration-short) ease;
+}
+
+.filter-cost-range__thumb::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface-brand-bold);
+  border: 2px solid var(--color-surface-overlay);
+  box-shadow: 0 1px 4px var(--shadow-elevation-2);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+/* Hover + active states on thumb */
+.filter-cost-range__thumb::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 8px rgba(var(--ref-color-primary-blue-default-rgb, 25, 92, 178), 0.12), 0 1px 4px var(--shadow-elevation-2);
+}
+
+.filter-cost-range__thumb:focus-visible::-webkit-slider-thumb {
+  outline: 3px solid var(--color-border-ada-focus-ring);
+  outline-offset: 2px;
+}
+
+.filter-cost-range__thumb:focus-visible::-moz-range-thumb {
+  outline: 3px solid var(--color-border-ada-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Min/max boundary labels */
+.filter-cost-range__bounds {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--ref-typescale-label-small-size);
+  color: var(--color-text-secondary);
+  padding: 0 var(--spacing-xs);
+}
+
+.filter-cost-range__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+
+/* ============================================================
+   FILTER: NUMERIC RANGE SLIDER
+   filter-numeric-range — dual-thumb range for CX Score / Ticket Age
+   Mirrors filter-cost-range structure without currency formatting.
+   Angular migration: replace with <mat-slider [min] [max] [step]>
+   ============================================================ */
+
+.filter-numeric-range {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+}
+
+.filter-numeric-range__values {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  justify-content: center;
+}
+
+.filter-numeric-range__value {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-large-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  color: var(--color-text-primary);
+  min-width: 48px;
+  text-align: center;
+}
+
+.filter-numeric-range__dash {
+  color: var(--color-text-secondary);
+  font-size: var(--ref-typescale-label-medium-size);
+}
+
+.filter-numeric-range__slider-wrap {
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  /* --cr-min and --cr-max set inline by JS (reuses same CSS var names as cost-range) */
+}
+
+.filter-numeric-range__track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--color-border-subtle);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.filter-numeric-range__fill {
+  position: absolute;
+  top: 0;
+  left: var(--cr-min, 0%);
+  right: calc(100% - var(--cr-max, 100%));
+  height: 100%;
+  background: var(--color-surface-brand-bold);
+  border-radius: 2px;
+}
+
+.filter-numeric-range__thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}
+
+.filter-numeric-range__thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface-brand-bold);
+  border: 2px solid var(--color-surface-overlay);
+  box-shadow: 0 1px 4px var(--shadow-elevation-2);
+  cursor: pointer;
+  pointer-events: all;
+  transition: transform var(--motion-duration-short) ease, box-shadow var(--motion-duration-short) ease;
+}
+
+.filter-numeric-range__thumb::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface-brand-bold);
+  border: 2px solid var(--color-surface-overlay);
+  box-shadow: 0 1px 4px var(--shadow-elevation-2);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.filter-numeric-range__thumb::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 8px rgba(var(--ref-color-primary-blue-default-rgb, 25, 92, 178), 0.12), 0 1px 4px var(--shadow-elevation-2);
+}
+
+.filter-numeric-range__thumb:focus-visible::-webkit-slider-thumb {
+  outline: 3px solid var(--color-border-ada-focus-ring);
+  outline-offset: 2px;
+}
+
+.filter-numeric-range__thumb:focus-visible::-moz-range-thumb {
+  outline: 3px solid var(--color-border-ada-focus-ring);
+  outline-offset: 2px;
+}
+
+.filter-numeric-range__bounds {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--ref-typescale-label-small-size);
+  color: var(--color-text-secondary);
+  padding: 0 var(--spacing-xs);
+}
+
+.filter-numeric-range__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+
+/* ============================================================
+   FILTER: DATE PRESET LIST
+   Preset time-window picker for the service overview Date group.
+   Presets render as a 2-col pill grid (filter-preset-pill-grid /
+   filter-preset-pill). The custom date range row below the grid
+   keeps the row-button pattern (filter-preset-option--custom).
+   Angular migration: radio group with <mat-radio-group>.
+   ============================================================ */
+
+.filter-preset-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+}
+
+/* ── Preset option grid — card-family single-select tiles ──
+   Echoes filter-card shape/surface/hover but stays clearly
+   distinct: text is centered and there is no check indicator,
+   which reads immediately as single-select (radio) not multi.  */
+.filter-preset-pill-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.filter-preset-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-body-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  line-height: var(--ref-typescale-body-medium-line-height);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: center;
+  white-space: normal;
+  transition: border-color var(--motion-duration-short), background-color var(--motion-duration-short), box-shadow var(--motion-duration-short);
+}
+
+.filter-preset-pill:hover:not(.filter-preset-pill--selected) {
+  border-color: var(--color-border-input-hover);
+  background: var(--overlay-hovered);
+  box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+}
+
+.filter-preset-pill:focus { outline: none; }
+.filter-preset-pill:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+
+.filter-preset-pill--selected {
+  border-color: transparent;
+  box-shadow: inset 0 0 0 2px var(--color-border-brand);
+  background: var(--color-surface-brand);
+  color: var(--color-text-brand);
+  font-weight: var(--ref-typeface-weight-bold);
+}
+
+/* ── Custom date range row (below pill grid) ── */
+.filter-preset-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--shape-corner-md);
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--ref-typescale-body-medium-size);
+  font-family: var(--ref-typeface-brand);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background var(--motion-duration-short) ease;
+}
+
+.filter-preset-option:hover {
+  background: var(--color-surface-secondary);
+}
+
+.filter-preset-option:focus-visible {
+  outline: 3px solid var(--color-border-ada-focus-ring);
+  outline-offset: -2px;
+  border-radius: var(--shape-corner-md);
+}
+
+/* The leading radio/icon indicator */
+.filter-preset-option__radio {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.filter-preset-option--selected .filter-preset-option__radio {
+  color: var(--color-surface-brand-bold);
+}
+
+.filter-preset-option--selected {
+  background: var(--color-surface-secondary);
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+/* Custom date range toggle — separated from preset list by a hairline */
+.filter-preset-option--custom {
+  border-top: 1px solid var(--color-border-subtle);
+  margin-top: var(--spacing-xs);
+  padding-top: calc(var(--spacing-sm) + var(--spacing-xs));
+}
+
+/* Trailing expand chevron */
+.filter-preset-option__expand {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: transform var(--motion-duration-short) ease;
+}
+
+.filter-preset-option--expanded .filter-preset-option__expand {
+  transform: rotate(180deg);
+}
+
+/* Badge showing number of custom ranges added */
+.filter-preset-option__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-brand-bold);
+  color: var(--color-text-inverse);
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  margin-left: var(--spacing-xs);
+  vertical-align: middle;
+}
+
+/* Container for the inline custom date range picker */
+.filter-preset-custom-picker {
+  padding: 0;
+}
+
+/* ── Custom dates toggle button ──
+   Full-width card-family button. Chevron rotation signals "this
+   opens something". Open state mirrors the selected preset tile
+   so only one active choice is visible at a time. */
+.filter-preset-custom-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-body-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  line-height: var(--ref-typescale-body-medium-line-height);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--motion-duration-short), background-color var(--motion-duration-short), box-shadow var(--motion-duration-short);
+}
+
+.filter-preset-custom-toggle:hover:not(.filter-preset-custom-toggle--open) {
+  border-color: var(--color-border-input-hover);
+  background: var(--overlay-hovered);
+  box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+}
+
+.filter-preset-custom-toggle:focus { outline: none; }
+.filter-preset-custom-toggle:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+
+.filter-preset-custom-toggle--open {
+  border-color: transparent;
+  box-shadow: inset 0 0 0 2px var(--color-border-brand);
+  background: var(--color-surface-brand);
+  color: var(--color-text-brand);
+  font-weight: var(--ref-typeface-weight-bold);
+}
+
+.filter-preset-custom-toggle__label {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Chevron rotates 180° when open — no JS class swap needed */
+.filter-preset-custom-toggle__chevron {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: transform var(--motion-duration-short) ease;
+}
+
+.filter-preset-custom-toggle--open .filter-preset-custom-toggle__chevron {
+  color: var(--color-text-brand);
+  transform: rotate(180deg);
+}

@@ -277,15 +277,49 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this._syncNavFromUrl(this.router.url);
     this._routeSub = this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => {
-        const section = e.urlAfterRedirects.replace(/^\//, '').split('/')[0] as NavSection;
-        if (section) {
-          this.activeSection.set(section);
-          this.openOrActivateTab(section);
-        }
+        this._syncNavFromUrl(e.urlAfterRedirects);
       });
+  }
+
+  private _syncNavFromUrl(url: string): void {
+    const parts = url.replace(/^\//, '').split('/');
+    const section = parts[0] as NavSection;
+    const p1 = parts[1] ?? '';
+    const p2 = parts[2] ?? '';
+
+    if (!section) return;
+    this.activeSection.set(section);
+    this.openOrActivateTab(section);
+
+    if (section === 'tickets') {
+      this.ticketsNavItem.set(p1 || 'inbox');
+    } else if (section === 'assets') {
+      this.assetsNavItem.set(p1 || 'asset-views');
+    } else if (section === 'analytics') {
+      if (p1 === 'comparison' && p2) {
+        this.analyticsNavItem.set(`comparison-${p2}`);
+      } else {
+        this.analyticsNavItem.set(p1 || 'service-overview');
+      }
+    } else if (section === 'settings') {
+      if (p2) {
+        const combined = p1 === 'workflows' && p2 === 'lookup-tables'
+          ? 'lookup-tables'
+          : `${p1}-${p2}`;
+        this.settingsNavItem.set(combined);
+      } else {
+        this.settingsNavItem.set(p1 || 'district-profile');
+      }
+      this._expandForCurrentNavItem();
+    }
+  }
+
+  go(path: string): void {
+    this.router.navigateByUrl(path);
   }
 
   ngOnDestroy(): void {

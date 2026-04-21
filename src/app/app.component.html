@@ -101,31 +101,31 @@
         @if (activeSection() === 'assets') {
           <ds-subnav-button label="Overview"
             [selected]="assetsNavItem() === 'overview'"
-            (navClick)="assetsNavItem.set('overview')" />
+            (navClick)="go('/assets/overview')" />
           <ds-subnav-button label="Asset Views"
             [selected]="assetsNavItem() === 'asset-views'"
-            (navClick)="assetsNavItem.set('asset-views')" />
+            (navClick)="go('/assets/asset-views')" />
           <ds-subnav-button label="Actions"
             [selected]="assetsNavItem() === 'actions'"
-            (navClick)="assetsNavItem.set('actions')" />
+            (navClick)="go('/assets/actions')" />
         }
 
         @if (activeSection() === 'analytics') {
           <ds-subnav-button label="Service Overview"
             [selected]="analyticsNavItem() === 'service-overview'"
-            (navClick)="analyticsNavItem.set('service-overview')" />
+            (navClick)="go('/analytics/service-overview')" />
           <ds-subnav-button label="Chatbot"
             [selected]="analyticsNavItem() === 'chatbot'"
-            (navClick)="analyticsNavItem.set('chatbot')" />
+            (navClick)="go('/analytics/chatbot')" />
           <ds-subnav-button label="Call Center"
             [selected]="analyticsNavItem() === 'call-center'"
-            (navClick)="analyticsNavItem.set('call-center')" />
+            (navClick)="go('/analytics/call-center')" />
           <ds-subnav-button label="Custom Reports"
             [selected]="analyticsNavItem() === 'custom-reports'"
-            (navClick)="analyticsNavItem.set('custom-reports')" />
+            (navClick)="go('/analytics/custom-reports')" />
           <ds-subnav-button label="Fees"
             [selected]="analyticsNavItem() === 'fees'"
-            (navClick)="analyticsNavItem.set('fees')" />
+            (navClick)="go('/analytics/fees')" />
           <ds-subnav-header
             text="Comparison"
             icon="splitscreen_left"
@@ -133,13 +133,13 @@
             (expandedChange)="comparisonExpanded.set($event)">
             <ds-subnav-button label="Users"
               [selected]="analyticsNavItem() === 'comparison-users'"
-              (navClick)="analyticsNavItem.set('comparison-users')" />
+              (navClick)="go('/analytics/comparison/users')" />
             <ds-subnav-button label="Categories"
               [selected]="analyticsNavItem() === 'comparison-categories'"
-              (navClick)="analyticsNavItem.set('comparison-categories')" />
+              (navClick)="go('/analytics/comparison/categories')" />
             <ds-subnav-button label="Topics"
               [selected]="analyticsNavItem() === 'comparison-topics'"
-              (navClick)="analyticsNavItem.set('comparison-topics')" />
+              (navClick)="go('/analytics/comparison/topics')" />
           </ds-subnav-header>
           <ds-subnav-header
             text="Saved Views"
@@ -187,16 +187,16 @@
         @if (activeSection() === 'tickets') {
           <ds-subnav-button label="Inbox"
             [selected]="ticketsNavItem() === 'inbox'"
-            (navClick)="ticketsNavItem.set('inbox')" />
+            (navClick)="go('/tickets/inbox')" />
           <ds-subnav-button label="Bookmarks"
             [selected]="ticketsNavItem() === 'bookmarks'"
-            (navClick)="ticketsNavItem.set('bookmarks')" />
+            (navClick)="go('/tickets/bookmarks')" />
           <ds-subnav-button label="Spam"
             [selected]="ticketsNavItem() === 'spam'"
-            (navClick)="ticketsNavItem.set('spam')" />
+            (navClick)="go('/tickets/spam')" />
           <ds-subnav-button label="Drafts"
             [selected]="ticketsNavItem() === 'drafts'"
-            (navClick)="ticketsNavItem.set('drafts')" />
+            (navClick)="go('/tickets/drafts')" />
           <ds-subnav-header
             text="Saved Searches"
             icon="search"
@@ -248,7 +248,7 @@
               @if (!filter || filter.has('district-profile')) {
                 <ds-subnav-button label="District Profile"
                   [selected]="settingsNavItem() === 'district-profile'"
-                  (navClick)="settingsNavItem.set('district-profile')" />
+                  (navClick)="go('/settings/district-profile')" />
               }
 
               @if (!filter || filter.has('activity-log') || filter.has('activity-log-onflo') || filter.has('activity-log-assets')) {
@@ -259,12 +259,12 @@
                   @if (!filter || filter.has('activity-log-onflo')) {
                     <ds-subnav-button label="Onflo"
                       [selected]="settingsNavItem() === 'activity-log-onflo'"
-                      (navClick)="settingsNavItem.set('activity-log-onflo')" />
+                      (navClick)="go('/settings/activity-log/onflo')" />
                   }
                   @if (!filter || filter.has('activity-log-assets')) {
                     <ds-subnav-button label="Assets"
                       [selected]="settingsNavItem() === 'activity-log-assets'"
-                      (navClick)="settingsNavItem.set('activity-log-assets')" />
+                      (navClick)="go('/settings/activity-log/assets')" />
                   }
                 </ds-subnav-subheader>
               }
@@ -272,12 +272,12 @@
               @if (!filter || filter.has('ai-training')) {
                 <ds-subnav-button label="AI Training Resources"
                   [selected]="settingsNavItem() === 'ai-training'"
-                  (navClick)="settingsNavItem.set('ai-training')" />
+                  (navClick)="go('/settings/ai-training')" />
               }
               @if (!filter || filter.has('chatbot')) {
                 <ds-subnav-button label="Chatbot"
                   [selected]="settingsNavItem() === 'chatbot'"
-                  (navClick)="settingsNavItem.set('chatbot')" />
+                  (navClick)="go('/settings/chatbot')" />
               }
 
               @if (!filter || filter.has('communications') || filter.has('cs-score-templates') || filter.has('email') || filter.has('response-templates')) {
@@ -288,17 +288,17 @@
                   @if (!filter || filter.has('cs-score-templates')) {
                     <ds-subnav-button label="CS Score Templates"
                       [selected]="settingsNavItem() === 'cs-score-templates'"
-                      (navClick)="settingsNavItem.set('cs-score-templates')" />
+                      (navClick)="go('/settings/cs-score-templates')" />
                   }
                   @if (!filter || filter.has('email')) {
                     <ds-subnav-button label="Email"
                       [selected]="settingsNavItem() === 'email'"
-                      (navClick)="settingsNavItem.set('email')" />
+                      (navClick)="go('/settings/email')" />
                   }
                   @if (!filter || filter.has('response-templates')) {
                     <ds-subnav-button label="Response Templates"
                       [selected]="settingsNavItem() === 'response-templates'"
-                      (navClick)="settingsNavItem.set('response-templates')" />
+                      (navClick)="go('/settings/response-templates')" />
                   }
                 </ds-subnav-subheader>
               }
@@ -306,27 +306,27 @@
               @if (!filter || filter.has('departments')) {
                 <ds-subnav-button label="Departments"
                   [selected]="settingsNavItem() === 'departments'"
-                  (navClick)="settingsNavItem.set('departments')" />
+                  (navClick)="go('/settings/departments')" />
               }
               @if (!filter || filter.has('keyword-alerts')) {
                 <ds-subnav-button label="Keyword Alerts"
                   [selected]="settingsNavItem() === 'keyword-alerts'"
-                  (navClick)="settingsNavItem.set('keyword-alerts')" />
+                  (navClick)="go('/settings/keyword-alerts')" />
               }
               @if (!filter || filter.has('languages')) {
                 <ds-subnav-button label="Languages"
                   [selected]="settingsNavItem() === 'languages'"
-                  (navClick)="settingsNavItem.set('languages')" />
+                  (navClick)="go('/settings/languages')" />
               }
               @if (!filter || filter.has('live-agent')) {
                 <ds-subnav-button label="Live Agent"
                   [selected]="settingsNavItem() === 'live-agent'"
-                  (navClick)="settingsNavItem.set('live-agent')" />
+                  (navClick)="go('/settings/live-agent')" />
               }
               @if (!filter || filter.has('locations')) {
                 <ds-subnav-button label="Locations"
                   [selected]="settingsNavItem() === 'locations'"
-                  (navClick)="settingsNavItem.set('locations')" />
+                  (navClick)="go('/settings/locations')" />
               }
 
               @if (!filter || filter.has('tags') || filter.has('tags-tickets') || filter.has('tags-assets')) {
@@ -337,12 +337,12 @@
                   @if (!filter || filter.has('tags-tickets')) {
                     <ds-subnav-button label="Tickets"
                       [selected]="settingsNavItem() === 'tags-tickets'"
-                      (navClick)="settingsNavItem.set('tags-tickets')" />
+                      (navClick)="go('/settings/tags/tickets')" />
                   }
                   @if (!filter || filter.has('tags-assets')) {
                     <ds-subnav-button label="Assets"
                       [selected]="settingsNavItem() === 'tags-assets'"
-                      (navClick)="settingsNavItem.set('tags-assets')" />
+                      (navClick)="go('/settings/tags/assets')" />
                   }
                 </ds-subnav-subheader>
               }
@@ -350,7 +350,7 @@
               @if (!filter || filter.has('user-management')) {
                 <ds-subnav-button label="User Management"
                   [selected]="settingsNavItem() === 'user-management'"
-                  (navClick)="settingsNavItem.set('user-management')" />
+                  (navClick)="go('/settings/user-management')" />
               }
             </ds-subnav-header>
           }
@@ -366,22 +366,22 @@
               @if (!filter || filter.has('api-tokens')) {
                 <ds-subnav-button label="API Tokens"
                   [selected]="settingsNavItem() === 'api-tokens'"
-                  (navClick)="settingsNavItem.set('api-tokens')" />
+                  (navClick)="go('/settings/api-tokens')" />
               }
               @if (!filter || filter.has('webhooks')) {
                 <ds-subnav-button label="Webhooks"
                   [selected]="settingsNavItem() === 'webhooks'"
-                  (navClick)="settingsNavItem.set('webhooks')" />
+                  (navClick)="go('/settings/webhooks')" />
               }
               @if (!filter || filter.has('marketplace')) {
                 <ds-subnav-button label="Marketplace"
                   [selected]="settingsNavItem() === 'marketplace'"
-                  (navClick)="settingsNavItem.set('marketplace')" />
+                  (navClick)="go('/settings/marketplace')" />
               }
               @if (!filter || filter.has('installed-apps')) {
                 <ds-subnav-button label="Installed Apps"
                   [selected]="settingsNavItem() === 'installed-apps'"
-                  (navClick)="settingsNavItem.set('installed-apps')" />
+                  (navClick)="go('/settings/installed-apps')" />
               }
             </ds-subnav-header>
           }
@@ -397,17 +397,17 @@
               @if (!filter || filter.has('workflows-tickets')) {
                 <ds-subnav-button label="Tickets"
                   [selected]="settingsNavItem() === 'workflows-tickets'"
-                  (navClick)="settingsNavItem.set('workflows-tickets')" />
+                  (navClick)="go('/settings/workflows/tickets')" />
               }
               @if (!filter || filter.has('workflows-assets')) {
                 <ds-subnav-button label="Assets"
                   [selected]="settingsNavItem() === 'workflows-assets'"
-                  (navClick)="settingsNavItem.set('workflows-assets')" />
+                  (navClick)="go('/settings/workflows/assets')" />
               }
               @if (!filter || filter.has('lookup-tables')) {
                 <ds-subnav-button label="Lookup Tables"
                   [selected]="settingsNavItem() === 'lookup-tables'"
-                  (navClick)="settingsNavItem.set('lookup-tables')" />
+                  (navClick)="go('/settings/workflows/lookup-tables')" />
               }
             </ds-subnav-header>
           }
@@ -429,12 +429,12 @@
                   @if (!filter || filter.has('portals-it-service')) {
                     <ds-subnav-button label="IT Service"
                       [selected]="settingsNavItem() === 'portals-it-service'"
-                      (navClick)="settingsNavItem.set('portals-it-service')" />
+                      (navClick)="go('/settings/portals/it-service')" />
                   }
                   @if (!filter || filter.has('portals-landing-page')) {
                     <ds-subnav-button label="Landing Page / Tab"
                       [selected]="settingsNavItem() === 'portals-landing-page'"
-                      (navClick)="settingsNavItem.set('portals-landing-page')" />
+                      (navClick)="go('/settings/portals/landing-page')" />
                   }
                 </ds-subnav-subheader>
               }
@@ -442,22 +442,22 @@
               @if (!filter || filter.has('forms')) {
                 <ds-subnav-button label="Forms"
                   [selected]="settingsNavItem() === 'forms'"
-                  (navClick)="settingsNavItem.set('forms')" />
+                  (navClick)="go('/settings/forms')" />
               }
               @if (!filter || filter.has('saved-exports')) {
                 <ds-subnav-button label="Saved Exports"
                   [selected]="settingsNavItem() === 'saved-exports'"
-                  (navClick)="settingsNavItem.set('saved-exports')" />
+                  (navClick)="go('/settings/saved-exports')" />
               }
               @if (!filter || filter.has('slas')) {
                 <ds-subnav-button label="SLAs"
                   [selected]="settingsNavItem() === 'slas'"
-                  (navClick)="settingsNavItem.set('slas')" />
+                  (navClick)="go('/settings/slas')" />
               }
               @if (!filter || filter.has('ticket-schedules')) {
                 <ds-subnav-button label="Ticket Schedules"
                   [selected]="settingsNavItem() === 'ticket-schedules'"
-                  (navClick)="settingsNavItem.set('ticket-schedules')" />
+                  (navClick)="go('/settings/ticket-schedules')" />
               }
 
               @if (!filter || filter.has('topics-manager') || filter.has('topics') || filter.has('success-messages')) {
@@ -468,12 +468,12 @@
                   @if (!filter || filter.has('topics')) {
                     <ds-subnav-button label="Topics"
                       [selected]="settingsNavItem() === 'topics'"
-                      (navClick)="settingsNavItem.set('topics')" />
+                      (navClick)="go('/settings/topics')" />
                   }
                   @if (!filter || filter.has('success-messages')) {
                     <ds-subnav-button label="Success Messages"
                       [selected]="settingsNavItem() === 'success-messages'"
-                      (navClick)="settingsNavItem.set('success-messages')" />
+                      (navClick)="go('/settings/success-messages')" />
                   }
                 </ds-subnav-subheader>
               }
@@ -491,47 +491,47 @@
               @if (!filter || filter.has('archived-assets')) {
                 <ds-subnav-button label="Archived Assets"
                   [selected]="settingsNavItem() === 'archived-assets'"
-                  (navClick)="settingsNavItem.set('archived-assets')" />
+                  (navClick)="go('/settings/archived-assets')" />
               }
               @if (!filter || filter.has('asset-fields')) {
                 <ds-subnav-button label="Asset Fields"
                   [selected]="settingsNavItem() === 'asset-fields'"
-                  (navClick)="settingsNavItem.set('asset-fields')" />
+                  (navClick)="go('/settings/asset-fields')" />
               }
               @if (!filter || filter.has('asset-hierarchy')) {
                 <ds-subnav-button label="Asset Hierarchy"
                   [selected]="settingsNavItem() === 'asset-hierarchy'"
-                  (navClick)="settingsNavItem.set('asset-hierarchy')" />
+                  (navClick)="go('/settings/asset-hierarchy')" />
               }
               @if (!filter || filter.has('funding-sources')) {
                 <ds-subnav-button label="Funding Sources"
                   [selected]="settingsNavItem() === 'funding-sources'"
-                  (navClick)="settingsNavItem.set('funding-sources')" />
+                  (navClick)="go('/settings/funding-sources')" />
               }
               @if (!filter || filter.has('manufacturers')) {
                 <ds-subnav-button label="Manufacturers"
                   [selected]="settingsNavItem() === 'manufacturers'"
-                  (navClick)="settingsNavItem.set('manufacturers')" />
+                  (navClick)="go('/settings/manufacturers')" />
               }
               @if (!filter || filter.has('models')) {
                 <ds-subnav-button label="Models"
                   [selected]="settingsNavItem() === 'models'"
-                  (navClick)="settingsNavItem.set('models')" />
+                  (navClick)="go('/settings/models')" />
               }
               @if (!filter || filter.has('purchase-order-details')) {
                 <ds-subnav-button label="Purchase Order Details"
                   [selected]="settingsNavItem() === 'purchase-order-details'"
-                  (navClick)="settingsNavItem.set('purchase-order-details')" />
+                  (navClick)="go('/settings/purchase-order-details')" />
               }
               @if (!filter || filter.has('statuses')) {
                 <ds-subnav-button label="Statuses"
                   [selected]="settingsNavItem() === 'statuses'"
-                  (navClick)="settingsNavItem.set('statuses')" />
+                  (navClick)="go('/settings/statuses')" />
               }
               @if (!filter || filter.has('suppliers')) {
                 <ds-subnav-button label="Suppliers"
                   [selected]="settingsNavItem() === 'suppliers'"
-                  (navClick)="settingsNavItem.set('suppliers')" />
+                  (navClick)="go('/settings/suppliers')" />
               }
             </ds-subnav-header>
           }
@@ -548,42 +548,42 @@
               @if (!filter || filter.has('business-hours')) {
                 <ds-subnav-button label="Business Hours"
                   [selected]="settingsNavItem() === 'business-hours'"
-                  (navClick)="settingsNavItem.set('business-hours')" />
+                  (navClick)="go('/settings/business-hours')" />
               }
               @if (!filter || filter.has('calendar')) {
                 <ds-subnav-button label="Calendar"
                   [selected]="settingsNavItem() === 'calendar'"
-                  (navClick)="settingsNavItem.set('calendar')" />
+                  (navClick)="go('/settings/calendar')" />
               }
               @if (!filter || filter.has('call-notes')) {
                 <ds-subnav-button label="Call Notes"
                   [selected]="settingsNavItem() === 'call-notes'"
-                  (navClick)="settingsNavItem.set('call-notes')" />
+                  (navClick)="go('/settings/call-notes')" />
               }
               @if (!filter || filter.has('contact-numbers')) {
                 <ds-subnav-button label="Contact Numbers"
                   [selected]="settingsNavItem() === 'contact-numbers'"
-                  (navClick)="settingsNavItem.set('contact-numbers')" />
+                  (navClick)="go('/settings/contact-numbers')" />
               }
               @if (!filter || filter.has('greetings')) {
                 <ds-subnav-button label="Greetings"
                   [selected]="settingsNavItem() === 'greetings'"
-                  (navClick)="settingsNavItem.set('greetings')" />
+                  (navClick)="go('/settings/greetings')" />
               }
               @if (!filter || filter.has('ivr')) {
                 <ds-subnav-button label="IVR"
                   [selected]="settingsNavItem() === 'ivr'"
-                  (navClick)="settingsNavItem.set('ivr')" />
+                  (navClick)="go('/settings/ivr')" />
               }
               @if (!filter || filter.has('queues')) {
                 <ds-subnav-button label="Queues"
                   [selected]="settingsNavItem() === 'queues'"
-                  (navClick)="settingsNavItem.set('queues')" />
+                  (navClick)="go('/settings/queues')" />
               }
               @if (!filter || filter.has('texting')) {
                 <ds-subnav-button label="Texting"
                   [selected]="settingsNavItem() === 'texting'"
-                  (navClick)="settingsNavItem.set('texting')" />
+                  (navClick)="go('/settings/texting')" />
               }
             </ds-subnav-header>
           }

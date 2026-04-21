@@ -35,17 +35,20 @@
               "node_modules/@onflo/design-system/tokens/css/index.css",
               "node_modules/@onflo/design-system/dist/components.css",
               "node_modules/@onflo/design-system/dist/layout.css",
+              "src/assets/filter-proto/filter-modal.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/filter-proto/filter-modal-engine.js"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1.5MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",

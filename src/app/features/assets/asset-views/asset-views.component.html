@@ -1,0 +1,202 @@
+<div class="ds-page-content__heading">
+  <h1 class="ds-page-content__title">Assets</h1>
+  <div class="ds-tabs" role="tablist" aria-label="Asset views">
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'assets'" role="tab"
+      [attr.aria-selected]="activeTab() === 'assets'" [attr.tabindex]="activeTab() === 'assets' ? 0 : -1"
+      (click)="setTab('assets')"><span class="ds-icon ds-icon--sm" aria-hidden="true">devices</span>Assets</button>
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'parts'" role="tab"
+      [attr.aria-selected]="activeTab() === 'parts'" [attr.tabindex]="activeTab() === 'parts' ? 0 : -1"
+      (click)="setTab('parts')"><span class="ds-icon ds-icon--sm" aria-hidden="true">build</span>Parts</button>
+  </div>
+</div>
+<div class="ds-page-content__main ds-page-content__main--table"
+     [attr.data-panel-open]="settingsActive || null">
+
+  <ds-table-toolbar
+    [showActions]="false"
+    [showDownload]="false"
+    [searchPlaceholder]="'Search assets'"
+    [(filterActive)]="filterOpen"
+    [(settingsActive)]="settingsActive"
+    (settingsActiveChange)="onSettingsToggle($event)"
+    (filterActiveChange)="onFilterToggle($event)"
+  />
+
+  <app-asset-filter-shell
+    [(open)]="filterOpen"
+    (filterCountChange)="filterCount = $event"
+  />
+
+  <!-- Table body -->
+  <div class="asset-table" role="table" aria-label="Assets">
+
+    <!-- Header -->
+    <div class="asset-table__header" role="row">
+      <div class="ds-table-header-cell asset-col--name" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Asset Name / Tag</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell asset-col--type" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Type</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell asset-col--status" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Status</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell asset-col--assigned" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Assigned To</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell asset-col--location" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Location</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell asset-col--manufacturer" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Manufacturer</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell asset-col--model" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Model</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell asset-col--purchase-date" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Purchase Date</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rows — placeholder skeletons -->
+    <div class="asset-table__body" role="rowgroup" aria-label="Placeholder table rows">
+      @for (_ of skeletonRows; track $index) {
+        <div class="asset-table__row" role="row" aria-hidden="true">
+          <div class="ds-table-row-cell asset-col--name" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(55 + ($index % 4) * 10) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell asset-col--type" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(40 + ($index % 3) * 15) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell asset-col--status" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line ds-skeleton__line--sm"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell asset-col--assigned" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(45 + ($index % 3) * 15) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell asset-col--location" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(50 + ($index % 3) * 12) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell asset-col--manufacturer" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line ds-skeleton__line--sm"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell asset-col--model" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(45 + ($index % 4) * 12) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell asset-col--purchase-date" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line ds-skeleton__line--md"></div></ds-skeleton>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <!-- Paginator -->
+  <div class="ds-ag-paginator" role="navigation" aria-label="Table pagination">
+    <div class="ds-ag-paginator__inner">
+      <div class="ds-ag-paginator__counter">
+        <span class="ds-ag-paginator__label" aria-hidden="true">Items per page:</span>
+        <span class="ds-ag-paginator__label">100</span>
+      </div>
+      <div class="ds-ag-paginator__pagination">
+        <span class="ds-ag-paginator__range" aria-live="polite">— of —</span>
+        <div class="ds-ag-paginator__nav">
+          <button class="ds-ag-paginator__btn" type="button" aria-label="First page" disabled>
+            <span class="ds-icon">first_page</span>
+          </button>
+          <button class="ds-ag-paginator__btn" type="button" aria-label="Previous page" disabled>
+            <span class="ds-icon">keyboard_arrow_left</span>
+          </button>
+          <button class="ds-ag-paginator__btn" type="button" aria-label="Next page" disabled>
+            <span class="ds-icon">keyboard_arrow_right</span>
+          </button>
+          <button class="ds-ag-paginator__btn" type="button" aria-label="Last page" disabled>
+            <span class="ds-icon">last_page</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

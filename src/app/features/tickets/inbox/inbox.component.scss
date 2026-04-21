@@ -1,0 +1,47 @@
+:host {
+  display: contents;
+}
+
+.ds-badge-indicator {
+  background: var(--color-surface-brand-bold);
+}
+
+// ── Table layout ────────────────────────────────────────────────────────────
+
+.inbox-table {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.inbox-table__header {
+  display: flex;
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border-secondary);
+}
+
+.inbox-table__body {
+  flex: 1 1 0;
+  overflow-y: auto;
+}
+
+.inbox-table__row {
+  display: flex;
+
+  .ds-table-row-cell {
+    border-bottom-color: var(--color-border-subtle);
+  }
+}
+
+// ── Column widths ────────────────────────────────────────────────────────────
+
+.inbox-col--subject   { flex: 2 0 0; min-width: 200px; }
+.inbox-col--requester { flex: 1 0 0; min-width: 130px; }
+.inbox-col--assignee  { flex: 1 0 0; min-width: 130px; }
+.inbox-col--status    { width: 110px; flex-shrink: 0; }
+.inbox-col--priority  { width: 100px; flex-shrink: 0; }
+.inbox-col--category  { flex: 1 0 0; min-width: 120px; }
+.inbox-col--created   { width: 130px; flex-shrink: 0; }
+.inbox-col--sla       { width: 100px; flex-shrink: 0; }

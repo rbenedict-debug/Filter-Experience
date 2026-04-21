@@ -1,0 +1,208 @@
+<div class="ds-page-content__heading">
+  <h1 class="ds-page-content__title ds-sr-only">Inbox</h1>
+  <div class="ds-tabs" role="tablist" aria-label="Ticket views">
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'my-tickets'" role="tab"
+      [attr.aria-selected]="activeTab() === 'my-tickets'" [attr.tabindex]="activeTab() === 'my-tickets' ? 0 : -1"
+      aria-label="My Tickets, 12 new" (click)="setTab('my-tickets')">My Tickets&nbsp;<span class="ds-badge-indicator" aria-hidden="true">12</span></button>
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'team'" role="tab"
+      [attr.aria-selected]="activeTab() === 'team'" [attr.tabindex]="activeTab() === 'team' ? 0 : -1"
+      aria-label="Team, 99 or more new" (click)="setTab('team')">Team&nbsp;<span class="ds-badge-indicator" aria-hidden="true">99+</span></button>
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'all'" role="tab"
+      [attr.aria-selected]="activeTab() === 'all'" [attr.tabindex]="activeTab() === 'all' ? 0 : -1"
+      (click)="setTab('all')">All</button>
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'closed'" role="tab"
+      [attr.aria-selected]="activeTab() === 'closed'" [attr.tabindex]="activeTab() === 'closed' ? 0 : -1"
+      (click)="setTab('closed')">Closed</button>
+  </div>
+</div>
+<div class="ds-page-content__main ds-page-content__main--table"
+     [attr.data-panel-open]="settingsActive || null">
+
+  <ds-table-toolbar
+    [showActions]="false"
+    [showDownload]="false"
+    [searchPlaceholder]="'Search tickets'"
+    [(filterActive)]="filterOpen"
+    [(settingsActive)]="settingsActive"
+    (settingsActiveChange)="onSettingsToggle($event)"
+    (filterActiveChange)="onFilterToggle($event)"
+  />
+
+  <app-filter-shell
+    [(open)]="filterOpen"
+    (filterCountChange)="filterCount = $event"
+  />
+
+  <!-- Table body -->
+  <div class="inbox-table" role="table" aria-label="Tickets">
+
+    <!-- Header -->
+    <div class="inbox-table__header" role="row">
+      <div class="ds-table-header-cell inbox-col--subject" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Subject</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell inbox-col--requester" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Requester</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell inbox-col--assignee" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Assignee</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell inbox-col--status" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Status</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell inbox-col--priority" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Priority</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell inbox-col--category" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Category</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell inbox-col--created" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">Created</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-table-header-cell inbox-col--sla" role="columnheader">
+        <div class="ds-table-header-cell__resize-handle"></div>
+        <div class="ds-table-header-cell__content">
+          <span class="ds-table-header-cell__label">SLA</span>
+        </div>
+        <div class="ds-table-header-cell__actions">
+          <div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing">
+            <span class="ds-table-header-cell__resize-bar"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rows — placeholder skeletons (table content is out of scope for this prototype) -->
+    <div class="inbox-table__body" role="rowgroup" aria-label="Placeholder table rows">
+      @for (_ of skeletonRows; track $index) {
+        <div class="inbox-table__row" role="row" aria-hidden="true">
+          <div class="ds-table-row-cell inbox-col--subject" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(60 + ($index % 4) * 10) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell inbox-col--requester" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(40 + ($index % 3) * 15) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell inbox-col--assignee" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(45 + ($index % 3) * 15) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell inbox-col--status" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line ds-skeleton__line--sm"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell inbox-col--priority" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line ds-skeleton__line--sm"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell inbox-col--category" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line" [style.width]="(50 + ($index % 3) * 15) + '%'"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell inbox-col--created" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line ds-skeleton__line--md"></div></ds-skeleton>
+            </div>
+          </div>
+          <div class="ds-table-row-cell inbox-col--sla" role="cell">
+            <div class="ds-table-row-cell__content">
+              <ds-skeleton><div class="ds-skeleton__line ds-skeleton__line--sm"></div></ds-skeleton>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <!-- Paginator -->
+  <div class="ds-ag-paginator" role="navigation" aria-label="Table pagination">
+    <div class="ds-ag-paginator__inner">
+      <div class="ds-ag-paginator__counter">
+        <span class="ds-ag-paginator__label" aria-hidden="true">Items per page:</span>
+        <span class="ds-ag-paginator__label">100</span>
+      </div>
+      <div class="ds-ag-paginator__pagination">
+        <span class="ds-ag-paginator__range" aria-live="polite">— of —</span>
+        <div class="ds-ag-paginator__nav">
+          <button class="ds-ag-paginator__btn" type="button" aria-label="First page" disabled>
+            <span class="ds-icon">first_page</span>
+          </button>
+          <button class="ds-ag-paginator__btn" type="button" aria-label="Previous page" disabled>
+            <span class="ds-icon">keyboard_arrow_left</span>
+          </button>
+          <button class="ds-ag-paginator__btn" type="button" aria-label="Next page" disabled>
+            <span class="ds-icon">keyboard_arrow_right</span>
+          </button>
+          <button class="ds-ag-paginator__btn" type="button" aria-label="Last page" disabled>
+            <span class="ds-icon">last_page</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

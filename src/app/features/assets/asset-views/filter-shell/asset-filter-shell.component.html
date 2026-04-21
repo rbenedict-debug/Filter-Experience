@@ -1,0 +1,132 @@
+<div
+  class="filter-overlay"
+  id="filter-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="filter-modal-title"
+  hidden
+>
+  <div class="filter-modal" id="filter-modal">
+
+    <button class="ds-icon-button ds-icon-button--icon filter-modal__close" id="close-modal-btn" aria-label="Close filters">
+      <span class="ds-icon ds-icon--sm">close</span>
+    </button>
+
+    <div class="filter-modal__body">
+
+      <!-- LEFT PANEL -->
+      <div class="filter-modal__left">
+
+        <div class="filter-modal__header">
+          <h2 class="filter-modal__title" id="filter-modal-title">Filters</h2>
+          <div class="ds-input ds-search filter-modal__search" role="search">
+            <div class="ds-input__field">
+              <span class="ds-icon ds-icon--sm ds-input__icon" aria-hidden="true">search</span>
+              <input
+                class="ds-input__control"
+                type="search"
+                id="filter-search-input"
+                placeholder="Search filters..."
+                aria-label="Search all filters"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                class="ds-input__action"
+                id="search-clear-btn"
+                type="button"
+                aria-label="Clear search"
+                hidden
+              >
+                <span class="ds-icon ds-icon--sm" aria-hidden="true">close</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-modal__content">
+          <nav class="filter-modal__nav" id="filter-nav" aria-label="Filter categories">
+            <!-- JS-rendered -->
+          </nav>
+          <div
+            class="filter-modal__options"
+            id="filter-options"
+            role="region"
+            aria-label="Filter options"
+            aria-live="polite"
+          >
+            <!-- JS-rendered -->
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: selected filters (navy) -->
+      <div class="filter-modal__right" data-theme="dark">
+
+        <div class="filter-modal__selected-header">
+          <div class="filter-modal__selected-header-row">
+            <h2 class="filter-modal__selected-title">Selected Filters</h2>
+          </div>
+          <div class="filter-modal__selected-header-actions">
+            <button class="ds-button ds-button--outlined ds-button--xs ds-button--leading-icon selected-header-saved-btn" id="saved-sets-toggle-btn" aria-pressed="false">
+              <span class="ds-icon" aria-hidden="true">bookmark</span>Load Filters
+            </button>
+            <button class="ds-button ds-button--text ds-button--xs" id="header-clear-btn" hidden>Clear all</button>
+          </div>
+        </div>
+
+        <div class="filter-modal__selected-body" id="selected-body">
+
+          <div class="active-set-chip" id="active-set-chip" hidden>
+            <span id="active-set-name"></span>
+            <div class="ds-tooltip-wrapper">
+              <button class="active-set-update-btn" id="update-set-btn" aria-label="Update saved set" hidden>
+                <span class="ds-icon" aria-hidden="true">sync</span>
+              </button>
+              <div class="ds-tooltip" role="tooltip">Update saved set</div>
+            </div>
+          </div>
+
+          <div class="ds-empty-state" id="selected-empty">
+            <div class="ds-empty-state__graphic" aria-hidden="true">
+              <span class="ds-icon ds-icon--xl">filter_alt_off</span>
+            </div>
+            <div class="ds-empty-state__body">
+              <p class="ds-empty-state__heading">No filters selected</p>
+              <p class="ds-empty-state__description">Pick options from the left panel.</p>
+            </div>
+          </div>
+
+          <ul class="selected-filter-list" id="selected-list" aria-label="Selected filters" hidden></ul>
+
+        </div>
+
+        <div class="saved-sets-panel" id="saved-sets-panel" hidden>
+          <div class="saved-sets-panel__header">
+            <h2 class="saved-sets-panel__title">Saved Filter Sets</h2>
+          </div>
+          <div class="saved-sets-panel__body" id="saved-sets-body">
+            <!-- JS-rendered -->
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /.filter-modal__body -->
+
+    <div class="filter-modal__footer">
+      <div class="filter-modal__footer-summary" id="footer-summary"></div>
+      <div class="filter-modal__footer-actions">
+        <button class="ds-button ds-button--text" id="cancel-btn" type="button">Cancel</button>
+        <button class="ds-button ds-button--filled" id="apply-btn" type="button">Apply Filters</button>
+      </div>
+    </div>
+
+  </div><!-- /.filter-modal -->
+</div><!-- /.filter-overlay -->
+
+<!-- Applied filters bar (rendered by JS after Apply) -->
+<div class="filter-applied-bar" id="filter-applied-bar" hidden>
+  <span class="filter-applied-bar__label">Filters</span>
+  <div class="filter-applied-bar__cards" id="filter-applied-cards" role="group" aria-label="Applied filters"></div>
+</div>

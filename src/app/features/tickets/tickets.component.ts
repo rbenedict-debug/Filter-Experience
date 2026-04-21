@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-
-type TicketTab = 'my-tickets' | 'team' | 'all' | 'closed';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-tickets',
@@ -8,11 +7,6 @@ type TicketTab = 'my-tickets' | 'team' | 'all' | 'closed';
   templateUrl: './tickets.component.html',
   styleUrls: ['./tickets.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterOutlet],
 })
-export class TicketsComponent {
-  activeTab = signal<TicketTab>('my-tickets');
-
-  setTab(tab: TicketTab): void {
-    this.activeTab.set(tab);
-  }
-}
+export class TicketsComponent {}
