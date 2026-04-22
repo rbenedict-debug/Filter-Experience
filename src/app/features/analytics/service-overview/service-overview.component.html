@@ -6,11 +6,9 @@
       <p class="ds-page-content__meta">April 21, 2026</p>
     </div>
 
-    <!-- Toolbar — controls only; title lives in the heading row above -->
     <div class="ds-dashboard-toolbar" style="padding: 0;">
       <div class="ds-dashboard-toolbar__controls">
 
-        <!-- Date range selector -->
         <div class="service-overview__date-wrapper">
           <button
             class="ds-dashboard-toolbar__date-select"
@@ -56,7 +54,6 @@
           }
         </div>
 
-        <!-- Filter button with active badge -->
         <div class="ds-badge-indicator__host">
           <button
             class="ds-dashboard-toolbar__btn"
@@ -71,11 +68,9 @@
           }
         </div>
 
-
       </div>
     </div>
 
-    <!-- Applied filters bar — JS engine renders chips into #filter-applied-cards -->
     <div
       class="filter-applied-bar"
       id="filter-applied-bar"
@@ -88,132 +83,15 @@
 
   </div><!-- /.ds-page-content__dashboard-header -->
 
-  <!-- Tile canvas — no card shell, metric tiles float on the page floor -->
   <div class="ds-page-content__main ds-page-content__main--dashboard">
     <div class="service-overview-canvas">
+      <div class="service-overview__chart-placeholder-full">
+        <span class="ds-icon ds-icon--xl" aria-hidden="true">bar_chart</span>
+        <span class="service-overview__placeholder-label">Dashboard placeholder</span>
+      </div>
+    </div>
+  </div>
 
-      <!-- KPI metric cards -->
-      <div class="service-overview__metrics">
-
-        <div class="ds-metric-card ds-metric-card--brand">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Open Tickets</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">inbox</span>
-          </div>
-          <div class="ds-metric-card__value" aria-label="Open Tickets: 1,248">1,248</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+8.3%</span>
-            <span class="ds-metric-card__trend-label">vs last week</span>
-          </div>
-        </div>
-
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">New Today</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">add_circle</span>
-          </div>
-          <div class="ds-metric-card__value">83</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--negative" aria-hidden="true">trending_down</span>
-            <span class="ds-metric-card__trend-value is-negative">-12%</span>
-            <span class="ds-metric-card__trend-label">vs yesterday</span>
-          </div>
-        </div>
-
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Resolved Today</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">check_circle</span>
-          </div>
-          <div class="ds-metric-card__value">71</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+5%</span>
-            <span class="ds-metric-card__trend-label">vs yesterday</span>
-          </div>
-        </div>
-
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Avg Response</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">timer</span>
-          </div>
-          <div class="ds-metric-card__value">4m 32s</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+12%</span>
-            <span class="ds-metric-card__trend-label">vs last week</span>
-          </div>
-        </div>
-
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">CSAT Score</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">sentiment_satisfied</span>
-          </div>
-          <div class="ds-metric-card__value">92.4%</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--negative" aria-hidden="true">trending_down</span>
-            <span class="ds-metric-card__trend-value is-negative">-1.2%</span>
-            <span class="ds-metric-card__trend-label">vs last month</span>
-          </div>
-        </div>
-
-        <div class="ds-metric-card ds-metric-card--brand">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">SLA Compliance</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">schedule</span>
-          </div>
-          <div class="ds-metric-card__value">96.1%</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+0.8%</span>
-            <span class="ds-metric-card__trend-label">vs last week</span>
-          </div>
-        </div>
-
-      </div><!-- /.service-overview__metrics -->
-
-      <!-- Chart cards -->
-      <div class="service-overview__charts">
-
-        <div class="service-overview__chart-card">
-          <div class="service-overview__chart-header">
-            <h2 class="service-overview__chart-title">Ticket Volume by Day</h2>
-          </div>
-          <div class="service-overview__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">bar_chart</span>
-            <span class="service-overview__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-
-        <div class="service-overview__chart-card">
-          <div class="service-overview__chart-header">
-            <h2 class="service-overview__chart-title">Volume by Topic</h2>
-          </div>
-          <div class="service-overview__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">donut_large</span>
-            <span class="service-overview__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-
-        <div class="service-overview__chart-card">
-          <div class="service-overview__chart-header">
-            <h2 class="service-overview__chart-title">CSAT Trend</h2>
-          </div>
-          <div class="service-overview__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">show_chart</span>
-            <span class="service-overview__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-
-      </div><!-- /.service-overview__charts -->
-
-    </div><!-- /.service-overview-canvas -->
-  </div><!-- /.ds-page-content__main--dashboard -->
-
-<!-- Filter modal — applied bar lives in the dashboard header above, not here -->
 <app-analytics-filter-shell
   [(open)]="filterOpen"
   (filterCountChange)="onFilterCountChange($event)"

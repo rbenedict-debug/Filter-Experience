@@ -28,10 +28,10 @@
   </div>
 </div>
 
-<div class="ds-page-content__main ds-page-content__main--table">
+<!-- ── Dashboard tabs (Overview + Optimization) ───────────────── -->
+@if (!isTableTab()) {
 
-  <!-- Toolbar: date selector + filter button -->
-  <div class="ds-dashboard-toolbar">
+  <div class="ds-dashboard-toolbar" style="padding: var(--spacing-lg) 0 0;">
     <div class="ds-dashboard-toolbar__controls">
 
       <div class="chatbot__date-wrapper">
@@ -92,312 +92,44 @@
     </div>
   </div>
 
-  <!-- Applied filters bar -->
   <div
     class="filter-applied-bar"
     id="filter-applied-bar"
     hidden
+    style="background:transparent; border-bottom:none; padding:0;"
   >
     <span class="filter-applied-bar__label">Filters</span>
     <div class="filter-applied-bar__cards" id="filter-applied-cards" role="group" aria-label="Applied filters"></div>
   </div>
 
-  <!-- ── OVERVIEW ─────────────────────────────────────────────── -->
-  @if (activeTab() === 'overview') {
-    <div class="chatbot__canvas" role="tabpanel" aria-label="Overview">
-
-      <div class="chatbot__metrics">
-        <div class="ds-metric-card ds-metric-card--brand">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Total Sessions</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">smart_toy</span>
-          </div>
-          <div class="ds-metric-card__value">14,382</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+11.4%</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Deflection Rate</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">shield</span>
-          </div>
-          <div class="ds-metric-card__value">73.2%</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+2.1%</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Avg Session Duration</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">timer</span>
-          </div>
-          <div class="ds-metric-card__value">3m 14s</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_down</span>
-            <span class="ds-metric-card__trend-value is-positive">-18s</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Escalation Rate</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">support_agent</span>
-          </div>
-          <div class="ds-metric-card__value">14.8%</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--negative" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-negative">+1.3%</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">CSAT Score</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">sentiment_satisfied</span>
-          </div>
-          <div class="ds-metric-card__value">4.3 / 5</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+0.2</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card ds-metric-card--brand">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Tickets Created</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">confirmation_number</span>
-          </div>
-          <div class="ds-metric-card__value">1,847</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--negative" aria-hidden="true">trending_down</span>
-            <span class="ds-metric-card__trend-value is-negative">-4.2%</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
+  <div class="ds-page-content__main ds-page-content__main--dashboard">
+    <div class="chatbot__canvas" role="tabpanel" [attr.aria-label]="activeTab()">
+      <div class="chatbot__chart-placeholder-full">
+        <span class="ds-icon ds-icon--xl" aria-hidden="true">bar_chart</span>
+        <span class="chatbot__placeholder-label">Dashboard placeholder</span>
       </div>
-
-      <div class="chatbot__charts">
-        <div class="chatbot__chart-card chatbot__chart-card--wide">
-          <div class="chatbot__chart-header">
-            <h2 class="chatbot__chart-title">Sessions by Day</h2>
-          </div>
-          <div class="chatbot__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">bar_chart</span>
-            <span class="chatbot__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-        <div class="chatbot__chart-card">
-          <div class="chatbot__chart-header">
-            <h2 class="chatbot__chart-title">Top Intent Groups</h2>
-          </div>
-          <div class="chatbot__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">donut_large</span>
-            <span class="chatbot__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-        <div class="chatbot__chart-card">
-          <div class="chatbot__chart-header">
-            <h2 class="chatbot__chart-title">Outcome Breakdown</h2>
-          </div>
-          <div class="chatbot__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">stacked_bar_chart</span>
-            <span class="chatbot__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-      </div>
-
     </div>
-  }
+  </div>
 
-  <!-- ── OPTIMIZATION ──────────────────────────────────────────── -->
-  @if (activeTab() === 'optimization') {
-    <div class="chatbot__canvas" role="tabpanel" aria-label="Optimization">
+}
 
-      <div class="chatbot__metrics">
-        <div class="ds-metric-card ds-metric-card--brand">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Avg Confidence</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">psychology</span>
-          </div>
-          <div class="ds-metric-card__value">84.6%</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-positive">+3.2%</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Fallback Rate</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">help</span>
-          </div>
-          <div class="ds-metric-card__value">6.4%</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_down</span>
-            <span class="ds-metric-card__trend-value is-positive">-1.1%</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">Avg Turns / Session</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">swap_vert</span>
-          </div>
-          <div class="ds-metric-card__value">4.7</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--positive" aria-hidden="true">trending_down</span>
-            <span class="ds-metric-card__trend-value is-positive">-0.3</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-        <div class="ds-metric-card">
-          <div class="ds-metric-card__header">
-            <span class="ds-metric-card__label">No-Match Intents</span>
-            <span class="ds-icon ds-icon--sm ds-icon--filled" aria-hidden="true">rule</span>
-          </div>
-          <div class="ds-metric-card__value">312</div>
-          <div class="ds-metric-card__trend">
-            <span class="ds-icon ds-icon--xs ds-metric-card__trend-icon--negative" aria-hidden="true">trending_up</span>
-            <span class="ds-metric-card__trend-value is-negative">+28</span>
-            <span class="ds-metric-card__trend-label">vs last period</span>
-          </div>
-        </div>
-      </div>
+<!-- ── Chat Logs tab (table) ──────────────────────────────────── -->
+@if (isTableTab()) {
 
-      <div class="chatbot__charts">
-        <div class="chatbot__chart-card chatbot__chart-card--wide">
-          <div class="chatbot__chart-header">
-            <h2 class="chatbot__chart-title">Confidence Score Distribution</h2>
-          </div>
-          <div class="chatbot__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">bar_chart</span>
-            <span class="chatbot__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-        <div class="chatbot__chart-card">
-          <div class="chatbot__chart-header">
-            <h2 class="chatbot__chart-title">Top No-Match Phrases</h2>
-          </div>
-          <div class="chatbot__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">list_alt</span>
-            <span class="chatbot__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-        <div class="chatbot__chart-card">
-          <div class="chatbot__chart-header">
-            <h2 class="chatbot__chart-title">Fallback Rate by Flow</h2>
-          </div>
-          <div class="chatbot__chart-placeholder">
-            <span class="ds-icon ds-icon--xl" aria-hidden="true">show_chart</span>
-            <span class="chatbot__chart-placeholder-label">Chart placeholder</span>
-          </div>
-        </div>
-      </div>
-
+  <div class="ds-page-content__main ds-page-content__main--table" style="margin-top: var(--spacing-lg);">
+    <ds-table-toolbar
+      [(filterActive)]="filterOpen"
+      [(settingsActive)]="settingsActive"
+      [showDownload]="false"
+      [searchPlaceholder]="'Search chat logs'"
+    />
+    <div class="chatbot__table-placeholder" role="tabpanel" aria-label="Chat Logs">
+      <span class="ds-icon ds-icon--xl" aria-hidden="true">table_rows</span>
+      <span class="chatbot__placeholder-label">Table placeholder</span>
     </div>
-  }
+  </div>
 
-  <!-- ── CHAT LOGS ─────────────────────────────────────────────── -->
-  @if (activeTab() === 'chat-logs') {
-    <div class="chat-logs-table" role="table" aria-label="Chat logs">
-
-      <div class="chat-logs-table__header" role="row">
-        <div class="ds-table-header-cell chat-logs-col--id" role="columnheader">
-          <div class="ds-table-header-cell__resize-handle"></div>
-          <div class="ds-table-header-cell__content"><span class="ds-table-header-cell__label">Session ID</span></div>
-          <div class="ds-table-header-cell__actions"><div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing"><span class="ds-table-header-cell__resize-bar"></span></div></div>
-        </div>
-        <div class="ds-table-header-cell chat-logs-col--date" role="columnheader">
-          <div class="ds-table-header-cell__resize-handle"></div>
-          <div class="ds-table-header-cell__content"><span class="ds-table-header-cell__label">Date</span></div>
-          <div class="ds-table-header-cell__actions"><div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing"><span class="ds-table-header-cell__resize-bar"></span></div></div>
-        </div>
-        <div class="ds-table-header-cell chat-logs-col--customer" role="columnheader">
-          <div class="ds-table-header-cell__resize-handle"></div>
-          <div class="ds-table-header-cell__content"><span class="ds-table-header-cell__label">Customer</span></div>
-          <div class="ds-table-header-cell__actions"><div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing"><span class="ds-table-header-cell__resize-bar"></span></div></div>
-        </div>
-        <div class="ds-table-header-cell chat-logs-col--topic" role="columnheader">
-          <div class="ds-table-header-cell__resize-handle"></div>
-          <div class="ds-table-header-cell__content"><span class="ds-table-header-cell__label">Topic</span></div>
-          <div class="ds-table-header-cell__actions"><div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing"><span class="ds-table-header-cell__resize-bar"></span></div></div>
-        </div>
-        <div class="ds-table-header-cell chat-logs-col--outcome" role="columnheader">
-          <div class="ds-table-header-cell__resize-handle"></div>
-          <div class="ds-table-header-cell__content"><span class="ds-table-header-cell__label">Outcome</span></div>
-          <div class="ds-table-header-cell__actions"><div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing"><span class="ds-table-header-cell__resize-bar"></span></div></div>
-        </div>
-        <div class="ds-table-header-cell chat-logs-col--duration" role="columnheader">
-          <div class="ds-table-header-cell__resize-handle"></div>
-          <div class="ds-table-header-cell__content"><span class="ds-table-header-cell__label">Duration</span></div>
-          <div class="ds-table-header-cell__actions"><div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing"><span class="ds-table-header-cell__resize-bar"></span></div></div>
-        </div>
-        <div class="ds-table-header-cell chat-logs-col--rating" role="columnheader">
-          <div class="ds-table-header-cell__resize-handle"></div>
-          <div class="ds-table-header-cell__content"><span class="ds-table-header-cell__label">Rating</span></div>
-          <div class="ds-table-header-cell__actions"><div class="ds-table-header-cell__resize-handle ds-table-header-cell__resize-handle--trailing"><span class="ds-table-header-cell__resize-bar"></span></div></div>
-        </div>
-      </div>
-
-      <div class="chat-logs-table__body">
-        @for (row of skeletonRows; track $index) {
-          <div class="ds-table-row-cell chat-logs-table__row" role="row">
-            <div class="ds-table-row-cell__cell chat-logs-col--id" role="cell">
-              <span class="chat-logs-table__session-id">#CB-{{ 10000 + $index * 37 }}</span>
-            </div>
-            <div class="ds-table-row-cell__cell chat-logs-col--date" role="cell">Apr 22, 2026</div>
-            <div class="ds-table-row-cell__cell chat-logs-col--customer" role="cell">
-              <span class="ds-label ds-label--neutral">Parent</span>
-            </div>
-            <div class="ds-table-row-cell__cell chat-logs-col--topic" role="cell">Enrollment Process</div>
-            <div class="ds-table-row-cell__cell chat-logs-col--outcome" role="cell">
-              @if ($index % 5 === 0) {
-                <span class="ds-label ds-label--warning">Escalated</span>
-              } @else if ($index % 4 === 0) {
-                <span class="ds-label ds-label--info">Ticket Created</span>
-              } @else {
-                <span class="ds-label ds-label--success">Self-Served</span>
-              }
-            </div>
-            <div class="ds-table-row-cell__cell chat-logs-col--duration" role="cell">
-              {{ 1 + ($index % 8) }}m {{ ($index * 13) % 60 }}s
-            </div>
-            <div class="ds-table-row-cell__cell chat-logs-col--rating" role="cell">
-              <span class="ds-icon ds-icon--sm ds-icon--filled chatbot__star-icon" aria-hidden="true">star</span>
-              {{ 3 + ($index % 3) }}
-            </div>
-          </div>
-        }
-      </div>
-
-      <div class="chat-logs-table__footer">
-        <span class="chat-logs-table__count">1–14 of 14,382 sessions</span>
-        <div class="chat-logs-table__page-controls" role="navigation" aria-label="Table pagination">
-          <button class="ds-icon-button ds-icon-button--icon" aria-label="First page" disabled>
-            <span class="ds-icon ds-icon--sm">first_page</span>
-          </button>
-          <button class="ds-icon-button ds-icon-button--icon" aria-label="Previous page" disabled>
-            <span class="ds-icon ds-icon--sm">chevron_left</span>
-          </button>
-          <span class="chat-logs-table__page-label">Page 1 of 1,027</span>
-          <button class="ds-icon-button ds-icon-button--icon" aria-label="Next page">
-            <span class="ds-icon ds-icon--sm">chevron_right</span>
-          </button>
-          <button class="ds-icon-button ds-icon-button--icon" aria-label="Last page">
-            <span class="ds-icon ds-icon--sm">last_page</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  }
-
-</div><!-- /.ds-page-content__main -->
+}
 
 <!-- Filter modal — context switches with the active tab -->
 <app-chatbot-filter-shell

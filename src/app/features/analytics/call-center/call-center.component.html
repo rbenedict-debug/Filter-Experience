@@ -1,6 +1,128 @@
 <div class="ds-page-content__heading">
   <h1 class="ds-page-content__title">Call Center</h1>
+  <div class="ds-tabs" role="tablist" aria-label="Call Center sections">
+    @for (tab of tabs; track tab.id) {
+      <button
+        class="ds-tabs__tab"
+        [class.is-selected]="activeTab() === tab.id"
+        role="tab"
+        [attr.aria-selected]="activeTab() === tab.id"
+        [attr.tabindex]="activeTab() === tab.id ? 0 : -1"
+        (click)="setTab(tab.id)"
+      >{{ tab.label }}</button>
+    }
+  </div>
 </div>
-<div class="ds-page-content__main">
-  <!-- TODO: Implement Call Center content -->
-</div>
+
+<!-- ── Dashboard tabs ──────────────────────────────────────────── -->
+@if (!isTableTab()) {
+
+  <!-- Toolbar sits OUTSIDE the card surface, between heading and canvas -->
+  <div class="ds-dashboard-toolbar" style="padding: var(--spacing-lg) 0 0;">
+    <div class="ds-dashboard-toolbar__controls">
+
+      <div class="call-center__date-wrapper">
+        <button
+          class="ds-dashboard-toolbar__date-select"
+          type="button"
+          aria-haspopup="menu"
+          [attr.aria-expanded]="dateMenuOpen"
+          (click)="toggleDateMenu()"
+        >
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
+          <span class="ds-dashboard-toolbar__date-label">{{ dateLabel }}</span>
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span>
+        </button>
+        @if (dateMenuOpen) {
+          <div
+            class="ds-menu"
+            role="menu"
+            style="position:absolute; top:calc(100% + 4px); left:0; z-index:200; min-width:190px;"
+          >
+            @for (option of dateOptions; track option) {
+              <button
+                class="ds-menu__item"
+                role="menuitemradio"
+                [attr.aria-checked]="dateLabel === option"
+                (click)="selectDate(option)"
+              >
+                @if (dateLabel === option) {
+                  <span class="ds-menu__item-check">
+                    <span class="ds-icon ds-icon--filled" aria-hidden="true">check</span>
+                  </span>
+                }
+                {{ option }}
+              </button>
+            }
+            <div class="ds-menu__divider" role="separator"></div>
+            <button class="ds-menu__item call-center__date-custom" role="menuitem" (click)="selectDate('Custom Date Range')">
+              Custom Date Range...
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="ds-badge-indicator__host">
+        <button
+          class="ds-dashboard-toolbar__btn"
+          type="button"
+          aria-label="Filter"
+          (click)="filterOpen = true"
+        >
+          <span class="ds-icon" aria-hidden="true">filter_alt</span>
+        </button>
+        @if (filterCount > 0) {
+          <div class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</div>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Applied filters bar — transparent, between toolbar and canvas -->
+  <div
+    class="filter-applied-bar"
+    id="filter-applied-bar"
+    hidden
+    style="background:transparent; border-bottom:none; padding:0;"
+  >
+    <span class="filter-applied-bar__label">Filters</span>
+    <div class="filter-applied-bar__cards" id="filter-applied-cards" role="group" aria-label="Applied filters"></div>
+  </div>
+
+  <!-- Dashboard canvas — --dashboard modifier removes the card shell -->
+  <div class="ds-page-content__main ds-page-content__main--dashboard">
+    <div class="call-center__canvas" role="tabpanel" [attr.aria-label]="activeTab()">
+      <div class="call-center__chart-placeholder-full">
+        <span class="ds-icon ds-icon--xl" aria-hidden="true">bar_chart</span>
+        <span class="call-center__placeholder-label">Dashboard placeholder</span>
+      </div>
+    </div>
+  </div>
+
+}
+
+<!-- ── Call Details tab (table) ───────────────────────────────── -->
+@if (isTableTab()) {
+
+  <div class="ds-page-content__main ds-page-content__main--table" style="margin-top: var(--spacing-lg);">
+    <ds-table-toolbar
+      [(filterActive)]="filterOpen"
+      [(settingsActive)]="settingsActive"
+      [showDownload]="false"
+      [searchPlaceholder]="'Search call details'"
+    />
+    <div class="call-center__table-placeholder" role="tabpanel" aria-label="Call Details">
+      <span class="ds-icon ds-icon--xl" aria-hidden="true">table_rows</span>
+      <span class="call-center__placeholder-label">Table placeholder</span>
+    </div>
+  </div>
+
+}
+
+<!-- Filter modal — context switches with the active tab -->
+<app-call-center-filter-shell
+  [(open)]="filterOpen"
+  [context]="filterContext()"
+  (filterCountChange)="onFilterCountChange($event)"
+/>

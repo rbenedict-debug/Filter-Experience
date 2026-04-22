@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { DsTableToolbarComponent } from '@onflo/design-system';
 import { ChatbotFilterShellComponent } from './filter-shell/chatbot-filter-shell.component';
 
 type ChatbotTab = 'overview' | 'optimization' | 'chat-logs';
@@ -6,7 +7,7 @@ type ChatbotTab = 'overview' | 'optimization' | 'chat-logs';
 @Component({
   selector: 'app-chatbot',
   standalone: true,
-  imports: [ChatbotFilterShellComponent],
+  imports: [DsTableToolbarComponent, ChatbotFilterShellComponent],
   templateUrl: './chatbot.component.html',
   styleUrls: ['./chatbot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,8 +15,9 @@ type ChatbotTab = 'overview' | 'optimization' | 'chat-logs';
 export class ChatbotComponent {
   activeTab = signal<ChatbotTab>('overview');
 
-  filterOpen  = false;
-  filterCount = 0;
+  filterOpen     = false;
+  filterCount    = 0;
+  settingsActive = false;
 
   dateMenuOpen = false;
   dateLabel    = 'Last 90 Days';
@@ -38,6 +40,8 @@ export class ChatbotComponent {
     return 'chatbot-chat-logs';
   });
 
+  isTableTab = computed(() => this.activeTab() === 'chat-logs');
+
   setTab(tab: ChatbotTab): void {
     if (this.activeTab() === tab) return;
     this.filterOpen  = false;
@@ -57,5 +61,4 @@ export class ChatbotComponent {
     this.filterOpen  = false;
   }
 
-  readonly skeletonRows = Array(14).fill(0);
 }

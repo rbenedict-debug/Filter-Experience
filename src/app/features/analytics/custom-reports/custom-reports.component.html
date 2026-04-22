@@ -1,7 +1,21 @@
 <div class="ds-page-content__heading">
   <h1 class="ds-page-content__title">Custom Reports</h1>
 </div>
+
 <div class="ds-page-content__main ds-page-content__main--table">
-  <!-- TODO: Add filter experience for custom-reports -->
-  <!-- Filter groups to be defined — see project filter spec -->
+  <ds-table-toolbar
+    [(filterActive)]="filterOpen"
+    [(settingsActive)]="settingsActive"
+    [showDownload]="false"
+    [searchPlaceholder]="'Search reports'"
+  />
+  <div class="custom-reports__table-placeholder">
+    <span class="ds-icon ds-icon--xl" aria-hidden="true">table_rows</span>
+    <span class="custom-reports__placeholder-label">Table placeholder</span>
+  </div>
 </div>
+
+<app-custom-reports-filter-shell
+  [(open)]="filterOpen"
+  (filterCountChange)="onFilterCountChange($event)"
+/>

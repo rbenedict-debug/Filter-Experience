@@ -1,7 +1,92 @@
-<div class="ds-page-content__heading">
-  <h1 class="ds-page-content__title">Comparison — Users</h1>
+<div class="ds-page-content__dashboard-header">
+
+  <div class="ds-page-content__heading ds-page-content__heading--row">
+    <h1 class="ds-page-content__title">Comparison — Users</h1>
+  </div>
+
+  <div class="ds-dashboard-toolbar" style="padding: 0;">
+    <div class="ds-dashboard-toolbar__controls">
+
+      <div class="comparison-users__date-wrapper">
+        <button
+          class="ds-dashboard-toolbar__date-select"
+          type="button"
+          aria-haspopup="menu"
+          [attr.aria-expanded]="dateMenuOpen"
+          (click)="toggleDateMenu()"
+        >
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
+          <span class="ds-dashboard-toolbar__date-label">{{ dateLabel }}</span>
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span>
+        </button>
+        @if (dateMenuOpen) {
+          <div
+            class="ds-menu"
+            role="menu"
+            style="position:absolute; top:calc(100% + 4px); left:0; z-index:200; min-width:190px;"
+          >
+            @for (option of dateOptions; track option) {
+              <button
+                class="ds-menu__item"
+                role="menuitemradio"
+                [attr.aria-checked]="dateLabel === option"
+                (click)="selectDate(option)"
+              >
+                @if (dateLabel === option) {
+                  <span class="ds-menu__item-check">
+                    <span class="ds-icon ds-icon--filled" aria-hidden="true">check</span>
+                  </span>
+                }
+                {{ option }}
+              </button>
+            }
+            <div class="ds-menu__divider" role="separator"></div>
+            <button class="ds-menu__item comparison-users__date-custom" role="menuitem" (click)="selectDate('Custom Date Range')">
+              Custom Date Range...
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="ds-badge-indicator__host">
+        <button
+          class="ds-dashboard-toolbar__btn"
+          type="button"
+          aria-label="Filter"
+          (click)="filterOpen = true"
+        >
+          <span class="ds-icon" aria-hidden="true">filter_alt</span>
+        </button>
+        @if (filterCount > 0) {
+          <div class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</div>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <div
+    class="filter-applied-bar"
+    id="filter-applied-bar"
+    hidden
+    style="background:transparent; border-bottom:none; padding:0;"
+  >
+    <span class="filter-applied-bar__label">Filters</span>
+    <div class="filter-applied-bar__cards" id="filter-applied-cards" role="group" aria-label="Applied filters"></div>
+  </div>
+
 </div>
-<div class="ds-page-content__main ds-page-content__main--table">
-  <!-- TODO: Add filter experience for comparison-users -->
-  <!-- Filter groups to be defined — see project filter spec -->
+
+<div class="ds-page-content__main ds-page-content__main--dashboard">
+  <div class="comparison-users__canvas">
+    <div class="comparison-users__chart-placeholder-full">
+      <span class="ds-icon ds-icon--xl" aria-hidden="true">bar_chart</span>
+      <span class="comparison-users__placeholder-label">Dashboard placeholder</span>
+    </div>
+  </div>
 </div>
+
+<app-comparison-users-filter-shell
+  [(open)]="filterOpen"
+  (filterCountChange)="onFilterCountChange($event)"
+/>

@@ -1,5 +1,56 @@
 :host {
-  display: contents;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
 }
 
-// Call Center — implement styles here
+.call-center__date-wrapper {
+  position: relative;
+}
+
+.call-center__date-custom {
+  color: var(--color-text-brand) !important;
+}
+
+// Dashboard canvas — floats on the page floor, no card shell
+.call-center__canvas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+}
+
+// Placeholder card for dashboard tabs
+.call-center__chart-placeholder-full {
+  min-height: 320px;
+  background: var(--color-surface-page);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: var(--color-icon-subtle);
+}
+
+// Table placeholder for Call Details tab
+.call-center__table-placeholder {
+  flex: 1;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: var(--color-icon-subtle);
+}
+
+.call-center__placeholder-label {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+}
