@@ -1,1 +1,83 @@
-// Service Overview — implement styles here
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.service-overview__date-wrapper {
+  position: relative;
+}
+
+.service-overview__date-custom {
+  color: var(--color-text-brand) !important;
+}
+
+.service-overview-canvas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+}
+
+.service-overview__metrics {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+
+  .ds-metric-card {
+    flex: 1 1 176px;
+    min-width: 156px;
+  }
+}
+
+.service-overview__charts {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.service-overview__chart-card {
+  background: var(--color-surface-page);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+}
+
+.service-overview__chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.service-overview__chart-title {
+  font-family: var(--ref-typescale-label-large-font);
+  font-size: var(--ref-typescale-label-large-size);
+  font-weight: var(--ref-typescale-label-large-weight);
+  line-height: var(--ref-typescale-label-large-line-height);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.service-overview__chart-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: var(--color-icon-subtle);
+}
+
+.service-overview__chart-placeholder-label {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+}

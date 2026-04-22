@@ -392,27 +392,7 @@ const FILTER_GROUPS_ASSETS = [
 // ── Service Overview filter groups ───────────────────────────────────────
 const FILTER_GROUPS_SERVICE_OVERVIEW = [
 
-  // ── 1. Date ──────────────────────────────────────────────────
-  // Single-select presets (mutually exclusive) + custom date range picker.
-  // type: 'date-preset' triggers a different renderer in buildGroupOptions.
-  {
-    id: 'dates',
-    label: 'Date',
-    icon: 'calendar_today',
-    type: 'date-preset',
-    options: [
-      { id: 'dp-this-week',        label: 'This week' },
-      { id: 'dp-7days',            label: 'Last 7 days' },
-      { id: 'dp-this-month',       label: 'This month' },
-      { id: 'dp-30days',           label: 'Last 30 days' },
-      { id: 'dp-90days',           label: 'Last 90 days' },
-      { id: 'dp-cur-school-year',  label: 'Current school year' },
-      { id: 'dp-last-school-year', label: 'Last school year' },
-      { id: 'dp-all-time',         label: 'All time' },
-    ],
-  },
-
-  // ── 2. Ticket ─────────────────────────────────────────────────
+  // ── 1. Ticket ─────────────────────────────────────────────────
   {
     id: 'ticket',
     label: 'Ticket',
@@ -658,10 +638,359 @@ const FILTER_GROUPS_SERVICE_OVERVIEW = [
   },
 ];
 
+// ── Chatbot: Overview ─────────────────────────────────────────
+const FILTER_GROUPS_CHATBOT_OVERVIEW = [
+  {
+    id: 'date',
+    label: 'Date',
+    icon: 'calendar_today',
+    tiers: [
+      { id: 'date-session', label: 'Session Date', type: 'date-range' },
+    ],
+  },
+  {
+    id: 'bot',
+    label: 'Bot',
+    icon: 'smart_toy',
+    tiers: [
+      {
+        id: 'flow',
+        label: 'Flow / Page',
+        options: [
+          { id: 'fl-home',        label: 'Home' },
+          { id: 'fl-it-support',  label: 'IT Support' },
+          { id: 'fl-hr',          label: 'Human Resources' },
+          { id: 'fl-registrar',   label: 'Registrar' },
+          { id: 'fl-payments',    label: 'Payments & Fees' },
+          { id: 'fl-nutrition',   label: 'Nutrition Services' },
+          { id: 'fl-transport',   label: 'Transportation' },
+          { id: 'fl-general',     label: 'General Inquiry' },
+        ],
+      },
+      {
+        id: 'intent-group',
+        label: 'Intent Group',
+        options: [
+          { id: 'ig-academics',    label: 'Academics' },
+          { id: 'ig-enrollment',   label: 'Enrollment' },
+          { id: 'ig-technology',   label: 'Technology' },
+          { id: 'ig-facilities',   label: 'Facilities & Safety' },
+          { id: 'ig-payments',     label: 'Payments' },
+          { id: 'ig-hr',           label: 'HR & Staff' },
+          { id: 'ig-events',       label: 'Events & Activities' },
+          { id: 'ig-other',        label: 'Other' },
+        ],
+      },
+      {
+        id: 'landing-page',
+        label: 'Landing Page',
+        options: [
+          { id: 'lp-district',    label: 'District Website' },
+          { id: 'lp-portal',      label: 'Customer Portal' },
+          { id: 'lp-cx-app',      label: 'Customer App' },
+          { id: 'lp-email',       label: 'Email Link' },
+          { id: 'lp-qr',          label: 'QR Code' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'customer',
+    label: 'Customer',
+    icon: 'person',
+    tiers: [
+      {
+        id: 'customer-type',
+        label: 'Customer Type',
+        options: [
+          { id: 'ct-student',   label: 'Student' },
+          { id: 'ct-employee',  label: 'Employee' },
+          { id: 'ct-parent',    label: 'Parent / Guardian' },
+          { id: 'ct-community', label: 'Community Member' },
+          { id: 'ct-other',     label: 'Other' },
+        ],
+      },
+      {
+        id: 'language',
+        label: 'Language',
+        options: [
+          { id: 'lang-ar', label: 'Arabic' },
+          { id: 'lang-zh', label: 'Chinese (Simplified)' },
+          { id: 'lang-en', label: 'English' },
+          { id: 'lang-fr', label: 'French' },
+          { id: 'lang-es', label: 'Spanish' },
+          { id: 'lang-so', label: 'Somali' },
+          { id: 'lang-uk', label: 'Ukrainian' },
+        ],
+      },
+    ],
+  },
+];
+
+// ── Chatbot: Optimization ─────────────────────────────────────
+const FILTER_GROUPS_CHATBOT_OPTIMIZATION = [
+  {
+    id: 'date',
+    label: 'Date',
+    icon: 'calendar_today',
+    tiers: [
+      { id: 'date-session', label: 'Session Date', type: 'date-range' },
+    ],
+  },
+  {
+    id: 'intent',
+    label: 'Intent',
+    icon: 'psychology',
+    tiers: [
+      {
+        id: 'intent-group',
+        label: 'Intent Group',
+        options: [
+          { id: 'ig-academics',  label: 'Academics' },
+          { id: 'ig-enrollment', label: 'Enrollment' },
+          { id: 'ig-technology', label: 'Technology' },
+          { id: 'ig-facilities', label: 'Facilities & Safety' },
+          { id: 'ig-payments',   label: 'Payments' },
+          { id: 'ig-hr',         label: 'HR & Staff' },
+          { id: 'ig-events',     label: 'Events & Activities' },
+          { id: 'ig-other',      label: 'Other' },
+        ],
+      },
+      {
+        id: 'confidence',
+        label: 'Confidence Level',
+        options: [
+          { id: 'conf-high',    label: 'High (≥ 90%)' },
+          { id: 'conf-medium',  label: 'Medium (70–89%)' },
+          { id: 'conf-low',     label: 'Low (< 70%)' },
+          { id: 'conf-fallback',label: 'Fallback' },
+        ],
+      },
+      {
+        id: 'matched-status',
+        label: 'Match Status',
+        options: [
+          { id: 'ms-matched',    label: 'Intent Matched' },
+          { id: 'ms-unmatched',  label: 'No Match' },
+          { id: 'ms-partial',    label: 'Partial Match' },
+          { id: 'ms-escalated',  label: 'Escalated to Agent' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'performance',
+    label: 'Performance',
+    icon: 'insights',
+    tiers: [
+      {
+        id: 'deflection',
+        label: 'Deflection Outcome',
+        options: [
+          { id: 'def-self-served',   label: 'Self-Served' },
+          { id: 'def-ticket-created',label: 'Ticket Created' },
+          { id: 'def-live-chat',     label: 'Transferred to Live Chat' },
+          { id: 'def-abandoned',     label: 'Session Abandoned' },
+          { id: 'def-call',          label: 'Prompted to Call' },
+        ],
+      },
+      {
+        id: 'session-rating',
+        label: 'Session Rating',
+        options: [
+          { id: 'sr-5',       label: '5 Stars' },
+          { id: 'sr-4',       label: '4 Stars' },
+          { id: 'sr-3',       label: '3 Stars' },
+          { id: 'sr-2',       label: '2 Stars' },
+          { id: 'sr-1',       label: '1 Star' },
+          { id: 'sr-no-rate', label: 'Not Rated' },
+        ],
+      },
+      {
+        id: 'turn-count',
+        label: 'Turn Count',
+        type: 'numeric-range',
+        min: 1,
+        max: 30,
+        step: 1,
+        unit: 'turns',
+        maxLabel: '30+',
+      },
+    ],
+  },
+  {
+    id: 'customer',
+    label: 'Customer',
+    icon: 'person',
+    tiers: [
+      {
+        id: 'customer-type',
+        label: 'Customer Type',
+        options: [
+          { id: 'ct-student',   label: 'Student' },
+          { id: 'ct-employee',  label: 'Employee' },
+          { id: 'ct-parent',    label: 'Parent / Guardian' },
+          { id: 'ct-community', label: 'Community Member' },
+          { id: 'ct-other',     label: 'Other' },
+        ],
+      },
+    ],
+  },
+];
+
+// ── Chatbot: Chat Logs ────────────────────────────────────────
+const FILTER_GROUPS_CHATBOT_CHAT_LOGS = [
+  {
+    id: 'date',
+    label: 'Date',
+    icon: 'calendar_today',
+    tiers: [
+      { id: 'date-session', label: 'Session Date', type: 'date-range' },
+    ],
+  },
+  {
+    id: 'session',
+    label: 'Session',
+    icon: 'forum',
+    tiers: [
+      {
+        id: 'session-status',
+        label: 'Session Status',
+        options: [
+          { id: 'ss-active',     label: 'Active' },
+          { id: 'ss-completed',  label: 'Completed' },
+          { id: 'ss-abandoned',  label: 'Abandoned' },
+          { id: 'ss-escalated',  label: 'Escalated' },
+          { id: 'ss-timed-out',  label: 'Timed Out' },
+        ],
+      },
+      {
+        id: 'session-outcome',
+        label: 'Outcome',
+        options: [
+          { id: 'so-self-served',    label: 'Self-Served' },
+          { id: 'so-ticket-created', label: 'Ticket Created' },
+          { id: 'so-live-chat',      label: 'Transferred to Live Chat' },
+          { id: 'so-call',           label: 'Prompted to Call' },
+          { id: 'so-no-outcome',     label: 'No Outcome' },
+        ],
+      },
+      {
+        id: 'session-duration',
+        label: 'Duration',
+        type: 'numeric-range',
+        min: 0,
+        max: 60,
+        step: 1,
+        unit: 'min',
+        maxLabel: '60+',
+      },
+    ],
+  },
+  {
+    id: 'customer',
+    label: 'Customer',
+    icon: 'person',
+    tiers: [
+      {
+        id: 'customer-type',
+        label: 'Customer Type',
+        options: [
+          { id: 'ct-student',   label: 'Student' },
+          { id: 'ct-employee',  label: 'Employee' },
+          { id: 'ct-parent',    label: 'Parent / Guardian' },
+          { id: 'ct-community', label: 'Community Member' },
+          { id: 'ct-other',     label: 'Other' },
+        ],
+      },
+      {
+        id: 'language',
+        label: 'Language',
+        options: [
+          { id: 'lang-ar', label: 'Arabic' },
+          { id: 'lang-zh', label: 'Chinese (Simplified)' },
+          { id: 'lang-en', label: 'English' },
+          { id: 'lang-fr', label: 'French' },
+          { id: 'lang-es', label: 'Spanish' },
+          { id: 'lang-so', label: 'Somali' },
+          { id: 'lang-uk', label: 'Ukrainian' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'topic',
+    label: 'Topic',
+    icon: 'layers',
+    tiers: [
+      {
+        id: 'topic-academics',
+        label: 'Academics',
+        options: [
+          { id: 'top-grades',     label: 'Grades & Report Cards' },
+          { id: 'top-curriculum', label: 'Curriculum Questions' },
+          { id: 'top-testing',    label: 'Standardized Testing' },
+          { id: 'top-special-ed', label: 'Special Education' },
+        ],
+      },
+      {
+        id: 'topic-enrollment',
+        label: 'Enrollment & Attendance',
+        options: [
+          { id: 'top-enroll',     label: 'Enrollment Process' },
+          { id: 'top-withdrawal', label: 'Withdrawal / Transfer' },
+          { id: 'top-attendance', label: 'Attendance Questions' },
+        ],
+      },
+      {
+        id: 'topic-tech',
+        label: 'Technology',
+        options: [
+          { id: 'top-device', label: 'Device Issue' },
+          { id: 'top-login',  label: 'Login / Password Reset' },
+          { id: 'top-app',    label: 'App / Software Access' },
+          { id: 'top-wifi',   label: 'Wi-Fi / Connectivity' },
+        ],
+      },
+      {
+        id: 'topic-other',
+        label: 'Other',
+        options: [
+          { id: 'top-facility',  label: 'Facility Concern' },
+          { id: 'top-safety',    label: 'Safety / Bullying' },
+          { id: 'top-food',      label: 'Food Services' },
+          { id: 'top-transport', label: 'Transportation' },
+          { id: 'top-payments',  label: 'Payments & Fees' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'intent',
+    label: 'Intent',
+    icon: 'psychology',
+    tiers: [
+      {
+        id: 'confidence',
+        label: 'Confidence Level',
+        options: [
+          { id: 'conf-high',     label: 'High (≥ 90%)' },
+          { id: 'conf-medium',   label: 'Medium (70–89%)' },
+          { id: 'conf-low',      label: 'Low (< 70%)' },
+          { id: 'conf-fallback', label: 'Fallback' },
+        ],
+      },
+    ],
+  },
+];
+
 // ── Context configuration ─────────────────────────────────────
 const CONTEXTS = {
-  assets:  { label: 'Assets Table',     groups: FILTER_GROUPS_ASSETS,           savedSetsKey: 'onflo-filter-sets-assets'  },
-  service: { label: 'Service Overview', groups: FILTER_GROUPS_SERVICE_OVERVIEW,  savedSetsKey: 'onflo-filter-sets-service' },
+  assets:               { label: 'Assets Table',        groups: FILTER_GROUPS_ASSETS,                savedSetsKey: 'onflo-filter-sets-assets'           },
+  service:              { label: 'Service Overview',     groups: FILTER_GROUPS_SERVICE_OVERVIEW,       savedSetsKey: 'onflo-filter-sets-service'          },
+  'chatbot-overview':   { label: 'Chatbot Overview',     groups: FILTER_GROUPS_CHATBOT_OVERVIEW,       savedSetsKey: 'onflo-filter-sets-chatbot-overview' },
+  'chatbot-optimization':{ label: 'Chatbot Optimization',groups: FILTER_GROUPS_CHATBOT_OPTIMIZATION,  savedSetsKey: 'onflo-filter-sets-chatbot-optim'    },
+  'chatbot-chat-logs':  { label: 'Chat Logs',            groups: FILTER_GROUPS_CHATBOT_CHAT_LOGS,      savedSetsKey: 'onflo-filter-sets-chatbot-logs'     },
 };
 
 let activeContext     = 'service';

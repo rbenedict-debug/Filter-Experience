@@ -1,1 +1,166 @@
-// Chatbot — implement styles here
+:host {
+  display: contents;
+}
+
+.chatbot__date-wrapper {
+  position: relative;
+}
+
+.chatbot__date-custom {
+  color: var(--color-text-brand) !important;
+}
+
+// Dashboard-style tab content — adds padding inside the table card shell
+.chatbot__canvas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+// ── Metrics row ───────────────────────────────────────────────
+
+.chatbot__metrics {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+
+  .ds-metric-card {
+    flex: 1 1 176px;
+    min-width: 156px;
+  }
+}
+
+// ── Chart cards ───────────────────────────────────────────────
+
+.chatbot__charts {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.chatbot__chart-card {
+  background: var(--color-surface-page);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+
+  &--wide { grid-column: 1 / -1; }
+}
+
+.chatbot__chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.chatbot__chart-title {
+  font-family: var(--ref-typescale-label-large-font);
+  font-size: var(--ref-typescale-label-large-size);
+  font-weight: var(--ref-typescale-label-large-weight);
+  line-height: var(--ref-typescale-label-large-line-height);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.chatbot__chart-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: var(--color-icon-subtle);
+}
+
+.chatbot__chart-placeholder-label {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+}
+
+// ── Chat Logs table ───────────────────────────────────────────
+
+.chat-logs-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.chat-logs-table__header {
+  display: flex;
+  align-items: stretch;
+}
+
+.chat-logs-table__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-logs-table__row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-subtle);
+  min-height: 48px;
+
+  &:last-child { border-bottom: none; }
+}
+
+// Column widths
+.chat-logs-col--id       { flex: 0 0 110px; padding: var(--spacing-xs) var(--spacing-md); }
+.chat-logs-col--date     { flex: 0 0 130px; }
+.chat-logs-col--customer { flex: 0 0 116px; }
+.chat-logs-col--topic    { flex: 1 1 180px; }
+.chat-logs-col--outcome  { flex: 0 0 160px; }
+.chat-logs-col--duration { flex: 0 0 100px; }
+.chat-logs-col--rating   { flex: 0 0 72px;  }
+
+.chat-logs-table__session-id {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-label-medium-weight);
+  color: var(--color-text-brand);
+}
+
+.chat-logs-table__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.chat-logs-table__count {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  color: var(--color-text-secondary);
+}
+
+.chat-logs-table__page-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.chat-logs-table__page-label {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  color: var(--color-text-secondary);
+  padding: 0 var(--spacing-xs);
+}
+
+// ── Misc ──────────────────────────────────────────────────────
+
+.chatbot__star-icon {
+  color: var(--color-icon-warning);
+  vertical-align: middle;
+}
