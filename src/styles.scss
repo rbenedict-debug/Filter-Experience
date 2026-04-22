@@ -25,3 +25,11 @@ app-root {
   width: 100%;
   height: 100%;
 }
+
+// DS workaround: layout.css hides router-outlet inside ds-page-content but
+// the rule loses specificity to Angular's element styles. Higher-specificity
+// override prevents the outlet from becoming a ghost flex item that triggers
+// the gap before ds-page-content__heading.
+main.ds-page-content > router-outlet {
+  display: none;
+}

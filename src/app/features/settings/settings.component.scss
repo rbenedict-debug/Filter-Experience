@@ -1,4 +1,5 @@
 :host { display: contents; }
+router-outlet { display: none; }
 
 .ds-page-content__main {
   overflow-y: auto;
