@@ -3,69 +3,127 @@
 
     <div class="ds-page-content__heading ds-page-content__heading--row">
       <h1 class="ds-page-content__title">Service Overview</h1>
-      <p class="ds-page-content__meta">April 21, 2026</p>
+      <div class="service-overview__heading-meta">
+        <a class="ds-button ds-button--text ds-button--xs ds-button--trailing-icon"
+           href="https://help.onflo.com/analytics/service-overview"
+           target="_blank"
+           rel="noreferrer noopener"
+           aria-label="Learn more about Service Overview — opens learning center in a new tab">
+          Learn more
+          <span class="ds-icon" aria-hidden="true">open_in_new</span>
+        </a>
+        <p class="ds-page-content__meta">Last updated {{ lastUpdated | date:'MMM d, y, h:mm a' }}</p>
+      </div>
+    </div>
+
+    <!-- Stats bar: clickable KPI counts -->
+    <div class="service-overview__stats-bar">
+      <div class="service-overview__stats" role="list">
+        @for (stat of stats; track stat.id) {
+          <button
+            class="service-overview__stat-btn"
+            type="button"
+            [attr.aria-label]="(stat.count | number) + ' ' + stat.label + ' — view tickets'"
+            (click)="openStat(stat)"
+            role="listitem"
+          >
+            <span class="service-overview__stat-count">{{ stat.count | number }}</span>
+            <span class="service-overview__stat-label">{{ stat.label }}</span>
+          </button>
+        }
+      </div>
     </div>
 
     <div class="ds-dashboard-toolbar" style="padding: 0;">
-      <div class="ds-dashboard-toolbar__controls">
+      <div class="ds-dashboard-toolbar__controls service-overview__toolbar-controls">
 
-        <div class="service-overview__date-wrapper">
-          <button
-            class="ds-dashboard-toolbar__date-select"
-            type="button"
-            aria-haspopup="menu"
-            [attr.aria-expanded]="dateMenuOpen"
-            (click)="toggleDateMenu()"
-          >
-            <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
-            <span class="ds-dashboard-toolbar__date-label">{{ dateLabel }}</span>
-            <span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span>
-          </button>
-          @if (dateMenuOpen) {
-            <div
-              class="ds-menu"
-              role="menu"
-              style="position:absolute; top:calc(100% + 4px); left:0; z-index:200; min-width:190px;"
+        <div class="service-overview__toolbar-left">
+          <div class="service-overview__date-wrapper">
+            <button
+              class="ds-dashboard-toolbar__date-select"
+              [class.ds-dashboard-toolbar__date-select--overridden]="filterDateActive"
+              type="button"
+              aria-haspopup="menu"
+              [attr.aria-expanded]="dateMenuOpen"
+              (click)="toggleDateMenu()"
             >
-              @for (option of dateOptions; track option) {
-                <button
-                  class="ds-menu__item"
-                  role="menuitemradio"
-                  [attr.aria-checked]="dateLabel === option"
-                  (click)="selectDate(option)"
-                >
-                  @if (dateLabel === option) {
-                    <span class="ds-menu__item-check">
-                      <span class="ds-icon ds-icon--filled" aria-hidden="true">check</span>
-                    </span>
-                  }
-                  {{ option }}
-                </button>
-              }
-              <div class="ds-menu__divider" role="separator"></div>
-              <button
-                class="ds-menu__item service-overview__date-custom"
-                role="menuitem"
-                (click)="selectDate('Custom Date Range')"
+              <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
+              <span class="ds-dashboard-toolbar__date-label">{{ dateLabel }}</span>
+              <span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span>
+            </button>
+            @if (dateMenuOpen) {
+              <div
+                class="ds-menu"
+                role="menu"
+                style="position:absolute; top:calc(100% + 4px); left:0; z-index:200; min-width:190px;"
               >
-                Custom Date Range...
-              </button>
-            </div>
-          }
+                @for (option of dateOptions; track option) {
+                  <button
+                    class="ds-menu__item"
+                    role="menuitemradio"
+                    [attr.aria-checked]="dateLabel === option"
+                    (click)="selectDate(option)"
+                  >
+                    @if (dateLabel === option) {
+                      <span class="ds-menu__item-check">
+                        <span class="ds-icon ds-icon--filled" aria-hidden="true">check</span>
+                      </span>
+                    }
+                    {{ option }}
+                  </button>
+                }
+                <div class="ds-menu__divider" role="separator"></div>
+                <button
+                  class="ds-menu__item service-overview__date-custom"
+                  role="menuitem"
+                  (click)="selectDate('Custom Date Range')"
+                >
+                  Custom Date Range...
+                </button>
+              </div>
+            }
+          </div>
+
         </div>
 
-        <div class="ds-badge-indicator__host">
+        <div class="service-overview__toolbar-right">
+          <div class="ds-badge-indicator__host">
+            <button
+              class="ds-dashboard-toolbar__btn"
+              type="button"
+              aria-label="Filter"
+              (click)="filterOpen = true"
+            >
+              <span class="ds-icon" aria-hidden="true">filter_alt</span>
+            </button>
+            @if (filterCount > 0) {
+              <div class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</div>
+            }
+          </div>
+
           <button
             class="ds-dashboard-toolbar__btn"
             type="button"
-            aria-label="Filter"
-            (click)="filterOpen = true"
+            aria-label="Download"
+            (click)="onDownload()"
           >
-            <span class="ds-icon" aria-hidden="true">filter_alt</span>
+            <span class="ds-icon" aria-hidden="true">download</span>
           </button>
-          @if (filterCount > 0) {
-            <div class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</div>
-          }
+
+          <button
+            class="ds-dashboard-toolbar__btn"
+            type="button"
+            aria-label="Share"
+            (click)="onShare()"
+          >
+            <span class="ds-icon" aria-hidden="true">share</span>
+          </button>
+
+          <button
+            class="ds-dashboard-toolbar__text-btn"
+            type="button"
+            (click)="onSave()"
+          >Save View</button>
         </div>
 
       </div>
@@ -95,4 +153,5 @@
 <app-analytics-filter-shell
   [(open)]="filterOpen"
   (filterCountChange)="onFilterCountChange($event)"
+  (filterDateActiveChange)="onFilterDateActiveChange($event)"
 />

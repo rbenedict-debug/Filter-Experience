@@ -26,6 +26,52 @@ app-root {
   height: 100%;
 }
 
+// Local extension of ds-dashboard-toolbar__btn for text-labeled actions.
+// Matches the surface/elevation/border-none treatment of the icon buttons
+// but uses variable width and text typography. Candidate for the DS.
+.ds-dashboard-toolbar__text-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 42px;
+  padding: 0 var(--spacing-lg);
+  background: var(--color-surface-page);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-large-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: var(--ref-typescale-label-large-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  transition: box-shadow .12s ease, color .12s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    transition: background .12s ease;
+    pointer-events: none;
+  }
+
+  &:focus { outline: none; }
+  &:hover:not(:disabled)::after { background: var(--overlay-hovered); }
+  &:focus-visible {
+    box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2), 0 0 0 3px var(--color-border-ada-focus-ring);
+    &::after { background: var(--overlay-focused); }
+  }
+  &:active:not(:disabled)::after { background: var(--overlay-pressed); }
+  &:disabled { color: var(--color-text-disabled); box-shadow: none; cursor: not-allowed; }
+}
+
 // DS workaround: layout.css hides router-outlet inside ds-page-content but
 // the rule loses specificity to Angular's element styles. Higher-specificity
 // override prevents the outlet from becoming a ghost flex item that triggers

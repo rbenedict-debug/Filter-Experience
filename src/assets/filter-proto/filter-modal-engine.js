@@ -392,7 +392,25 @@ const FILTER_GROUPS_ASSETS = [
 // ── Service Overview filter groups ───────────────────────────────────────
 const FILTER_GROUPS_SERVICE_OVERVIEW = [
 
-  // ── 1. Ticket ─────────────────────────────────────────────────
+  // ── 1. Date ───────────────────────────────────────────────────
+  {
+    id: 'dates',
+    label: 'Date',
+    icon: 'calendar_today',
+    type: 'date-preset',
+    options: [
+      { id: 'dp-today',              label: 'Today' },
+      { id: 'dp-last-7-days',        label: 'Last 7 days' },
+      { id: 'dp-last-30-days',       label: 'Last 30 days' },
+      { id: 'dp-last-90-days',       label: 'Last 90 days' },
+      { id: 'dp-this-week',          label: 'This week' },
+      { id: 'dp-this-month',         label: 'This month' },
+      { id: 'dp-current-school-year', label: 'Current school year' },
+      { id: 'dp-last-school-year',    label: 'Last school year' },
+    ],
+  },
+
+  // ── 2. Ticket ─────────────────────────────────────────────────
   {
     id: 'ticket',
     label: 'Ticket',
@@ -2938,7 +2956,8 @@ function applyFilters() {
   renderAppliedBar();
   updateFilterBadge();
   closeModal();
-  window.dispatchEvent(new CustomEvent('filterApplied', { detail: { count: state.selected.size } }));
+  const hasDateFilter = Array.from(state.selected).some(id => id.startsWith('dp-') || id.startsWith('custom-dr-'));
+  window.dispatchEvent(new CustomEvent('filterApplied', { detail: { count: state.selected.size, hasDateFilter } }));
 }
 
 
@@ -3569,3 +3588,164 @@ window.filterModalInit = function(context) {
 
 window.filterModalOpen  = function() { if (overlay) openModal(); };
 window.filterModalClose = function() { if (overlay) closeModal(); };
+
+// Clears only date-related selections (presets + custom ranges) and re-applies.
+// Called by the dashboard date dropdown when the user picks a date there instead.
+window.filterModalClearDates = function() {
+  Array.from(state.selected).forEach(id => {
+    if (id.startsWith('dp-') || id.startsWith('custom-dr-')) {
+      state.selected.delete(id);
+      OPTION_META.delete(id);
+    }
+  });
+  state.datePresetCustomOpen = false;
+  state.dateRangeDraft = { start: null, end: null };
+  renderAppliedBar();
+  updateFilterBadge();
+  if (overlay) render();
+  window.dispatchEvent(new CustomEvent('filterApplied', { detail: { count: state.selected.size, hasDateFilter: false } }));
+};
+
+// ── Standalone date range picker (Service Overview custom date) ──────────────
+// Opens the same calendar UI used inside the filter modal as a standalone dialog.
+// Dispatches a 'dateRangeSelected' CustomEvent on window when the user confirms,
+// with detail: { label: string, start: Date, end: Date, mode: 'range'|'single' }.
+window.openDateRangePicker = function() {
+  // Reset shared draft state
+  state.dateRangeDraft  = { start: null, end: null };
+  state.calendarOpen    = false;
+  state.activeDateInput = 'start';
+  state.datePickerMode  = 'range';
+
+  // Build backdrop
+  const backdrop = document.createElement('div');
+  backdrop.className = 'ds-dialog-backdrop';
+  backdrop.setAttribute('role', 'presentation');
+
+  // Build dialog shell
+  const dialog = document.createElement('div');
+  dialog.className = 'ds-dialog';
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  dialog.setAttribute('aria-labelledby', 'sdp-title');
+
+  const dialogBody = document.createElement('div');
+  dialogBody.className = 'ds-dialog__body';
+  dialogBody.innerHTML = '<h2 id="sdp-title" class="ds-dialog__title">Custom Date Range</h2>';
+
+  const pickerWrap = document.createElement('div');
+  pickerWrap.className = 'standalone-date-picker__body';
+  dialogBody.appendChild(pickerWrap);
+
+  const dialogDivider = document.createElement('div');
+  dialogDivider.className = 'ds-dialog__divider';
+
+  const dialogActions = document.createElement('div');
+  dialogActions.className = 'ds-dialog__actions';
+  dialogActions.innerHTML = '<button class="ds-button ds-button--text" data-sdp-cancel type="button">Cancel</button>';
+
+  dialog.append(dialogBody, dialogDivider, dialogActions);
+  backdrop.appendChild(dialog);
+  document.body.appendChild(backdrop);
+
+  function renderPicker() {
+    pickerWrap.innerHTML = buildDateRangePicker({ suppressChips: true });
+    renderCalendarPanel();
+    syncInputsFromState();
+    updateDatePickerButtons();
+  }
+  renderPicker();
+
+  function closeStandalone() {
+    state.calendarOpen = false;
+    document.getElementById('ds-cal-panel-float')?.remove();
+    state.dateRangeDraft = { start: null, end: null };
+    document.removeEventListener('click', floatClickHandler);
+    document.removeEventListener('keydown', escHandler);
+    backdrop.remove();
+  }
+
+  // Backdrop click-outside closes
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeStandalone(); });
+
+  // Dialog interactions
+  dialog.addEventListener('click', e => {
+    if (e.target.closest('[data-sdp-cancel]')) { closeStandalone(); return; }
+
+    const modeBtn = e.target.closest('[data-date-mode]');
+    if (modeBtn) { setDatePickerMode(modeBtn.dataset.dateMode); renderPicker(); return; }
+
+    const calToggle = e.target.closest('[data-toggle-calendar]');
+    if (calToggle) {
+      state.calendarOpen = !state.calendarOpen;
+      renderPicker();
+      if (state.calendarOpen) pickerWrap.querySelector(`[data-date-input="${state.activeDateInput}"]`)?.focus();
+      return;
+    }
+
+    if (e.target.closest('[data-cal-prev]')) { navigateDatePicker(-1); renderPicker(); return; }
+    if (e.target.closest('[data-cal-next]')) { navigateDatePicker(1);  renderPicker(); return; }
+
+    const dayBtn = e.target.closest('[data-date]');
+    if (dayBtn) { handleDateCellClick(dayBtn.dataset.date); renderPicker(); return; }
+
+    const addBtn = e.target.closest('[data-add-date-range]');
+    if (addBtn && !addBtn.hasAttribute('disabled')) {
+      const { start, end } = state.dateRangeDraft;
+      const effectiveEnd = end ?? start;
+      if (!start) return;
+      window.dispatchEvent(new CustomEvent('dateRangeSelected', {
+        detail: { label: formatDateRangeLabel(start, effectiveEnd), start, end: effectiveEnd, mode: state.datePickerMode }
+      }));
+      closeStandalone();
+      return;
+    }
+
+    if (e.target.closest('[data-clear-date-draft]')) { clearDateDraft(); renderPicker(); return; }
+  });
+
+  // Floating calendar panel clicks
+  function floatClickHandler(e) {
+    const panel = document.getElementById('ds-cal-panel-float');
+    if (!panel?.contains(e.target)) return;
+    const dayBtn = e.target.closest('[data-date]');
+    if (dayBtn) { handleDateCellClick(dayBtn.dataset.date); renderPicker(); return; }
+    if (e.target.closest('[data-cal-prev]')) { navigateDatePicker(-1); renderPicker(); return; }
+    if (e.target.closest('[data-cal-next]')) { navigateDatePicker(1);  renderPicker(); return; }
+  }
+  document.addEventListener('click', floatClickHandler);
+
+  // Text input changes
+  dialog.addEventListener('input', e => {
+    const input = e.target.closest('[data-date-input]');
+    if (!input) return;
+    const which  = input.dataset.dateInput;
+    const parsed = parseDateInput(input.value);
+    if (which === 'start') {
+      state.dateRangeDraft.start = parsed;
+      if (parsed && state.datePickerMode === 'range') {
+        state.activeDateInput = 'end';
+        state.calendarOpen    = true;
+        renderPicker();
+        syncInputsFromState();
+        return;
+      }
+    } else {
+      state.dateRangeDraft.end = parsed;
+    }
+    if (state.calendarOpen) renderCalendarPanel();
+    updateDatePickerButtons();
+  });
+
+  dialog.addEventListener('focusin', e => {
+    const input = e.target.closest('[data-date-input]');
+    if (!input) return;
+    state.activeDateInput = input.dataset.dateInput;
+    if (state.calendarOpen) renderCalendarPanel();
+  });
+
+  function escHandler(e) {
+    if (e.key === 'Escape') closeStandalone();
+  }
+  document.addEventListener('keydown', escHandler);
+};

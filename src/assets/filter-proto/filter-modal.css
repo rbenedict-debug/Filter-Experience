@@ -27,8 +27,30 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
+}
+
+.filter-applied-bar__save-link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-brand);
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+  text-decoration: none;
+}
+.filter-applied-bar__save-link:hover { text-decoration: underline; }
+.filter-applied-bar__save-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+  border-radius: var(--radius-sm);
 }
 
 /* ── ds-card-item (mirrored from design-system/components/card/_card.scss) ── */

@@ -5,8 +5,104 @@
   min-height: 0;
 }
 
+.service-overview__heading-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+// Stats bar: KPI row between heading and toolbar
+.service-overview__stats-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-top: calc(-1 * var(--spacing-lg) + var(--spacing-xs));
+  padding-left: var(--spacing-lg);
+}
+
+.service-overview__stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.service-overview__stat-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  position: relative;
+
+  // Divider after each item except last
+  &:not(:last-child) {
+    padding-right: var(--spacing-md);
+    margin-right: var(--spacing-xs);
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 15%;
+      height: 70%;
+      width: 1px;
+      background: var(--color-border-default);
+    }
+  }
+
+  &:hover .service-overview__stat-count { text-decoration: underline; }
+  &:focus-visible {
+    outline: none;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+  }
+}
+
+.service-overview__stat-count {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  line-height: var(--ref-typescale-body-small-line-height);
+  font-weight: 600;
+  color: var(--color-text-brand);
+  white-space: nowrap;
+}
+
+.service-overview__stat-label {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.service-overview__toolbar-controls {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.service-overview__toolbar-left,
+.service-overview__toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
 .service-overview__date-wrapper {
   position: relative;
+
+  .ds-dashboard-toolbar__date-select > .ds-icon:first-child {
+    color: var(--color-icon-default);
+  }
+}
+
+.ds-dashboard-toolbar__date-select--overridden {
+  opacity: 0.4;
+  pointer-events: auto;
 }
 
 .service-overview__date-custom {

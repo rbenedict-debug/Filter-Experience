@@ -2,6 +2,21 @@
   display: contents;
 }
 
+.ds-page-content__heading {
+  gap: 0;
+}
+
+// Filter badge overlaid on the toolbar's filter toggle button
+.toolbar-filter-wrapper {
+  position: relative;
+
+  .ds-badge-indicator {
+    position: absolute;
+    top: 12px;
+    right: 62px;
+  }
+}
+
 // ── Table layout ────────────────────────────────────────────────────────────
 
 .asset-table {

@@ -18,6 +18,7 @@ export class InboxComponent {
   settingsActive = false;
   filterOpen     = false;
   filterCount    = 0;
+  viewDirty      = signal(false);
 
   activeTab = signal<'my-tickets' | 'team' | 'all' | 'closed'>('my-tickets');
   setTab(tab: 'my-tickets' | 'team' | 'all' | 'closed'): void { this.activeTab.set(tab); }
@@ -30,5 +31,18 @@ export class InboxComponent {
 
   onFilterToggle(active: boolean): void {
     this.filterOpen = active;
+  }
+
+  onFilterCountChange(count: number): void {
+    this.filterCount = count;
+    this.viewDirty.set(count > 0);
+  }
+
+  onSaveView(): void {
+    // TODO: open save-view dialog
+  }
+
+  onAdvancedSearch(): void {
+    // TODO: open advanced search
   }
 }

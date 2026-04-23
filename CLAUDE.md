@@ -51,6 +51,14 @@ src/app/features/tickets/
 
 ---
 
+## Page patterns
+
+Before building any analytics dashboard, read the canonical dashboard spec:
+
+@.claude/specs/specs-dashboard.md
+
+---
+
 ## Angular conventions
 
 - **Standalone components only** — never use NgModule

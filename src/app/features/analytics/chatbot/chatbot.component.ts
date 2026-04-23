@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { DsTableToolbarComponent } from '@onflo/design-system';
 import { ChatbotFilterShellComponent } from './filter-shell/chatbot-filter-shell.component';
 
@@ -7,7 +8,7 @@ type ChatbotTab = 'overview' | 'optimization' | 'chat-logs';
 @Component({
   selector: 'app-chatbot',
   standalone: true,
-  imports: [DsTableToolbarComponent, ChatbotFilterShellComponent],
+  imports: [DatePipe, DsTableToolbarComponent, ChatbotFilterShellComponent],
   templateUrl: './chatbot.component.html',
   styleUrls: ['./chatbot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,9 +16,12 @@ type ChatbotTab = 'overview' | 'optimization' | 'chat-logs';
 export class ChatbotComponent {
   activeTab = signal<ChatbotTab>('overview');
 
-  filterOpen     = false;
-  filterCount    = 0;
-  settingsActive = false;
+  filterOpen      = false;
+  filterCount     = 0;
+  filterDateActive = false;
+  settingsActive  = false;
+
+  lastUpdated = new Date();
 
   dateMenuOpen = false;
   dateLabel    = 'Last 90 Days';
@@ -60,5 +64,9 @@ export class ChatbotComponent {
     this.filterCount = count;
     this.filterOpen  = false;
   }
+
+  onDownload(): void {}
+  onShare():    void {}
+  onSave():     void {}
 
 }

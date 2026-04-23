@@ -18,19 +18,35 @@
 <div class="ds-page-content__main ds-page-content__main--table"
      [attr.data-panel-open]="settingsActive || null">
 
-  <ds-table-toolbar
-    [showActions]="false"
-    [showDownload]="false"
-    [searchPlaceholder]="'Search tickets'"
-    [(filterActive)]="filterOpen"
-    [(settingsActive)]="settingsActive"
-    (settingsActiveChange)="onSettingsToggle($event)"
-    (filterActiveChange)="onFilterToggle($event)"
-  />
+  <div class="toolbar-filter-wrapper">
+    <ds-table-toolbar
+      [showActions]="false"
+      [showDownload]="false"
+      [searchPlaceholder]="'Search tickets'"
+      [(filterActive)]="filterOpen"
+      [(settingsActive)]="settingsActive"
+      (settingsActiveChange)="onSettingsToggle($event)"
+      (filterActiveChange)="onFilterToggle($event)"
+    >
+      <button toolbar-extra
+        class="ds-button ds-button--filled"
+        type="button"
+        (click)="onAdvancedSearch()"
+      >Advanced Search</button>
+      <button toolbar-trailing
+        class="ds-button ds-button--outlined"
+        type="button"
+        (click)="onSaveView()"
+      >Save View</button>
+    </ds-table-toolbar>
+    @if (filterCount > 0) {
+      <span class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</span>
+    }
+  </div>
 
   <app-filter-shell
     [(open)]="filterOpen"
-    (filterCountChange)="filterCount = $event"
+    (filterCountChange)="onFilterCountChange($event)"
   />
 
   <!-- Table body -->

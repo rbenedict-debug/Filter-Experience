@@ -5,6 +5,28 @@
   min-height: 0;
 }
 
+.ds-page-content__heading {
+  gap: 0;
+}
+
+.chatbot__title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.chatbot__toolbar-controls {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.chatbot__toolbar-left,
+.chatbot__toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
 .chatbot__date-wrapper {
   position: relative;
 }

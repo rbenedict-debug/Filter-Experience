@@ -8,7 +8,12 @@
     [(settingsActive)]="settingsActive"
     [showDownload]="false"
     [searchPlaceholder]="'Search reports'"
-  />
+  >
+    <button toolbar-trailing
+      class="ds-button ds-button--outlined"
+      type="button"
+    >Save View</button>
+  </ds-table-toolbar>
   <div class="custom-reports__table-placeholder">
     <span class="ds-icon ds-icon--xl" aria-hidden="true">table_rows</span>
     <span class="custom-reports__placeholder-label">Table placeholder</span>

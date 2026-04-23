@@ -76,6 +76,11 @@
         }
       </div>
 
+      <button
+        class="ds-dashboard-toolbar__text-btn"
+        type="button"
+      >Save View</button>
+
     </div>
   </div>
 
@@ -111,7 +116,12 @@
       [(settingsActive)]="settingsActive"
       [showDownload]="false"
       [searchPlaceholder]="'Search call details'"
-    />
+    >
+      <button toolbar-trailing
+        class="ds-button ds-button--outlined"
+        type="button"
+      >Save View</button>
+    </ds-table-toolbar>
     <div class="call-center__table-placeholder" role="tabpanel" aria-label="Call Details">
       <span class="ds-icon ds-icon--xl" aria-hidden="true">table_rows</span>
       <span class="call-center__placeholder-label">Table placeholder</span>
