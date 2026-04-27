@@ -1,0 +1,67 @@
+name: Deploy Preview to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - claude/add-preview-url-KBLqg
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        run: npx ng build --base-href "/filter-experience/"
+
+      - name: Locate build output
+        id: build_output
+        run: |
+          if [ -d "dist/onflo-project/browser" ]; then
+            echo "dir=dist/onflo-project/browser" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=dist/onflo-project" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Add SPA fallback (404.html)
+        run: cp "${{ steps.build_output.outputs.dir }}/index.html" "${{ steps.build_output.outputs.dir }}/404.html"
+
+      - name: Disable Jekyll processing
+        run: touch "${{ steps.build_output.outputs.dir }}/.nojekyll"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.build_output.outputs.dir }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
