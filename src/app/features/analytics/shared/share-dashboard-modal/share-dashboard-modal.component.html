@@ -1,0 +1,101 @@
+@if (open) {
+  <div
+    class="ds-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="share-modal-title"
+    (click)="onBackdropClick($event)"
+  >
+    <div class="ds-modal">
+
+      <div class="ds-modal__header">
+        <h2 class="ds-modal__title" id="share-modal-title">Share {{ dashboardTitle }}</h2>
+        <button
+          class="ds-modal__dismiss"
+          type="button"
+          aria-label="Close"
+          (click)="close()"
+        >
+          <span class="ds-icon" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <div class="share-modal__body">
+        <div class="share-modal__form">
+
+          <div class="ds-input"
+               (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
+               (focusout)="$any($event.currentTarget).removeAttribute('data-mouse-focus')">
+            <label class="ds-input__label" for="share-send-to">Send to</label>
+            <div class="ds-input__field">
+              <input
+                id="share-send-to"
+                class="ds-input__control"
+                type="email"
+                placeholder="Enter email address"
+                [value]="sendTo"
+                (input)="sendTo = $any($event.target).value"
+              />
+            </div>
+          </div>
+
+          <div class="ds-input"
+               (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
+               (focusout)="$any($event.currentTarget).removeAttribute('data-mouse-focus')">
+            <label class="ds-input__label" for="share-subject">Subject</label>
+            <div class="ds-input__field">
+              <input
+                id="share-subject"
+                class="ds-input__control"
+                type="text"
+                placeholder="Subject"
+                [value]="subject"
+                (input)="subject = $any($event.target).value"
+              />
+            </div>
+          </div>
+
+          <div class="ds-textarea"
+               (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
+               (focusout)="$any($event.currentTarget).removeAttribute('data-mouse-focus')">
+            <label class="ds-textarea__label" for="share-message">Message</label>
+            <div class="ds-textarea__field">
+              <textarea
+                id="share-message"
+                class="ds-textarea__control"
+                placeholder="Optional message"
+                rows="5"
+                [value]="message"
+                (input)="message = $any($event.target).value"
+              ></textarea>
+            </div>
+          </div>
+
+          <label class="ds-checkbox">
+            <input
+              class="ds-checkbox__control"
+              type="checkbox"
+              [checked]="sendMeCopy"
+              (change)="sendMeCopy = $any($event.target).checked"
+            />
+            <span class="ds-checkbox__touch">
+              <span class="ds-checkbox__box"></span>
+            </span>
+            <span class="ds-checkbox__label">Send me a copy</span>
+          </label>
+
+        </div>
+      </div><!-- /.share-modal__body -->
+
+      <div class="ds-modal__actions">
+        <button class="ds-button ds-button--text" type="button" (click)="close()">
+          Cancel
+        </button>
+        <button class="ds-button ds-button--filled" type="button" (click)="send()">
+          Send
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

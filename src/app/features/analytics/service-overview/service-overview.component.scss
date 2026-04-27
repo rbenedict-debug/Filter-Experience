@@ -5,19 +5,26 @@
   min-height: 0;
 }
 
+.ds-page-content__heading {
+  gap: 0;
+}
+
+.service-overview__title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
 .service-overview__heading-meta {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
 }
 
-// Stats bar: KPI row between heading and toolbar
 .service-overview__stats-bar {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
-  margin-top: calc(-1 * var(--spacing-lg) + var(--spacing-xs));
-  padding-left: var(--spacing-lg);
 }
 
 .service-overview__stats {
@@ -25,6 +32,8 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--spacing-xs);
+  padding-left: var(--spacing-lg);
+  padding-top: var(--spacing-sm);
 }
 
 .service-overview__stat-btn {
@@ -38,7 +47,6 @@
   text-decoration: none;
   position: relative;
 
-  // Divider after each item except last
   &:not(:last-child) {
     padding-right: var(--spacing-md);
     margin-right: var(--spacing-xs);
@@ -85,11 +93,16 @@
   justify-content: space-between;
 }
 
-.service-overview__toolbar-left,
-.service-overview__toolbar-right {
+.service-overview__toolbar-left {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+}
+
+.service-overview__toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .service-overview__date-wrapper {
@@ -134,4 +147,63 @@
   font-weight: var(--ref-typescale-body-small-weight);
   line-height: var(--ref-typescale-body-small-line-height);
   color: var(--color-text-secondary);
+}
+
+// ── Applied filters bar ─────────────────────────────────────────────────────
+
+.filter-applied-bar {
+  background: transparent;
+  border-bottom: none;
+  padding: 0;
+  align-items: flex-start;
+
+  .filter-bar__count-chip {
+    display: none;
+    flex-shrink: 0;
+    box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  }
+
+  .filter-bar__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+    font-family: var(--ref-typescale-label-small-font);
+    font-size: var(--ref-typescale-label-small-size);
+    font-weight: var(--ref-typescale-label-small-weight);
+    line-height: var(--ref-typescale-label-small-line-height);
+
+    .filter-bar__toggle-arrow--right {
+      transform: rotate(-90deg);
+    }
+
+    &:hover {
+      background: var(--overlay-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+    }
+  }
+
+  &.is-collapsed {
+    .filter-applied-bar__cards {
+      display: none;
+    }
+
+    .filter-bar__count-chip {
+      display: inline-flex;
+      cursor: pointer;
+    }
+  }
+
 }

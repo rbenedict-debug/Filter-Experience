@@ -4,11 +4,13 @@ import {
   signal,
   computed,
   effect,
+  inject,
   WritableSignal,
   OnInit,
   OnDestroy,
 } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { SavedViewsService } from './core/services/saved-views.service';
 import { filter, Subscription } from 'rxjs';
 import {
   NavSidebarComponent,
@@ -93,6 +95,7 @@ export class AppComponent implements OnInit, OnDestroy {
   analyticsNavItem       = signal<string>('service-overview');
   comparisonExpanded     = signal<boolean>(false);
   savedViewsExpanded     = signal<boolean>(false);
+  readonly savedViews    = inject(SavedViewsService).savedViews;
 
   // ── Settings sub-nav ──────────────────────────────────────────────────────
 
@@ -302,6 +305,9 @@ export class AppComponent implements OnInit, OnDestroy {
     } else if (section === 'analytics') {
       if (p1 === 'comparison' && p2) {
         this.analyticsNavItem.set(`comparison-${p2}`);
+      } else if (p1 === 'saved-views' && p2) {
+        this.analyticsNavItem.set(p2);
+        this.savedViewsExpanded.set(true);
       } else {
         this.analyticsNavItem.set(p1 || 'service-overview');
       }

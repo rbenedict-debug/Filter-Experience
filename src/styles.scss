@@ -63,13 +63,124 @@ app-root {
   }
 
   &:focus { outline: none; }
-  &:hover:not(:disabled)::after { background: var(--overlay-hovered); }
+  &:hover:not(:disabled) {
+    box-shadow:
+      inset 0 0 0 1px var(--color-border-hover),
+      0 1px 4px var(--shadow-elevation-1),
+      0 2px 8px var(--shadow-elevation-2);
+    &::after { background: var(--overlay-hovered); }
+  }
   &:focus-visible {
     box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2), 0 0 0 3px var(--color-border-ada-focus-ring);
     &::after { background: var(--overlay-focused); }
   }
   &:active:not(:disabled)::after { background: var(--overlay-pressed); }
   &:disabled { color: var(--color-text-disabled); box-shadow: none; cursor: not-allowed; }
+}
+
+// Text-labeled Save View button for the table toolbar (ds-table-toolbar slot).
+// Same shape/typography as ds-dashboard-toolbar__text-btn but uses the table
+// toolbar's bordered, non-elevated treatment to match the icon buttons beside it.
+.ds-table-toolbar__text-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 42px;
+  padding: 0 var(--spacing-lg);
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-large-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: var(--ref-typescale-label-large-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .12s ease, color .12s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    transition: background .12s ease;
+    pointer-events: none;
+  }
+
+  &:focus { outline: none; }
+  &:hover:not(:disabled) {
+    border-color: var(--color-border-input-hover);
+    &::after { background: var(--overlay-hovered); }
+  }
+  &:focus-visible {
+    border-color: var(--color-border-input-active);
+    box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+    &::after { background: var(--overlay-focused); }
+  }
+  &:active:not(:disabled) {
+    border-color: var(--color-border-active);
+    &::after { background: var(--overlay-pressed); }
+  }
+  &:disabled { color: var(--color-text-disabled); border-color: var(--color-border-subtle); cursor: not-allowed; }
+}
+
+// Bordered (non-elevated) variant of the dashboard date-select button for use
+// inside table toolbars, where the bordered treatment matches the icon buttons.
+// Candidate for the Onflo Design System as a modifier on ds-dashboard-toolbar__date-select.
+.ds-dashboard-toolbar__date-select--bordered {
+  border: 1px solid var(--color-border-primary);
+  box-shadow: none;
+  transition: border-color .12s ease, color .12s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-border-input-hover);
+  }
+  &:focus-visible {
+    border-color: var(--color-border-input-active);
+    box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+  }
+  &:active:not(:disabled) {
+    border-color: var(--color-border-active);
+  }
+  &:disabled {
+    border-color: var(--color-border-subtle);
+  }
+}
+
+// Dashboard header — applied filter cards use elevation instead of a border,
+// matching the toolbar buttons. On hover, the border becomes visible.
+// Table pages keep the default bordered ds-card-item styling.
+.ds-page-content__dashboard-header {
+  .filter-applied-bar__cards .ds-card-item {
+    border-color: transparent;
+    box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  }
+
+  .filter-applied-bar__cards .ds-card-item--interactive:hover {
+    border-color: var(--color-border-hover);
+    box-shadow:
+      0 2px 6px var(--shadow-elevation-1),
+      0 4px 12px var(--shadow-elevation-2);
+  }
+
+  .filter-applied-bar__cards .ds-card-item.filter-applied-card--excluded {
+    border-color: transparent;
+  }
+
+  // Toolbar action buttons reveal a border on hover via inset shadow (no layout shift).
+  .ds-dashboard-toolbar__btn:hover:not(:disabled),
+  .ds-dashboard-toolbar__date-select:hover:not(:disabled) {
+    box-shadow:
+      inset 0 0 0 1px var(--color-border-hover),
+      0 1px 4px var(--shadow-elevation-1),
+      0 2px 8px var(--shadow-elevation-2);
+  }
 }
 
 // DS workaround: layout.css hides router-outlet inside ds-page-content but

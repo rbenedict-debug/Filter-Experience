@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { DsTableToolbarComponent, DsSkeletonComponent } from '@onflo/design-system';
+import { DsTableToolbarComponent } from '@onflo/design-system';
 import { FilterShellComponent } from './filter-shell/filter-shell.component';
 
 @Component({
@@ -10,20 +10,18 @@ import { FilterShellComponent } from './filter-shell/filter-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DsTableToolbarComponent,
-    DsSkeletonComponent,
     FilterShellComponent,
   ],
 })
 export class InboxComponent {
-  settingsActive = false;
-  filterOpen     = false;
-  filterCount    = 0;
-  viewDirty      = signal(false);
+  settingsActive      = false;
+  filterOpen          = false;
+  filterCount         = 0;
+  filterBarCollapsed  = signal(false);
+  viewDirty           = signal(false);
 
   activeTab = signal<'my-tickets' | 'team' | 'all' | 'closed'>('my-tickets');
   setTab(tab: 'my-tickets' | 'team' | 'all' | 'closed'): void { this.activeTab.set(tab); }
-
-  readonly skeletonRows = Array(12).fill(0);
 
   onSettingsToggle(active: boolean): void {
     this.settingsActive = active;
@@ -36,6 +34,11 @@ export class InboxComponent {
   onFilterCountChange(count: number): void {
     this.filterCount = count;
     this.viewDirty.set(count > 0);
+    if (count === 0) this.filterBarCollapsed.set(false);
+  }
+
+  toggleFilterBar(): void {
+    this.filterBarCollapsed.update(v => !v);
   }
 
   onSaveView(): void {

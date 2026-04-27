@@ -11,6 +11,7 @@
   justify-content: center;
   gap: var(--spacing-xs);
   color: var(--color-icon-subtle);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .fees__placeholder-label {
@@ -19,4 +20,63 @@
   font-weight: var(--ref-typescale-body-small-weight);
   line-height: var(--ref-typescale-body-small-line-height);
   color: var(--color-text-secondary);
+}
+
+// ── Applied filters bar ─────────────────────────────────────────────────────
+
+.filter-applied-bar {
+  background: transparent;
+  border-bottom: none;
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  align-items: flex-start;
+
+  .filter-bar__count-chip {
+    display: none;
+    flex-shrink: 0;
+  }
+
+  .filter-bar__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+    font-family: var(--ref-typescale-label-small-font);
+    font-size: var(--ref-typescale-label-small-size);
+    font-weight: var(--ref-typescale-label-small-weight);
+    line-height: var(--ref-typescale-label-small-line-height);
+
+    .filter-bar__toggle-arrow--right {
+      transform: rotate(-90deg);
+    }
+
+    &:hover {
+      background: var(--overlay-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+    }
+  }
+
+  &.is-collapsed {
+    padding: 0 var(--spacing-lg) var(--spacing-xs);
+
+    .filter-applied-bar__cards {
+      display: none;
+    }
+
+    .filter-bar__count-chip {
+      display: inline-flex;
+      cursor: pointer;
+    }
+  }
 }

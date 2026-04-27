@@ -1,36 +1,40 @@
 <!-- Sticky dashboard header: heading + toolbar + applied bar, never scrolls -->
   <div class="ds-page-content__dashboard-header">
 
-    <div class="ds-page-content__heading ds-page-content__heading--row">
-      <h1 class="ds-page-content__title">Service Overview</h1>
-      <div class="service-overview__heading-meta">
-        <a class="ds-button ds-button--text ds-button--xs ds-button--trailing-icon"
-           href="https://help.onflo.com/analytics/service-overview"
-           target="_blank"
-           rel="noreferrer noopener"
-           aria-label="Learn more about Service Overview — opens learning center in a new tab">
-          Learn more
-          <span class="ds-icon" aria-hidden="true">open_in_new</span>
-        </a>
-        <p class="ds-page-content__meta">Last updated {{ lastUpdated | date:'MMM d, y, h:mm a' }}</p>
+    <div class="ds-page-content__heading">
+      <div class="service-overview__title-row">
+        <h1 class="ds-page-content__title">{{ isSavedView ? currentSavedView?.name : 'Service Overview' }}</h1>
+        <div class="service-overview__heading-meta">
+          @if (!isSavedView) {
+            <a class="ds-button ds-button--text ds-button--xs ds-button--trailing-icon"
+               href="https://help.onflo.com/analytics/service-overview"
+               target="_blank"
+               rel="noreferrer noopener"
+               aria-label="Learn more about Service Overview — opens learning center in a new tab">
+              Learn more
+              <span class="ds-icon" aria-hidden="true">open_in_new</span>
+            </a>
+          }
+          <p class="ds-page-content__meta">Last updated {{ lastUpdated | date:'MMM d, y, h:mm a' }}</p>
+        </div>
       </div>
-    </div>
 
-    <!-- Stats bar: clickable KPI counts -->
-    <div class="service-overview__stats-bar">
-      <div class="service-overview__stats" role="list">
-        @for (stat of stats; track stat.id) {
-          <button
-            class="service-overview__stat-btn"
-            type="button"
-            [attr.aria-label]="(stat.count | number) + ' ' + stat.label + ' — view tickets'"
-            (click)="openStat(stat)"
-            role="listitem"
-          >
-            <span class="service-overview__stat-count">{{ stat.count | number }}</span>
-            <span class="service-overview__stat-label">{{ stat.label }}</span>
-          </button>
-        }
+      <!-- Stats bar: clickable KPI counts -->
+      <div class="service-overview__stats-bar">
+        <div class="service-overview__stats" role="list">
+          @for (stat of stats; track stat.id) {
+            <button
+              class="service-overview__stat-btn"
+              type="button"
+              [attr.aria-label]="(stat.count | number) + ' ' + stat.label + ' — view tickets'"
+              (click)="openStat(stat)"
+              role="listitem"
+            >
+              <span class="service-overview__stat-count">{{ stat.count | number }}</span>
+              <span class="service-overview__stat-label">{{ stat.label }}</span>
+            </button>
+          }
+        </div>
       </div>
     </div>
 
@@ -47,7 +51,7 @@
               [attr.aria-expanded]="dateMenuOpen"
               (click)="toggleDateMenu()"
             >
-              <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
+              <span class="ds-icon ds-icon--filled ds-icon--sm" aria-hidden="true">calendar_today</span>
               <span class="ds-dashboard-toolbar__date-label">{{ dateLabel }}</span>
               <span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span>
             </button>
@@ -101,6 +105,20 @@
             }
           </div>
 
+          @if (isSavedView) {
+            <button
+              class="ds-dashboard-toolbar__text-btn"
+              type="button"
+              (click)="onEditView()"
+            >Edit View</button>
+          } @else {
+            <button
+              class="ds-dashboard-toolbar__text-btn"
+              type="button"
+              (click)="onSave()"
+            >Save View</button>
+          }
+
           <button
             class="ds-dashboard-toolbar__btn"
             type="button"
@@ -118,12 +136,6 @@
           >
             <span class="ds-icon" aria-hidden="true">share</span>
           </button>
-
-          <button
-            class="ds-dashboard-toolbar__text-btn"
-            type="button"
-            (click)="onSave()"
-          >Save View</button>
         </div>
 
       </div>
@@ -133,10 +145,22 @@
       class="filter-applied-bar"
       id="filter-applied-bar"
       hidden
-      style="background:transparent; border-bottom:none; padding:0;"
+      [class.is-collapsed]="filterBarCollapsed()"
     >
-      <span class="filter-applied-bar__label">Filters</span>
+      <span class="ds-label ds-label--brand ds-label--pill ds-label--sm filter-bar__count-chip" aria-hidden="true" (click)="toggleFilterBar()">{{ filterCount }} active filters</span>
       <div class="filter-applied-bar__cards" id="filter-applied-cards" role="group" aria-label="Applied filters"></div>
+      <button
+        class="filter-bar__toggle"
+        type="button"
+        [attr.aria-expanded]="!filterBarCollapsed()"
+        [attr.aria-label]="filterBarCollapsed() ? 'Show filters, ' + filterCount + ' active' : 'Hide filters'"
+        (click)="toggleFilterBar()"
+      >
+        {{ filterBarCollapsed() ? 'Show filters' : 'Hide filters' }}
+        <span class="ds-icon ds-icon--sm filter-bar__toggle-arrow"
+              [class.filter-bar__toggle-arrow--right]="filterBarCollapsed()"
+              aria-hidden="true">arrow_drop_down</span>
+      </button>
     </div>
 
   </div><!-- /.ds-page-content__dashboard-header -->
@@ -154,4 +178,18 @@
   [(open)]="filterOpen"
   (filterCountChange)="onFilterCountChange($event)"
   (filterDateActiveChange)="onFilterDateActiveChange($event)"
+/>
+
+<app-share-dashboard-modal
+  [(open)]="shareOpen"
+  dashboardTitle="Service Overview"
+/>
+
+<app-save-view-modal
+  [(open)]="saveViewModalOpen"
+  [mode]="saveViewModalMode"
+  [initialName]="currentSavedView?.name ?? ''"
+  [filterCount]="filterCount"
+  (confirmed)="onSaveViewConfirmed($event)"
+  (deleted)="onSaveViewDeleted()"
 />

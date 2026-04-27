@@ -5,8 +5,61 @@
   min-height: 0;
 }
 
+// Tabs sit flush under the title — collapse default xs gap
+.ds-page-content__heading {
+  gap: 0;
+}
+
+.call-center__title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.call-center__toolbar-controls {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.call-center__toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.call-center__toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .call-center__date-wrapper {
   position: relative;
+
+  .ds-dashboard-toolbar__date-select > .ds-icon:first-child {
+    color: var(--color-icon-default);
+  }
+}
+
+.call-center__agent-date-wrapper {
+  position: relative;
+  order: -1;
+
+  .ds-dashboard-toolbar__date-select > .ds-icon:first-child {
+    color: var(--color-icon-default);
+  }
+}
+
+.call-center__queue-wrapper {
+  position: relative;
+
+  .ds-dashboard-toolbar__date-select > .ds-icon:first-child {
+    color: var(--color-icon-default);
+  }
+}
+
+.call-center__queue-clear {
+  color: var(--color-text-brand) !important;
 }
 
 .call-center__date-custom {
@@ -18,7 +71,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
 }
 
 // Placeholder card for dashboard tabs
@@ -45,6 +97,7 @@
   justify-content: center;
   gap: var(--spacing-xs);
   color: var(--color-icon-subtle);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .call-center__placeholder-label {
@@ -53,4 +106,91 @@
   font-weight: var(--ref-typescale-body-small-weight);
   line-height: var(--ref-typescale-body-small-line-height);
   color: var(--color-text-secondary);
+}
+
+// Live queue indicator dot on the Queue Management tab
+.call-center__live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-icon-success);
+  flex-shrink: 0;
+  animation: call-center-pulse 2s ease-in-out infinite;
+}
+
+@keyframes call-center-pulse {
+  0%, 100% { opacity: 1;    transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.6); }
+}
+
+.ds-dashboard-toolbar__date-select--overridden {
+  opacity: 0.4;
+  pointer-events: auto;
+}
+
+// ── Applied filters bar ─────────────────────────────────────────────────────
+
+.filter-applied-bar {
+  background: transparent;
+  border-bottom: none;
+  padding: 0;
+  align-items: flex-start;
+
+  .filter-bar__count-chip {
+    display: none;
+    flex-shrink: 0;
+    box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  }
+
+  .filter-bar__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+    font-family: var(--ref-typescale-label-small-font);
+    font-size: var(--ref-typescale-label-small-size);
+    font-weight: var(--ref-typescale-label-small-weight);
+    line-height: var(--ref-typescale-label-small-line-height);
+
+    .filter-bar__toggle-arrow--right {
+      transform: rotate(-90deg);
+    }
+
+    &:hover {
+      background: var(--overlay-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+    }
+  }
+
+  &.is-collapsed {
+    .filter-applied-bar__cards {
+      display: none;
+    }
+
+    .filter-bar__count-chip {
+      display: inline-flex;
+      cursor: pointer;
+    }
+  }
+}
+
+.ds-page-content__main--table .filter-applied-bar {
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+
+  &.is-collapsed {
+    padding: 0 var(--spacing-lg) var(--spacing-xs);
+  }
 }

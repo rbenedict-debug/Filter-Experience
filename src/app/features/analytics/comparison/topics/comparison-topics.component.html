@@ -1,71 +1,134 @@
 <div class="ds-page-content__dashboard-header">
 
-  <div class="ds-page-content__heading ds-page-content__heading--row">
-    <h1 class="ds-page-content__title">Comparison — Topics</h1>
+  <div class="ds-page-content__heading">
+    <div class="comparison-topics__title-row">
+      <h1 class="ds-page-content__title">Comparison — Topics</h1>
+      <div class="comparison-topics__heading-meta">
+        <a class="ds-button ds-button--text ds-button--xs ds-button--trailing-icon"
+           href="https://help.onflo.com/analytics/comparison-topics"
+           target="_blank"
+           rel="noreferrer noopener"
+           aria-label="Learn more about Comparison — Topics — opens learning center in a new tab">
+          Learn more
+          <span class="ds-icon" aria-hidden="true">open_in_new</span>
+        </a>
+        <p class="ds-page-content__meta">Last updated {{ lastUpdated | date:'MMM d, y, h:mm a' }}</p>
+      </div>
+    </div>
+
+    <div class="comparison-topics__stats-bar">
+      <div class="comparison-topics__stats" role="list">
+        @for (stat of stats; track stat.id) {
+          <button
+            class="comparison-topics__stat-btn"
+            type="button"
+            [attr.aria-label]="stat.value + ' ' + stat.label"
+            (click)="openStat(stat)"
+            role="listitem"
+          >
+            <span class="comparison-topics__stat-count">{{ stat.value }}</span>
+            <span class="comparison-topics__stat-label">{{ stat.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
   </div>
 
   <div class="ds-dashboard-toolbar" style="padding: 0;">
-    <div class="ds-dashboard-toolbar__controls">
+    <div class="ds-dashboard-toolbar__controls comparison-topics__toolbar-controls">
 
-      <div class="comparison-topics__date-wrapper">
-        <button
-          class="ds-dashboard-toolbar__date-select"
-          type="button"
-          aria-haspopup="menu"
-          [attr.aria-expanded]="dateMenuOpen"
-          (click)="toggleDateMenu()"
-        >
-          <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
-          <span class="ds-dashboard-toolbar__date-label">{{ dateLabel }}</span>
-          <span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span>
-        </button>
-        @if (dateMenuOpen) {
-          <div
-            class="ds-menu"
-            role="menu"
-            style="position:absolute; top:calc(100% + 4px); left:0; z-index:200; min-width:190px;"
+      <div class="comparison-topics__toolbar-left">
+        <div class="comparison-topics__date-wrapper">
+          <button
+            class="ds-dashboard-toolbar__date-select"
+            [class.ds-dashboard-toolbar__date-select--overridden]="filterDateActive"
+            type="button"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="dateMenuOpen"
+            (click)="toggleDateMenu()"
           >
-            @for (option of dateOptions; track option) {
-              <button
-                class="ds-menu__item"
-                role="menuitemradio"
-                [attr.aria-checked]="dateLabel === option"
-                (click)="selectDate(option)"
-              >
-                @if (dateLabel === option) {
-                  <span class="ds-menu__item-check">
-                    <span class="ds-icon ds-icon--filled" aria-hidden="true">check</span>
-                  </span>
-                }
-                {{ option }}
+            <span class="ds-icon ds-icon--filled ds-icon--sm" aria-hidden="true">calendar_today</span>
+            <span class="ds-dashboard-toolbar__date-label">{{ dateLabel }}</span>
+            <span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span>
+          </button>
+          @if (dateMenuOpen) {
+            <div
+              class="ds-menu"
+              role="menu"
+              style="position:absolute; top:calc(100% + 4px); left:0; z-index:200; min-width:190px;"
+            >
+              @for (option of dateOptions; track option) {
+                <button
+                  class="ds-menu__item"
+                  role="menuitemradio"
+                  [attr.aria-checked]="dateLabel === option"
+                  (click)="selectDate(option)"
+                >
+                  @if (dateLabel === option) {
+                    <span class="ds-menu__item-check">
+                      <span class="ds-icon ds-icon--filled" aria-hidden="true">check</span>
+                    </span>
+                  }
+                  {{ option }}
+                </button>
+              }
+              <div class="ds-menu__divider" role="separator"></div>
+              <button class="ds-menu__item comparison-topics__date-custom" role="menuitem" (click)="selectDate('Custom Date Range')">
+                Custom Date Range...
               </button>
-            }
-            <div class="ds-menu__divider" role="separator"></div>
-            <button class="ds-menu__item comparison-topics__date-custom" role="menuitem" (click)="selectDate('Custom Date Range')">
-              Custom Date Range...
-            </button>
-          </div>
-        }
+            </div>
+          }
+        </div>
       </div>
 
-      <div class="ds-badge-indicator__host">
+      <div class="comparison-topics__toolbar-right">
+        <div class="ds-badge-indicator__host">
+          <button
+            class="ds-dashboard-toolbar__btn"
+            type="button"
+            aria-label="Filter"
+            (click)="filterOpen = true"
+          >
+            <span class="ds-icon" aria-hidden="true">filter_alt</span>
+          </button>
+          @if (filterCount > 0) {
+            <div class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</div>
+          }
+        </div>
+
         <button
-          class="ds-dashboard-toolbar__btn"
+          class="ds-dashboard-toolbar__text-btn"
           type="button"
-          aria-label="Filter"
-          (click)="filterOpen = true"
-        >
-          <span class="ds-icon" aria-hidden="true">filter_alt</span>
-        </button>
-        @if (filterCount > 0) {
-          <div class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</div>
-        }
-      </div>
+          (click)="onSave()"
+        >Save View</button>
 
-      <button
-        class="ds-dashboard-toolbar__text-btn"
-        type="button"
-      >Save View</button>
+          <button
+            class="ds-dashboard-toolbar__btn"
+            type="button"
+            aria-label="Download"
+            (click)="onDownload()"
+          >
+            <span class="ds-icon" aria-hidden="true">download</span>
+          </button>
+
+          <button
+            class="ds-dashboard-toolbar__btn"
+            type="button"
+            aria-label="Share"
+            (click)="onShare()"
+          >
+            <span class="ds-icon" aria-hidden="true">share</span>
+          </button>
+
+          <button
+            class="ds-dashboard-toolbar__btn"
+            type="button"
+            aria-label="Send message"
+            (click)="onSendMessage()"
+          >
+            <span class="ds-icon" aria-hidden="true">send</span>
+          </button>
+      </div>
 
     </div>
   </div>
@@ -74,10 +137,22 @@
     class="filter-applied-bar"
     id="filter-applied-bar"
     hidden
-    style="background:transparent; border-bottom:none; padding:0;"
+    [class.is-collapsed]="filterBarCollapsed()"
   >
-    <span class="filter-applied-bar__label">Filters</span>
+    <span class="ds-label ds-label--brand ds-label--pill ds-label--sm filter-bar__count-chip" aria-hidden="true" (click)="toggleFilterBar()">{{ filterCount }} active filters</span>
     <div class="filter-applied-bar__cards" id="filter-applied-cards" role="group" aria-label="Applied filters"></div>
+    <button
+      class="filter-bar__toggle"
+      type="button"
+      [attr.aria-expanded]="!filterBarCollapsed()"
+      [attr.aria-label]="filterBarCollapsed() ? 'Show filters, ' + filterCount + ' active' : 'Hide filters'"
+      (click)="toggleFilterBar()"
+    >
+      {{ filterBarCollapsed() ? 'Show filters' : 'Hide filters' }}
+      <span class="ds-icon ds-icon--sm filter-bar__toggle-arrow"
+            [class.filter-bar__toggle-arrow--right]="filterBarCollapsed()"
+            aria-hidden="true">arrow_drop_down</span>
+    </button>
   </div>
 
 </div>
@@ -94,4 +169,12 @@
 <app-comparison-topics-filter-shell
   [(open)]="filterOpen"
   (filterCountChange)="onFilterCountChange($event)"
+  (filterDateActiveChange)="onFilterDateActiveChange($event)"
 />
+
+<app-share-dashboard-modal
+  [(open)]="shareOpen"
+  dashboardTitle="Comparison"
+/>
+
+<app-notify-users-modal [(open)]="notifyOpen" />

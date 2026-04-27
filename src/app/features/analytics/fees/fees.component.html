@@ -4,16 +4,41 @@
 
 <div class="ds-page-content__main ds-page-content__main--table">
   <ds-table-toolbar
+    [showActions]="false"
     [(filterActive)]="filterOpen"
     [(settingsActive)]="settingsActive"
     [showDownload]="false"
     [searchPlaceholder]="'Search fees'"
   >
     <button toolbar-trailing
-      class="ds-button ds-button--outlined"
+      class="ds-table-toolbar__text-btn"
       type="button"
     >Save View</button>
   </ds-table-toolbar>
+
+  <div
+    class="filter-applied-bar"
+    id="filter-applied-bar"
+    hidden
+    [class.is-collapsed]="filterBarCollapsed()"
+  >
+    <span class="ds-label ds-label--brand ds-label--pill ds-label--sm filter-bar__count-chip" aria-hidden="true" (click)="toggleFilterBar()">{{ filterCount }} active filters</span>
+    <div class="filter-applied-bar__cards" id="filter-applied-cards"
+         role="group" aria-label="Applied filters"></div>
+    <button
+      class="filter-bar__toggle"
+      type="button"
+      [attr.aria-expanded]="!filterBarCollapsed()"
+      [attr.aria-label]="filterBarCollapsed() ? 'Show filters, ' + filterCount + ' active' : 'Hide filters'"
+      (click)="toggleFilterBar()"
+    >
+      {{ filterBarCollapsed() ? 'Show filters' : 'Hide filters' }}
+      <span class="ds-icon ds-icon--sm filter-bar__toggle-arrow"
+            [class.filter-bar__toggle-arrow--right]="filterBarCollapsed()"
+            aria-hidden="true">arrow_drop_down</span>
+    </button>
+  </div>
+
   <div class="fees__table-placeholder">
     <span class="ds-icon ds-icon--xl" aria-hidden="true">table_rows</span>
     <span class="fees__placeholder-label">Table placeholder</span>

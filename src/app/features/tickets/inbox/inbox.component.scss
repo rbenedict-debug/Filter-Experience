@@ -17,42 +17,83 @@
   }
 }
 
-// ── Table layout ────────────────────────────────────────────────────────────
+// ── Applied filters bar ─────────────────────────────────────────────────────
 
-.inbox-table {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0;
-  min-height: 0;
-  overflow: hidden;
-}
+.filter-applied-bar {
+  background: transparent;
+  border-bottom: none;
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  align-items: flex-start;
 
-.inbox-table__header {
-  display: flex;
-  flex-shrink: 0;
-  border-top: 1px solid var(--color-border-secondary);
-}
+  .filter-bar__count-chip {
+    display: none;
+    flex-shrink: 0;
+  }
 
-.inbox-table__body {
-  flex: 1 1 0;
-  overflow-y: auto;
-}
+  .filter-bar__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+    font-family: var(--ref-typescale-label-small-font);
+    font-size: var(--ref-typescale-label-small-size);
+    font-weight: var(--ref-typescale-label-small-weight);
+    line-height: var(--ref-typescale-label-small-line-height);
 
-.inbox-table__row {
-  display: flex;
+    .filter-bar__toggle-arrow--right {
+      transform: rotate(-90deg);
+    }
 
-  .ds-table-row-cell {
-    border-bottom-color: var(--color-border-subtle);
+    &:hover {
+      background: var(--overlay-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+    }
+  }
+
+  &.is-collapsed {
+    padding: 0 var(--spacing-lg) var(--spacing-xs);
+
+    .filter-applied-bar__cards {
+      display: none;
+    }
+
+    .filter-bar__count-chip {
+      display: inline-flex;
+      cursor: pointer;
+    }
   }
 }
 
-// ── Column widths ────────────────────────────────────────────────────────────
+// ── Table placeholder ────────────────────────────────────────────────────────
 
-.inbox-col--subject   { flex: 2 0 0; min-width: 200px; }
-.inbox-col--requester { flex: 1 0 0; min-width: 130px; }
-.inbox-col--assignee  { flex: 1 0 0; min-width: 130px; }
-.inbox-col--status    { width: 110px; flex-shrink: 0; }
-.inbox-col--priority  { width: 100px; flex-shrink: 0; }
-.inbox-col--category  { flex: 1 0 0; min-width: 120px; }
-.inbox-col--created   { width: 130px; flex-shrink: 0; }
-.inbox-col--sla       { width: 100px; flex-shrink: 0; }
+.inbox__table-placeholder {
+  flex: 1;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: var(--color-icon-subtle);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.inbox__placeholder-label {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+}

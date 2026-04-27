@@ -1,0 +1,90 @@
+@if (open) {
+  <div
+    class="ds-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'save-view-modal-title'"
+    (click)="onBackdropClick($event)"
+  >
+    <div class="ds-modal save-view-modal">
+
+      <div class="ds-modal__header">
+        <h2 class="ds-modal__title" id="save-view-modal-title">{{ title }}</h2>
+        <button
+          class="ds-modal__dismiss"
+          type="button"
+          aria-label="Close"
+          (click)="close()"
+        >
+          <span class="ds-icon" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <div class="save-view-modal__body">
+
+        <div
+          class="ds-input"
+          (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
+          (focusout)="$any($event.currentTarget).removeAttribute('data-mouse-focus')"
+        >
+          <label class="ds-input__label" for="save-view-name">View name</label>
+          <div class="ds-input__field">
+            <input
+              id="save-view-name"
+              class="ds-input__control"
+              type="text"
+              placeholder="e.g. Q1 Chatbot — EN Only"
+              [value]="viewName"
+              (input)="viewName = $any($event.target).value"
+              (keydown.enter)="confirm()"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        @if (mode === 'edit') {
+          <p class="save-view-modal__filter-summary">
+            <span class="ds-icon ds-icon--sm" aria-hidden="true">filter_alt</span>
+            @if (filterCount === 0) {
+              No active filters
+            } @else if (filterCount === 1) {
+              1 active filter
+            } @else {
+              {{ filterCount }} active filters
+            }
+          </p>
+          <p class="save-view-modal__filter-hint">
+            To change filters, close this modal and use the filter button. Then open Edit View to save.
+          </p>
+        }
+
+      </div>
+
+      <div class="ds-modal__actions" [class.save-view-modal__actions--edit]="mode === 'edit'">
+        @if (mode === 'edit') {
+          <button
+            class="ds-button ds-button--text save-view-modal__delete-btn"
+            type="button"
+            (click)="confirmDelete()"
+          >
+            Delete View
+          </button>
+        }
+        <div class="save-view-modal__right-actions">
+          <button class="ds-button ds-button--text" type="button" (click)="close()">
+            Cancel
+          </button>
+          <button
+            class="ds-button ds-button--filled"
+            type="button"
+            [disabled]="!viewName.trim()"
+            (click)="confirm()"
+          >
+            {{ confirmLabel }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+}

@@ -27,6 +27,42 @@ The header block is sticky — it never scrolls. The canvas below it scrolls ind
 
 ---
 
+## Non-negotiable layout rules
+
+### 1. Always wrap in `ds-page-content__dashboard-header`
+
+Every dashboard page **must** wrap its heading, toolbar, and applied-filters bar inside `ds-page-content__dashboard-header`. This element provides:
+- `background: var(--color-surface-default)` — the surface color that fills the header zone
+- `padding-bottom: var(--spacing-lg)` — the visible gap between the last header element and the canvas below
+
+The canvas (`ds-page-content__main--dashboard`) must be a **sibling after** the wrapper, never inside it.
+
+Never compensate for a missing wrapper with inline `padding` or `margin-top` on the toolbar — fix the structure instead.
+
+### 2. Never put `padding-top` on the canvas element
+
+`ds-page-content__main--dashboard` already provides `padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg)`. Adding `padding-top` to `{page}__canvas` doubles the top gap and creates a visible gap above the first chart row.
+
+```scss
+// Correct
+.{page}__canvas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+// Wrong — never do this
+.{page}__canvas {
+  padding-top: var(--spacing-lg); // removes this
+}
+```
+
+### 3. `__toolbar-right` always uses `--spacing-sm` (8px) gap
+
+Left-side controls (`__toolbar-left`) use `--spacing-xs` (4px). Right-side action buttons always use `--spacing-sm` (8px). Never collapse both into a single selector with shared gap.
+
+---
+
 ## Canonical HTML skeleton
 
 ```html
@@ -88,7 +124,9 @@ The header block is sticky — it never scrolls. The canvas below it scrolls ind
             <div class="ds-badge-indicator" aria-hidden="true">{{ filterCount }}</div>
           }
         </div>
-        <!-- Download, Share, Save View — include as needed -->
+        <!-- Save View, Download, Share — include as needed -->
+        <button class="ds-dashboard-toolbar__text-btn" type="button"
+                (click)="onSave()">Save View</button>
         <button class="ds-dashboard-toolbar__btn" type="button"
                 aria-label="Download" (click)="onDownload()">
           <span class="ds-icon" aria-hidden="true">download</span>
@@ -97,8 +135,6 @@ The header block is sticky — it never scrolls. The canvas below it scrolls ind
                 aria-label="Share" (click)="onShare()">
           <span class="ds-icon" aria-hidden="true">share</span>
         </button>
-        <button class="ds-dashboard-toolbar__text-btn" type="button"
-                (click)="onSave()">Save View</button>
       </div>
 
     </div>
@@ -106,10 +142,23 @@ The header block is sticky — it never scrolls. The canvas below it scrolls ind
 
   <!-- Applied filters bar — always included when filter is present; hidden when no filters active -->
   <div class="filter-applied-bar" id="filter-applied-bar" hidden
-       style="background:transparent; border-bottom:none; padding:0;">
-    <span class="filter-applied-bar__label">Filters</span>
+       [class.is-collapsed]="filterBarCollapsed()">
+    <span class="ds-label ds-label--brand ds-label--pill ds-label--sm filter-bar__count-chip"
+          aria-hidden="true" (click)="toggleFilterBar()">{{ filterCount }} active filters</span>
     <div class="filter-applied-bar__cards" id="filter-applied-cards"
          role="group" aria-label="Applied filters"></div>
+    <button
+      class="filter-bar__toggle"
+      type="button"
+      [attr.aria-expanded]="!filterBarCollapsed()"
+      [attr.aria-label]="filterBarCollapsed() ? 'Show filters, ' + filterCount + ' active' : 'Hide filters'"
+      (click)="toggleFilterBar()"
+    >
+      {{ filterBarCollapsed() ? 'Show filters' : 'Hide filters' }}
+      <span class="ds-icon ds-icon--sm filter-bar__toggle-arrow"
+            [class.filter-bar__toggle-arrow--right]="filterBarCollapsed()"
+            aria-hidden="true">arrow_drop_down</span>
+    </button>
   </div>
 
 </div><!-- /.ds-page-content__dashboard-header -->
@@ -283,10 +332,16 @@ toggleDateMenu() { this.dateMenuOpen = !this.dateMenuOpen; }
 selectDate(option: string) { this.dateLabel = option; this.dateMenuOpen = false; }
 
 // Filter
-filterOpen = false;
-filterCount = 0;
-onFilterCountChange(count: number) { this.filterCount = count; }
+filterOpen          = false;
+filterCount         = 0;
+filterBarCollapsed  = signal(false);
+onFilterCountChange(count: number) {
+  this.filterCount = count;
+  this.filterOpen  = false;
+  if (count === 0) this.filterBarCollapsed.set(false);
+}
 onFilterDateActiveChange(active: boolean) { this.filterDateActive = active; }
+toggleFilterBar(): void { this.filterBarCollapsed.update(v => !v); }
 
 // Toolbar actions
 onDownload() { /* ... */ }
@@ -318,16 +373,71 @@ Minimum required:
   justify-content: space-between;
 }
 
-.{page}__toolbar-left,
-.{page}__toolbar-right {
+.{page}__toolbar-left {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
 }
 
+// Right-side action buttons always use 8px gap — never collapse to xs
+.{page}__toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 // Date menu dropdown anchor
 .{page}__date-wrapper {
   position: relative;
+}
+
+// Applied filters bar — padding:0 for dashboards (header provides spacing)
+.filter-applied-bar {
+  background: transparent;
+  border-bottom: none;
+  padding: 0;
+  align-items: flex-start;
+
+  .filter-bar__count-chip {
+    display: none;
+    flex-shrink: 0;
+    box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  }
+
+  .filter-bar__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+    font-family: var(--ref-typescale-label-small-font);
+    font-size: var(--ref-typescale-label-small-size);
+    font-weight: var(--ref-typescale-label-small-weight);
+    line-height: var(--ref-typescale-label-small-line-height);
+
+    .filter-bar__toggle-arrow--right { transform: rotate(-90deg); }
+
+    &:hover { background: var(--overlay-hover); color: var(--color-text-primary); }
+    &:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring); }
+  }
+
+  &.is-collapsed {
+    .filter-applied-bar__cards { display: none; }
+    .filter-bar__count-chip { display: inline-flex; cursor: pointer; }
+  }
+}
+
+// For pages with table tabs: override padding inside ds-page-content__main--table
+.ds-page-content__main--table .filter-applied-bar {
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+
+  &.is-collapsed { padding: 0 var(--spacing-lg) var(--spacing-xs); }
 }
 ```
 

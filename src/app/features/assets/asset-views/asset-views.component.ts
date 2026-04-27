@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { DsTableToolbarComponent, DsSkeletonComponent } from '@onflo/design-system';
+import { DsTableToolbarComponent } from '@onflo/design-system';
 import { AssetFilterShellComponent } from './filter-shell/asset-filter-shell.component';
 
 @Component({
@@ -10,19 +10,17 @@ import { AssetFilterShellComponent } from './filter-shell/asset-filter-shell.com
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DsTableToolbarComponent,
-    DsSkeletonComponent,
     AssetFilterShellComponent,
   ],
 })
 export class AssetViewsComponent {
-  settingsActive = false;
-  filterOpen     = false;
-  filterCount    = 0;
+  settingsActive      = false;
+  filterOpen          = false;
+  filterCount         = 0;
+  filterBarCollapsed  = signal(false);
 
   activeTab = signal<'assets' | 'parts'>('assets');
   setTab(tab: 'assets' | 'parts'): void { this.activeTab.set(tab); }
-
-  readonly skeletonRows = Array(12).fill(0);
 
   onSettingsToggle(active: boolean): void {
     this.settingsActive = active;
@@ -30,5 +28,14 @@ export class AssetViewsComponent {
 
   onFilterToggle(active: boolean): void {
     this.filterOpen = active;
+  }
+
+  onFilterCountChange(count: number): void {
+    this.filterCount = count;
+    if (count === 0) this.filterBarCollapsed.set(false);
+  }
+
+  toggleFilterBar(): void {
+    this.filterBarCollapsed.update(v => !v);
   }
 }

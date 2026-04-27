@@ -15,6 +15,8 @@ declare global {
     filterModalInit: (context?: string) => void;
     filterModalOpen: () => void;
     filterModalClose: () => void;
+    filterModalClearDates: () => void;
+    openDateRangePicker: () => void;
   }
 }
 
@@ -27,15 +29,17 @@ declare global {
 export class ChatbotFilterShellComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input()  open    = false;
   @Input()  context = 'chatbot-overview';
-  @Output() openChange        = new EventEmitter<boolean>();
-  @Output() filterCountChange = new EventEmitter<number>();
+  @Output() openChange             = new EventEmitter<boolean>();
+  @Output() filterCountChange      = new EventEmitter<number>();
+  @Output() filterDateActiveChange = new EventEmitter<boolean>();
 
   private _initialized = false;
 
   private _onClose   = () => { this.openChange.emit(false); };
   private _onApplied = (e: Event) => {
-    const count = (e as CustomEvent<{ count: number }>).detail?.count ?? 0;
-    this.filterCountChange.emit(count);
+    const detail = (e as CustomEvent<{ count: number; hasDateFilter: boolean }>).detail;
+    this.filterCountChange.emit(detail?.count ?? 0);
+    this.filterDateActiveChange.emit(detail?.hasDateFilter ?? false);
     this.openChange.emit(false);
   };
 

@@ -40,7 +40,7 @@ export class FilterShellComponent implements OnChanges, AfterViewInit, OnDestroy
 
   ngAfterViewInit(): void {
     if (typeof window.filterModalInit === 'function') {
-      window.filterModalInit();
+      window.filterModalInit('inbox');
       this._initialized = true;
     }
     window.addEventListener('filterModalClose', this._onClose);

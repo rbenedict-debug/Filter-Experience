@@ -109,6 +109,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/analytics/comparison/topics/comparison-topics.component').then(m => m.ComparisonTopicsComponent),
       },
+      {
+        path: 'saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/service-overview/service-overview.component').then(m => m.ServiceOverviewComponent),
+      },
     ],
   },
 

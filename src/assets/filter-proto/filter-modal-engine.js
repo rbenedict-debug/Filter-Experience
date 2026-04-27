@@ -557,16 +557,6 @@ const FILTER_GROUPS_SERVICE_OVERVIEW = [
         ],
       },
       {
-        id: 'topic-tech',
-        label: 'Technology',
-        options: [
-          { id: 'top-device',    label: 'Device Issue' },
-          { id: 'top-login',     label: 'Login / Password Reset' },
-          { id: 'top-app',       label: 'App / Software Access' },
-          { id: 'top-wifi',      label: 'Wi-Fi / Connectivity' },
-        ],
-      },
-      {
         id: 'topic-facilities',
         label: 'Facilities & Safety',
         options: [
@@ -574,6 +564,16 @@ const FILTER_GROUPS_SERVICE_OVERVIEW = [
           { id: 'top-safety',    label: 'Safety / Bullying' },
           { id: 'top-food',      label: 'Food Services' },
           { id: 'top-transport', label: 'Transportation' },
+        ],
+      },
+      {
+        id: 'topic-tech',
+        label: 'Technology',
+        options: [
+          { id: 'top-device',    label: 'Device Issue' },
+          { id: 'top-login',     label: 'Login / Password Reset' },
+          { id: 'top-app',       label: 'App / Software Access' },
+          { id: 'top-wifi',      label: 'Wi-Fi / Connectivity' },
         ],
       },
     ],
@@ -658,89 +658,72 @@ const FILTER_GROUPS_SERVICE_OVERVIEW = [
 
 // ── Chatbot: Overview ─────────────────────────────────────────
 const FILTER_GROUPS_CHATBOT_OVERVIEW = [
+
+  // ── 1. Dates ──────────────────────────────────────────────────
   {
-    id: 'date',
+    id: 'dates',
     label: 'Date',
     icon: 'calendar_today',
-    tiers: [
-      { id: 'date-session', label: 'Session Date', type: 'date-range' },
+    type: 'date-preset',
+    options: [
+      { id: 'dp-today',               label: 'Today' },
+      { id: 'dp-last-7-days',         label: 'Last 7 days' },
+      { id: 'dp-last-30-days',        label: 'Last 30 days' },
+      { id: 'dp-last-90-days',        label: 'Last 90 days' },
+      { id: 'dp-this-week',           label: 'This week' },
+      { id: 'dp-this-month',          label: 'This month' },
+      { id: 'dp-current-school-year', label: 'Current school year' },
+      { id: 'dp-last-school-year',    label: 'Last school year' },
     ],
   },
+
+  // ── 2. Languages ──────────────────────────────────────────────
   {
-    id: 'bot',
-    label: 'Bot',
-    icon: 'smart_toy',
-    tiers: [
-      {
-        id: 'flow',
-        label: 'Flow / Page',
-        options: [
-          { id: 'fl-home',        label: 'Home' },
-          { id: 'fl-it-support',  label: 'IT Support' },
-          { id: 'fl-hr',          label: 'Human Resources' },
-          { id: 'fl-registrar',   label: 'Registrar' },
-          { id: 'fl-payments',    label: 'Payments & Fees' },
-          { id: 'fl-nutrition',   label: 'Nutrition Services' },
-          { id: 'fl-transport',   label: 'Transportation' },
-          { id: 'fl-general',     label: 'General Inquiry' },
-        ],
-      },
-      {
-        id: 'intent-group',
-        label: 'Intent Group',
-        options: [
-          { id: 'ig-academics',    label: 'Academics' },
-          { id: 'ig-enrollment',   label: 'Enrollment' },
-          { id: 'ig-technology',   label: 'Technology' },
-          { id: 'ig-facilities',   label: 'Facilities & Safety' },
-          { id: 'ig-payments',     label: 'Payments' },
-          { id: 'ig-hr',           label: 'HR & Staff' },
-          { id: 'ig-events',       label: 'Events & Activities' },
-          { id: 'ig-other',        label: 'Other' },
-        ],
-      },
-      {
-        id: 'landing-page',
-        label: 'Landing Page',
-        options: [
-          { id: 'lp-district',    label: 'District Website' },
-          { id: 'lp-portal',      label: 'Customer Portal' },
-          { id: 'lp-cx-app',      label: 'Customer App' },
-          { id: 'lp-email',       label: 'Email Link' },
-          { id: 'lp-qr',          label: 'QR Code' },
-        ],
-      },
+    id: 'language',
+    label: 'Languages',
+    icon: 'language',
+    options: [
+      { id: 'lang-en', label: 'English' },
+      { id: 'lang-ar', label: 'Arabic' },
+      { id: 'lang-zh', label: 'Chinese (Simplified)' },
+      { id: 'lang-fr', label: 'French' },
+      { id: 'lang-es', label: 'Spanish' },
+      { id: 'lang-ru', label: 'Russian' },
+      { id: 'lang-so', label: 'Somali' },
+      { id: 'lang-ur', label: 'Urdu' },
+      { id: 'lang-pl', label: 'Polish' },
+      { id: 'lang-hi', label: 'Hindi' },
+      { id: 'lang-uk', label: 'Ukrainian' },
     ],
   },
+
+  // ── 3. Profiles (client-configured, dynamic in production) ────
   {
-    id: 'customer',
-    label: 'Customer',
-    icon: 'person',
-    tiers: [
-      {
-        id: 'customer-type',
-        label: 'Customer Type',
-        options: [
-          { id: 'ct-student',   label: 'Student' },
-          { id: 'ct-employee',  label: 'Employee' },
-          { id: 'ct-parent',    label: 'Parent / Guardian' },
-          { id: 'ct-community', label: 'Community Member' },
-          { id: 'ct-other',     label: 'Other' },
-        ],
-      },
-      {
-        id: 'language',
-        label: 'Language',
-        options: [
-          { id: 'lang-ar', label: 'Arabic' },
-          { id: 'lang-zh', label: 'Chinese (Simplified)' },
-          { id: 'lang-en', label: 'English' },
-          { id: 'lang-fr', label: 'French' },
-          { id: 'lang-es', label: 'Spanish' },
-          { id: 'lang-so', label: 'Somali' },
-          { id: 'lang-uk', label: 'Ukrainian' },
-        ],
-      },
+    id: 'profiles',
+    label: 'Profiles',
+    icon: 'manage_accounts',
+    options: [
+      { id: 'prof-default',    label: 'Default' },
+      { id: 'prof-elementary', label: 'Elementary School' },
+      { id: 'prof-middle',     label: 'Middle School' },
+      { id: 'prof-high',       label: 'High School' },
+      { id: 'prof-district',   label: 'District Office' },
+    ],
+  },
+
+  // ── 4. Embeds (client-configured, dynamic in production) ──────
+  {
+    id: 'embeds',
+    label: 'Embeds',
+    icon: 'web',
+    options: [
+      { id: 'emb-homepage',  label: 'Homepage' },
+      { id: 'emb-it',        label: 'IT Support' },
+      { id: 'emb-hr',        label: 'Human Resources' },
+      { id: 'emb-registrar', label: 'Registrar' },
+      { id: 'emb-finance',   label: 'Finance' },
+      { id: 'emb-nutrition', label: 'Nutrition Services' },
+      { id: 'emb-transport', label: 'Transportation' },
     ],
   },
 ];
@@ -850,6 +833,9 @@ const FILTER_GROUPS_CHATBOT_OPTIMIZATION = [
           { id: 'ct-parent',    label: 'Parent / Guardian' },
           { id: 'ct-community', label: 'Community Member' },
           { id: 'ct-other',     label: 'Other' },
+          { id: 'ct-volunteer', label: 'Volunteer' },
+          { id: 'ct-vendor',    label: 'Vendor' },
+          { id: 'ct-board',     label: 'Board Member' },
         ],
       },
     ],
@@ -858,84 +844,185 @@ const FILTER_GROUPS_CHATBOT_OPTIMIZATION = [
 
 // ── Chatbot: Chat Logs ────────────────────────────────────────
 const FILTER_GROUPS_CHATBOT_CHAT_LOGS = [
+
+  // ── 1. Date (date-preset — same full option set as other dashboards) ──
   {
-    id: 'date',
+    id: 'dates',
     label: 'Date',
     icon: 'calendar_today',
-    tiers: [
-      { id: 'date-session', label: 'Session Date', type: 'date-range' },
+    type: 'date-preset',
+    options: [
+      { id: 'dp-today',               label: 'Today' },
+      { id: 'dp-last-7-days',         label: 'Last 7 days' },
+      { id: 'dp-last-30-days',        label: 'Last 30 days' },
+      { id: 'dp-last-90-days',        label: 'Last 90 days' },
+      { id: 'dp-this-week',           label: 'This week' },
+      { id: 'dp-this-month',          label: 'This month' },
+      { id: 'dp-current-school-year', label: 'Current school year' },
+      { id: 'dp-last-school-year',    label: 'Last school year' },
     ],
   },
+
+  // ── 2. Message — per-exchange content filters ─────────────────
   {
-    id: 'session',
-    label: 'Session',
+    id: 'message',
+    label: 'Message',
     icon: 'forum',
     tiers: [
+      { id: 'cl-time',     label: 'Time of Day', type: 'time-range', min: 0, max: 1439, step: 15 },
+      { id: 'cl-question', label: 'Question',    type: 'text-match' },
+      { id: 'cl-response', label: 'Response',    type: 'text-match' },
       {
-        id: 'session-status',
-        label: 'Session Status',
+        id: 'cl-answered',
+        label: 'Answered',
         options: [
-          { id: 'ss-active',     label: 'Active' },
-          { id: 'ss-completed',  label: 'Completed' },
-          { id: 'ss-abandoned',  label: 'Abandoned' },
-          { id: 'ss-escalated',  label: 'Escalated' },
-          { id: 'ss-timed-out',  label: 'Timed Out' },
+          { id: 'ans-yes', label: 'Yes' },
+          { id: 'ans-no',  label: 'No' },
         ],
       },
       {
-        id: 'session-outcome',
-        label: 'Outcome',
+        id: 'cl-rating',
+        label: 'Rating',
         options: [
-          { id: 'so-self-served',    label: 'Self-Served' },
-          { id: 'so-ticket-created', label: 'Ticket Created' },
-          { id: 'so-live-chat',      label: 'Transferred to Live Chat' },
-          { id: 'so-call',           label: 'Prompted to Call' },
-          { id: 'so-no-outcome',     label: 'No Outcome' },
+          { id: 'rat-helpful',   label: 'Helpful' },
+          { id: 'rat-unhelpful', label: 'Unhelpful' },
+          { id: 'rat-none',      label: 'No Rating' },
         ],
-      },
-      {
-        id: 'session-duration',
-        label: 'Duration',
-        type: 'numeric-range',
-        min: 0,
-        max: 60,
-        step: 1,
-        unit: 'min',
-        maxLabel: '60+',
       },
     ],
   },
+
+  // ── 3. Language ───────────────────────────────────────────────
   {
-    id: 'customer',
-    label: 'Customer',
-    icon: 'person',
+    id: 'language',
+    label: 'Language',
+    icon: 'language',
+    options: [
+      { id: 'lang-ar', label: 'Arabic' },
+      { id: 'lang-zh', label: 'Chinese (Simplified)' },
+      { id: 'lang-en', label: 'English' },
+      { id: 'lang-fr', label: 'French' },
+      { id: 'lang-hi', label: 'Hindi' },
+      { id: 'lang-pl', label: 'Polish' },
+      { id: 'lang-ru', label: 'Russian' },
+      { id: 'lang-so', label: 'Somali' },
+      { id: 'lang-es', label: 'Spanish' },
+      { id: 'lang-uk', label: 'Ukrainian' },
+      { id: 'lang-ur', label: 'Urdu' },
+    ],
+  },
+
+  // ── 4. Deployment — client-configured / session context ───────
+  {
+    id: 'deployment',
+    label: 'Deployment',
+    icon: 'deployed_code',
     tiers: [
       {
-        id: 'customer-type',
-        label: 'Customer Type',
+        id: 'cl-profiles',
+        label: 'Profile',
         options: [
-          { id: 'ct-student',   label: 'Student' },
-          { id: 'ct-employee',  label: 'Employee' },
-          { id: 'ct-parent',    label: 'Parent / Guardian' },
-          { id: 'ct-community', label: 'Community Member' },
-          { id: 'ct-other',     label: 'Other' },
+          { id: 'prof-default',    label: 'Default' },
+          { id: 'prof-elementary', label: 'Elementary School' },
+          { id: 'prof-middle',     label: 'Middle School' },
+          { id: 'prof-high',       label: 'High School' },
+          { id: 'prof-district',   label: 'District Office' },
         ],
       },
       {
-        id: 'language',
-        label: 'Language',
+        id: 'cl-embeds',
+        label: 'Embed',
         options: [
-          { id: 'lang-ar', label: 'Arabic' },
-          { id: 'lang-zh', label: 'Chinese (Simplified)' },
-          { id: 'lang-en', label: 'English' },
-          { id: 'lang-fr', label: 'French' },
-          { id: 'lang-es', label: 'Spanish' },
-          { id: 'lang-so', label: 'Somali' },
-          { id: 'lang-uk', label: 'Ukrainian' },
+          { id: 'emb-homepage',  label: 'Homepage' },
+          { id: 'emb-it',        label: 'IT Support' },
+          { id: 'emb-hr',        label: 'Human Resources' },
+          { id: 'emb-registrar', label: 'Registrar' },
+          { id: 'emb-finance',   label: 'Finance' },
+          { id: 'emb-nutrition', label: 'Nutrition Services' },
+          { id: 'emb-transport', label: 'Transportation' },
+        ],
+      },
+      {
+        id: 'cl-theme',
+        label: 'Theme',
+        options: [
+          { id: 'thm-light',        label: 'Light' },
+          { id: 'thm-dark',         label: 'Dark' },
+          { id: 'thm-system',       label: 'System Default' },
+          { id: 'thm-high-contrast', label: 'High Contrast' },
+        ],
+      },
+      {
+        id: 'cl-origin',
+        label: 'Origin',
+        options: [
+          { id: 'orig-external', label: 'External' },
+          { id: 'orig-internal', label: 'Internal' },
         ],
       },
     ],
   },
+];
+
+// ── Call Center — CSAT filter groups ─────────────────────────
+// Districts, queues, and topics are dynamic per-client — options below are
+// representative placeholders until the real API feeds are wired.
+const FILTER_GROUPS_CALL_CENTER_CSAT = [
+
+  // ── 1. Date ───────────────────────────────────────────────────
+  {
+    id: 'dates',
+    label: 'Date',
+    icon: 'calendar_today',
+    type: 'date-preset',
+    options: [
+      { id: 'dp-today',               label: 'Today' },
+      { id: 'dp-last-7-days',         label: 'Last 7 days' },
+      { id: 'dp-last-30-days',        label: 'Last 30 days' },
+      { id: 'dp-last-90-days',        label: 'Last 90 days' },
+      { id: 'dp-this-week',           label: 'This week' },
+      { id: 'dp-this-month',          label: 'This month' },
+      { id: 'dp-current-school-year', label: 'Current school year' },
+      { id: 'dp-last-school-year',    label: 'Last school year' },
+    ],
+  },
+
+  // ── 2. Phone Line ─────────────────────────────────────────────
+  // Dynamic — populated from client phone line configuration.
+  // Each option label is the line name; the number is shown as sublabel on prod.
+  {
+    id: 'phone-line',
+    label: 'Phone Line',
+    icon: 'phone',
+    options: [
+      { id: 'line-hr',            label: 'HR Line',            sublabel: '15715204113' },
+      { id: 'line-missing-child', label: 'Missing Child Line', sublabel: '15715204114' },
+      { id: 'line-main',          label: 'Main Office Line',   sublabel: '15715204115' },
+      { id: 'line-enrollment',    label: 'Enrollment Line',    sublabel: '15715204116' },
+      { id: 'line-transport',     label: 'Transportation Line', sublabel: '15715204117' },
+    ],
+  },
+
+  // ── 3. Queue ──────────────────────────────────────────────────
+  // Dynamic — populated from client queue configuration
+  {
+    id: 'queue',
+    label: 'Queue',
+    icon: 'support_agent',
+    options: [
+      { id: 'queue-general',        label: 'General Inquiries' },
+      { id: 'queue-enrollment',     label: 'Enrollment' },
+      { id: 'queue-transportation', label: 'Transportation' },
+      { id: 'queue-special-ed',     label: 'Special Education' },
+      { id: 'queue-nutrition',      label: 'Nutrition Services' },
+      { id: 'queue-hr',             label: 'Human Resources' },
+      { id: 'queue-tech',           label: 'Technology Support' },
+    ],
+  },
+
+  // ── 4. Topic ──────────────────────────────────────────────────
+  // Hierarchical: categories (tiers) → topics (options).
+  // All content is district-customized — placeholders represent realistic examples.
   {
     id: 'topic',
     label: 'Topic',
@@ -947,8 +1034,8 @@ const FILTER_GROUPS_CHATBOT_CHAT_LOGS = [
         options: [
           { id: 'top-grades',     label: 'Grades & Report Cards' },
           { id: 'top-curriculum', label: 'Curriculum Questions' },
-          { id: 'top-testing',    label: 'Standardized Testing' },
           { id: 'top-special-ed', label: 'Special Education' },
+          { id: 'top-testing',    label: 'Standardized Testing' },
         ],
       },
       {
@@ -958,6 +1045,17 @@ const FILTER_GROUPS_CHATBOT_CHAT_LOGS = [
           { id: 'top-enroll',     label: 'Enrollment Process' },
           { id: 'top-withdrawal', label: 'Withdrawal / Transfer' },
           { id: 'top-attendance', label: 'Attendance Questions' },
+          { id: 'top-tardies',    label: 'Tardies & Absences' },
+        ],
+      },
+      {
+        id: 'topic-facilities',
+        label: 'Facilities & Safety',
+        options: [
+          { id: 'top-facility',  label: 'Facility Concern' },
+          { id: 'top-safety',    label: 'Safety / Bullying' },
+          { id: 'top-food',      label: 'Food Services' },
+          { id: 'top-transport', label: 'Transportation' },
         ],
       },
       {
@@ -970,49 +1068,738 @@ const FILTER_GROUPS_CHATBOT_CHAT_LOGS = [
           { id: 'top-wifi',   label: 'Wi-Fi / Connectivity' },
         ],
       },
+    ],
+  },
+
+];
+
+// ── Call Center — Call Details filter groups ──────────────────
+// Customer, Agent, Queue, District Number, and Topic are dynamic
+// per-client — options below are representative placeholders.
+const FILTER_GROUPS_CALL_DETAILS = [
+
+  // ── 1. Date ───────────────────────────────────────────────────
+  {
+    id: 'dates',
+    label: 'Date',
+    icon: 'calendar_today',
+    type: 'date-preset',
+    options: [
+      { id: 'dp-today',               label: 'Today' },
+      { id: 'dp-last-7-days',         label: 'Last 7 days' },
+      { id: 'dp-last-30-days',        label: 'Last 30 days' },
+      { id: 'dp-last-90-days',        label: 'Last 90 days' },
+      { id: 'dp-this-week',           label: 'This week' },
+      { id: 'dp-this-month',          label: 'This month' },
+      { id: 'dp-current-school-year', label: 'Current school year' },
+      { id: 'dp-last-school-year',    label: 'Last school year' },
+    ],
+  },
+
+  // ── 2. Call ───────────────────────────────────────────────────
+  // Start time, direction, result, and all duration ranges.
+  {
+    id: 'cd-call',
+    label: 'Call',
+    icon: 'call',
+    tiers: [
+      { id: 'cd-time-of-day', label: 'Start Time', type: 'time-range', min: 0, max: 1439, step: 15 },
       {
-        id: 'topic-other',
-        label: 'Other',
+        id: 'cd-direction',
+        label: 'Direction',
+        options: [
+          { id: 'dir-incoming',       label: 'Incoming' },
+          { id: 'dir-outgoing',       label: 'Outgoing' },
+          { id: 'dir-callback',       label: 'Callback' },
+          { id: 'dir-queue-transfer', label: 'Queue Transfer' },
+        ],
+      },
+      {
+        id: 'cd-result',
+        label: 'Result',
+        options: [
+          { id: 'res-handled',             label: 'Handled' },
+          { id: 'res-internal-transfer',   label: 'Internal Transfer' },
+          { id: 'res-external-transfer',   label: 'External Transfer' },
+          { id: 'res-abandoned-ivr',       label: 'Abandoned (in IVR)' },
+          { id: 'res-abandoned-no-agents', label: 'Abandoned (agents unavailable)' },
+          { id: 'res-abandoned-queue',     label: 'Abandoned (in queue)' },
+          { id: 'res-abandoned-greeting',  label: 'Abandoned (missed call greeting)' },
+          { id: 'res-abandoned-hours',     label: 'Abandoned (business hours)' },
+          { id: 'res-voicemail-no-agents', label: 'Voicemail (agents unavailable)' },
+          { id: 'res-voicemail-hours',     label: 'Voicemail (business hours)' },
+        ],
+      },
+      { id: 'cd-duration',       label: 'Duration',          type: 'numeric-range', min: 0, max: 60, step: 1, unit: 'min', maxLabel: '60+' },
+      { id: 'cd-queue-duration', label: 'Queue Duration',    type: 'numeric-range', min: 0, max: 30, step: 1, unit: 'min', maxLabel: '30+' },
+      { id: 'cd-oncall-duration',label: 'On Call Duration',  type: 'numeric-range', min: 0, max: 60, step: 1, unit: 'min', maxLabel: '60+' },
+    ],
+  },
+
+  // ── 3. People ─────────────────────────────────────────────────
+  // Customer and agent — both dynamic in production.
+  {
+    id: 'cd-people',
+    label: 'People',
+    icon: 'group',
+    tiers: [
+      {
+        id: 'cd-customer',
+        label: 'Customer',
+        options: [
+          { id: 'cust-dyn-1',   label: 'Jane Smith' },
+          { id: 'cust-dyn-2',   label: 'Robert Johnson' },
+          { id: 'cust-dyn-3',   label: 'Maria Garcia' },
+          { id: 'cust-dyn-4',   label: 'David Lee' },
+          { id: 'cust-unknown', label: 'Unknown Caller' },
+        ],
+      },
+      {
+        id: 'cd-agent',
+        label: 'Agent',
+        options: [
+          { id: 'agt-sarah-chen',    label: 'Sarah Chen' },
+          { id: 'agt-marcus-hayes',  label: 'Marcus Hayes' },
+          { id: 'agt-priya-patel',   label: 'Priya Patel' },
+          { id: 'agt-james-okonkwo', label: 'James Okonkwo' },
+          { id: 'agt-linda-reyes',   label: 'Linda Reyes' },
+          { id: 'agt-derek-wu',      label: 'Derek Wu' },
+        ],
+      },
+    ],
+  },
+
+  // ── 4. Features ───────────────────────────────────────────────
+  {
+    id: 'cd-features',
+    label: 'Features',
+    icon: 'tune',
+    tiers: [
+      {
+        id: 'cd-ai-agent',
+        label: 'AI Agent',
+        options: [
+          { id: 'ai-yes', label: 'Has AI Agent' },
+          { id: 'ai-no',  label: 'No AI Agent' },
+        ],
+      },
+      {
+        id: 'cd-call-notes',
+        label: 'Call Notes',
+        options: [
+          { id: 'notes-yes', label: 'Has call notes' },
+          { id: 'notes-no',  label: 'No call notes' },
+        ],
+      },
+      {
+        id: 'cd-recording',
+        label: 'Recording',
+        options: [
+          { id: 'rec-yes', label: 'Has recording' },
+          { id: 'rec-no',  label: 'No recording' },
+        ],
+      },
+    ],
+  },
+
+  // ── 5. Routing ────────────────────────────────────────────────
+  // Queue and district — both dynamic in production.
+  {
+    id: 'cd-routing',
+    label: 'Routing',
+    icon: 'account_tree',
+    tiers: [
+      {
+        id: 'cd-queue',
+        label: 'Queue',
+        options: [
+          { id: 'cdq-general',        label: 'General Inquiries' },
+          { id: 'cdq-enrollment',     label: 'Enrollment' },
+          { id: 'cdq-transportation', label: 'Transportation' },
+          { id: 'cdq-special-ed',     label: 'Special Education' },
+          { id: 'cdq-nutrition',      label: 'Nutrition Services' },
+          { id: 'cdq-hr',             label: 'Human Resources' },
+          { id: 'cdq-tech',           label: 'Technology Support' },
+        ],
+      },
+      {
+        id: 'cd-district',
+        label: 'District Number',
+        options: [
+          { id: 'dist-1001', label: 'Northside Unified',      sublabel: '1001' },
+          { id: 'dist-1002', label: 'Westfield Elementary',   sublabel: '1002' },
+          { id: 'dist-1003', label: 'Lakeview Middle School', sublabel: '1003' },
+          { id: 'dist-1004', label: 'Central High School',    sublabel: '1004' },
+          { id: 'dist-1005', label: 'Riverside District',     sublabel: '1005' },
+        ],
+      },
+    ],
+  },
+
+  // ── 6. Topic ──────────────────────────────────────────────────
+  // Hierarchical: categories (tiers) → topics (options).
+  // All content is district-customized — placeholders represent realistic examples.
+  {
+    id: 'topic',
+    label: 'Topic',
+    icon: 'layers',
+    tiers: [
+      {
+        id: 'topic-academics',
+        label: 'Academics',
+        options: [
+          { id: 'top-grades',     label: 'Grades & Report Cards' },
+          { id: 'top-curriculum', label: 'Curriculum Questions' },
+          { id: 'top-special-ed', label: 'Special Education' },
+          { id: 'top-testing',    label: 'Standardized Testing' },
+        ],
+      },
+      {
+        id: 'topic-enrollment',
+        label: 'Enrollment & Attendance',
+        options: [
+          { id: 'top-enroll',     label: 'Enrollment Process' },
+          { id: 'top-withdrawal', label: 'Withdrawal / Transfer' },
+          { id: 'top-attendance', label: 'Attendance Questions' },
+          { id: 'top-tardies',    label: 'Tardies & Absences' },
+        ],
+      },
+      {
+        id: 'topic-facilities',
+        label: 'Facilities & Safety',
         options: [
           { id: 'top-facility',  label: 'Facility Concern' },
           { id: 'top-safety',    label: 'Safety / Bullying' },
           { id: 'top-food',      label: 'Food Services' },
           { id: 'top-transport', label: 'Transportation' },
-          { id: 'top-payments',  label: 'Payments & Fees' },
+        ],
+      },
+      {
+        id: 'topic-tech',
+        label: 'Technology',
+        options: [
+          { id: 'top-device', label: 'Device Issue' },
+          { id: 'top-login',  label: 'Login / Password Reset' },
+          { id: 'top-app',    label: 'App / Software Access' },
+          { id: 'top-wifi',   label: 'Wi-Fi / Connectivity' },
         ],
       },
     ],
   },
+
+];
+
+// ── Call Center — Agent Status filter groups ──────────────────
+const FILTER_GROUPS_CALL_CENTER_AGENT_STATUS = [
+
+  // ── 1. Date ───────────────────────────────────────────────────
   {
-    id: 'intent',
-    label: 'Intent',
-    icon: 'psychology',
+    id: 'dates',
+    label: 'Date',
+    icon: 'calendar_today',
+    type: 'date-preset',
+    options: [
+      { id: 'dp-today',               label: 'Today' },
+      { id: 'dp-last-7-days',         label: 'Last 7 days' },
+      { id: 'dp-last-30-days',        label: 'Last 30 days' },
+      { id: 'dp-last-90-days',        label: 'Last 90 days' },
+      { id: 'dp-this-week',           label: 'This week' },
+      { id: 'dp-this-month',          label: 'This month' },
+      { id: 'dp-current-school-year', label: 'Current school year' },
+      { id: 'dp-last-school-year',    label: 'Last school year' },
+    ],
+  },
+
+  // ── 2. Status ─────────────────────────────────────────────────
+  {
+    id: 'as-status-group',
+    label: 'Status',
+    icon: 'circle',
     tiers: [
       {
-        id: 'confidence',
-        label: 'Confidence Level',
+        id: 'as-status',
+        label: 'Status',
         options: [
-          { id: 'conf-high',     label: 'High (≥ 90%)' },
-          { id: 'conf-medium',   label: 'Medium (70–89%)' },
-          { id: 'conf-low',      label: 'Low (< 70%)' },
-          { id: 'conf-fallback', label: 'Fallback' },
+          { id: 'as-status-offline',     label: 'Offline' },
+          { id: 'as-status-unavailable', label: 'Unavailable' },
+          { id: 'as-status-available',   label: 'Available' },
+          { id: 'as-status-engaged',     label: 'Engaged' },
+        ],
+      },
+      {
+        id: 'as-changed-by',
+        label: 'Status Changed By',
+        options: [
+          { id: 'changed-by-agent',  label: 'Agent' },
+          { id: 'changed-by-admin',  label: 'Admin' },
+          { id: 'changed-by-system', label: 'System' },
+        ],
+      },
+    ],
+  },
+
+  // ── 3. Agents ─────────────────────────────────────────────────
+  // Dynamic — populated from client agent roster in production.
+  {
+    id: 'as-agent',
+    label: 'Agents',
+    icon: 'group',
+    options: [
+      { id: 'agt-sarah-chen',    label: 'Sarah Chen' },
+      { id: 'agt-marcus-hayes',  label: 'Marcus Hayes' },
+      { id: 'agt-priya-patel',   label: 'Priya Patel' },
+      { id: 'agt-james-okonkwo', label: 'James Okonkwo' },
+      { id: 'agt-linda-reyes',   label: 'Linda Reyes' },
+      { id: 'agt-derek-wu',      label: 'Derek Wu' },
+    ],
+  },
+
+];
+
+// ── Fees filter groups ────────────────────────────────────────
+const FILTER_GROUPS_FEES = [
+  // ── 1. Date ───────────────────────────────────────────────────
+  {
+    id: 'fee-dates',
+    label: 'Date',
+    icon: 'calendar_today',
+    tiers: [
+      { id: 'date-created',      label: 'Created Date',      type: 'date-range' },
+      { id: 'date-last-updated', label: 'Last Updated Date', type: 'date-range' },
+    ],
+  },
+
+  // ── 2. Fee ───────────────────────────────────────────────────
+  {
+    id: 'fee',
+    label: 'Fee',
+    icon: 'receipt',
+    tiers: [
+      { id: 'fee-name', label: 'Fee Name', type: 'text-match' },
+      {
+        id: 'fee-type',
+        label: 'Fee Type',
+        options: [
+          { id: 'ft-parts', label: 'Parts' },
+          { id: 'ft-fee',   label: 'Fee' },
+        ],
+      },
+      {
+        id: 'fee-status',
+        label: 'Status',
+        options: [
+          { id: 'fs-open',        label: 'Open' },
+          { id: 'fs-pending',     label: 'Pending' },
+          { id: 'fs-paid',        label: 'Paid' },
+          { id: 'fs-waived',      label: 'Waived' },
+          { id: 'fs-overdue',     label: 'Overdue' },
+          { id: 'fs-partial',     label: 'Partially Paid' },
+          { id: 'fs-refunded',    label: 'Refunded' },
+          { id: 'fs-collections', label: 'Sent to Collections' },
+        ],
+      },
+      {
+        id: 'fee-notes',
+        label: 'Notes',
+        options: [
+          { id: 'notes-has',  label: 'Has notes' },
+          { id: 'notes-none', label: 'No notes' },
+        ],
+      },
+    ],
+  },
+
+  // ── 3. Identifiers ───────────────────────────────────────────
+  {
+    id: 'fee-identifiers',
+    label: 'Identifiers',
+    icon: 'tag',
+    tiers: [
+      { id: 'fee-ticket-number',  label: 'Ticket Number',  type: 'text-match' },
+      { id: 'fee-id',             label: 'Fee ID',          type: 'text-match' },
+      { id: 'fee-transaction-id', label: 'Transaction ID', type: 'text-match' },
+    ],
+  },
+
+  // ── 4. Transaction ───────────────────────────────────────────
+  {
+    id: 'transaction',
+    label: 'Transaction',
+    icon: 'paid',
+    tiers: [
+      {
+        id: 'fee-amount',
+        label: 'Amount',
+        type: 'cost-range',
+        min: 0,
+        max: 500,
+        step: 10,
+      },
+      {
+        id: 'fee-department',
+        label: 'Department',
+        options: [
+          { id: 'dept-technology',     label: 'Technology' },
+          { id: 'dept-library',        label: 'Library & Media' },
+          { id: 'dept-food-services',  label: 'Food Services' },
+          { id: 'dept-athletics',      label: 'Athletics' },
+          { id: 'dept-activities',     label: 'Student Activities' },
+          { id: 'dept-transportation', label: 'Transportation' },
+          { id: 'dept-registrar',      label: 'Registrar' },
+          { id: 'dept-administration', label: 'Administration' },
+        ],
+      },
+    ],
+  },
+
+];
+
+// ── Custom Reports ────────────────────────────────────────────
+const FILTER_GROUPS_CUSTOM_REPORTS = [
+  // ── 1. Date ───────────────────────────────────────────────────
+  {
+    id: 'report-dates',
+    label: 'Date',
+    icon: 'calendar_today',
+    tiers: [
+      { id: 'date-created',      label: 'Created Date',      type: 'date-range' },
+      { id: 'date-last-updated', label: 'Last Updated Date', type: 'date-range' },
+    ],
+  },
+
+  // ── 2. Report ─────────────────────────────────────────────────
+  {
+    id: 'report',
+    label: 'Report',
+    icon: 'summarize',
+    tiers: [
+      { id: 'report-name', label: 'Report Name', type: 'text-match' },
+      {
+        id: 'report-type',
+        label: 'Type',
+        options: [
+          { id: 'rt-tickets',     label: 'Tickets'     },
+          { id: 'rt-assets',      label: 'Assets'      },
+          { id: 'rt-call-center', label: 'Call Center' },
+          { id: 'rt-topics',      label: 'Topics'      },
+        ],
+      },
+      {
+        id: 'report-format',
+        label: 'Format',
+        options: [
+          { id: 'rf-pdf',   label: 'PDF'   },
+          { id: 'rf-excel', label: 'Excel' },
+          { id: 'rf-csv',   label: 'CSV'   },
         ],
       },
     ],
   },
 ];
 
+// ── Inbox ─────────────────────────────────────────────────────
+const FILTER_GROUPS_INBOX = [
+
+  // ── 1. Date ───────────────────────────────────────────────────
+  {
+    id: 'dates',
+    label: 'Date',
+    icon: 'calendar_today',
+    type: 'date-preset',
+    options: [
+      { id: 'dp-today',               label: 'Today' },
+      { id: 'dp-last-7-days',         label: 'Last 7 days' },
+      { id: 'dp-last-30-days',        label: 'Last 30 days' },
+      { id: 'dp-last-90-days',        label: 'Last 90 days' },
+      { id: 'dp-this-week',           label: 'This week' },
+      { id: 'dp-this-month',          label: 'This month' },
+      { id: 'dp-current-school-year', label: 'Current school year' },
+      { id: 'dp-last-school-year',    label: 'Last school year' },
+    ],
+  },
+
+  // ── 2. Ticket ─────────────────────────────────────────────────
+  {
+    id: 'ticket',
+    label: 'Ticket',
+    icon: 'confirmation_number',
+    tiers: [
+      { id: 'inbox-subject',     label: 'Subject',     type: 'text-match' },
+      { id: 'inbox-description', label: 'Description', type: 'text-match' },
+      {
+        id: 'ticket-type',
+        label: 'Ticket Type',
+        options: [
+          { id: 'tt-question',   label: 'Question' },
+          { id: 'tt-comment',    label: 'Comment' },
+          { id: 'tt-suggestion', label: 'Suggestion' },
+          { id: 'tt-concern',    label: 'Concern' },
+          { id: 'tt-compliment', label: 'Compliment' },
+        ],
+      },
+      {
+        id: 'ticket-status',
+        label: 'Ticket Status',
+        options: [
+          { id: 'ts-critical',  label: 'Critical' },
+          { id: 'ts-p1-high',   label: 'P1 High' },
+          { id: 'ts-p2-normal', label: 'P2 Normal' },
+          { id: 'ts-p3-low',    label: 'P3 Low' },
+        ],
+      },
+      {
+        id: 'ticket-age',
+        label: 'Ticket Age',
+        type: 'numeric-range',
+        min: 0,
+        max: 32,
+        step: 1,
+        unit: 'days',
+        maxLabel: '32+',
+      },
+      {
+        id: 'cx-score',
+        label: 'CX Score',
+        type: 'numeric-range',
+        min: 0,
+        max: 10,
+        step: 1,
+        unit: '',
+      },
+      {
+        id: 'ticket-owner',
+        label: 'Ticket Owner',
+        options: [
+          { id: 'to-sarah-chen',    label: 'Sarah Chen' },
+          { id: 'to-marcus-hayes',  label: 'Marcus Hayes' },
+          { id: 'to-priya-patel',   label: 'Priya Patel' },
+          { id: 'to-james-okonkwo', label: 'James Okonkwo' },
+          { id: 'to-linda-reyes',   label: 'Linda Reyes' },
+          { id: 'to-derek-wu',      label: 'Derek Wu' },
+          { id: 'to-unassigned',    label: 'Unassigned' },
+        ],
+      },
+      {
+        id: 'inbox-agents',
+        label: 'Assigned Agents',
+        options: [
+          { id: 'agt-sarah-chen',    label: 'Sarah Chen' },
+          { id: 'agt-marcus-hayes',  label: 'Marcus Hayes' },
+          { id: 'agt-priya-patel',   label: 'Priya Patel' },
+          { id: 'agt-james-okonkwo', label: 'James Okonkwo' },
+          { id: 'agt-linda-reyes',   label: 'Linda Reyes' },
+          { id: 'agt-derek-wu',      label: 'Derek Wu' },
+        ],
+      },
+      {
+        id: 'svc-tags',
+        label: 'Tags',
+        options: [
+          { id: 'stag-escalated',    label: 'Escalated' },
+          { id: 'stag-follow-up',    label: 'Follow-up Required' },
+          { id: 'stag-after-hours',  label: 'After Hours' },
+          { id: 'stag-parent-cb',    label: 'Parent Callback' },
+          { id: 'stag-data-request', label: 'Data Request' },
+          { id: 'stag-tech-issue',   label: 'Tech Issue' },
+          { id: 'stag-transport',    label: 'Transportation' },
+          { id: 'stag-covid',        label: 'COVID-Related' },
+        ],
+      },
+    ],
+  },
+
+  // ── 3. Customer ───────────────────────────────────────────────
+  {
+    id: 'customer',
+    label: 'Customer',
+    icon: 'person',
+    tiers: [
+      { id: 'inbox-customer-name', label: 'Customer Name', type: 'text-match' },
+      {
+        id: 'customer-type',
+        label: 'Customer Type',
+        options: [
+          { id: 'ct-student',   label: 'Student' },
+          { id: 'ct-employee',  label: 'Employee' },
+          { id: 'ct-parent',    label: 'Parent / Guardian' },
+          { id: 'ct-community', label: 'Community Member' },
+          { id: 'ct-other',     label: 'Other' },
+          { id: 'ct-volunteer', label: 'Volunteer' },
+          { id: 'ct-vendor',    label: 'Vendor' },
+          { id: 'ct-board',     label: 'Board Member' },
+        ],
+      },
+      {
+        id: 'language',
+        label: 'Language',
+        options: [
+          { id: 'lang-ar', label: 'Arabic' },
+          { id: 'lang-zh', label: 'Chinese (Simplified)' },
+          { id: 'lang-en', label: 'English' },
+          { id: 'lang-fr', label: 'French' },
+          { id: 'lang-hi', label: 'Hindi' },
+          { id: 'lang-pl', label: 'Polish' },
+          { id: 'lang-ru', label: 'Russian' },
+          { id: 'lang-so', label: 'Somali' },
+          { id: 'lang-es', label: 'Spanish' },
+          { id: 'lang-uk', label: 'Ukrainian' },
+          { id: 'lang-ur', label: 'Urdu' },
+        ],
+      },
+    ],
+  },
+
+  // ── 4. Topic ──────────────────────────────────────────────────
+  {
+    id: 'topic',
+    label: 'Topic',
+    icon: 'layers',
+    tiers: [
+      {
+        id: 'topic-academics',
+        label: 'Academics',
+        options: [
+          { id: 'top-grades',     label: 'Grades & Report Cards' },
+          { id: 'top-curriculum', label: 'Curriculum Questions' },
+          { id: 'top-hw-help',    label: 'Homework Help' },
+          { id: 'top-testing',    label: 'Standardized Testing' },
+          { id: 'top-special-ed', label: 'Special Education' },
+        ],
+      },
+      {
+        id: 'topic-enrollment',
+        label: 'Enrollment & Attendance',
+        options: [
+          { id: 'top-enroll',     label: 'Enrollment Process' },
+          { id: 'top-withdrawal', label: 'Withdrawal / Transfer' },
+          { id: 'top-attendance', label: 'Attendance Questions' },
+          { id: 'top-tardies',    label: 'Tardies & Absences' },
+        ],
+      },
+      {
+        id: 'topic-facilities',
+        label: 'Facilities & Safety',
+        options: [
+          { id: 'top-facility',  label: 'Facility Concern' },
+          { id: 'top-safety',    label: 'Safety / Bullying' },
+          { id: 'top-food',      label: 'Food Services' },
+          { id: 'top-transport', label: 'Transportation' },
+        ],
+      },
+      {
+        id: 'topic-tech',
+        label: 'Technology',
+        options: [
+          { id: 'top-device',    label: 'Device Issue' },
+          { id: 'top-login',     label: 'Login / Password Reset' },
+          { id: 'top-app',       label: 'App / Software Access' },
+          { id: 'top-wifi',      label: 'Wi-Fi / Connectivity' },
+        ],
+      },
+    ],
+  },
+
+  // ── 5. Routing ────────────────────────────────────────────────
+  {
+    id: 'routing',
+    label: 'Routing',
+    icon: 'route',
+    tiers: [
+      {
+        id: 'entry-point',
+        label: 'Entry Point',
+        options: [
+          { id: 'ep-website',   label: 'District Website' },
+          { id: 'ep-email',     label: 'Email' },
+          { id: 'ep-phone',     label: 'Phone' },
+          { id: 'ep-recorder',  label: 'Recorder' },
+          { id: 'ep-cx-app',    label: 'Customer App' },
+          { id: 'ep-text',      label: 'Text' },
+          { id: 'ep-chatbot',   label: 'Chatbot' },
+          { id: 'ep-live-chat', label: 'Live Chat' },
+          { id: 'ep-global',    label: 'Global Ticket' },
+          { id: 'ep-portal',    label: 'Customer Portal' },
+        ],
+      },
+      {
+        id: 'landing-page',
+        label: 'Landing Page',
+        options: [
+          { id: 'lp-home',      label: 'Homepage' },
+          { id: 'lp-it',        label: 'IT Support' },
+          { id: 'lp-hr',        label: 'Human Resources' },
+          { id: 'lp-registrar', label: 'Registrar' },
+          { id: 'lp-finance',   label: 'Finance' },
+          { id: 'lp-nutrition', label: 'Nutrition Services' },
+          { id: 'lp-transport', label: 'Transportation' },
+          { id: 'lp-comm',      label: 'Communications' },
+        ],
+      },
+      {
+        id: 'tab',
+        label: 'Tab',
+        options: [
+          { id: 'tab-general',    label: 'General' },
+          { id: 'tab-academic',   label: 'Academic' },
+          { id: 'tab-it',         label: 'IT / Tech Support' },
+          { id: 'tab-hr',         label: 'HR' },
+          { id: 'tab-facilities', label: 'Facilities' },
+          { id: 'tab-parents',    label: 'Parents' },
+        ],
+      },
+    ],
+  },
+
+  // ── 6. Actions ────────────────────────────────────────────────
+  {
+    id: 'actions',
+    label: 'Actions',
+    icon: 'task_alt',
+    tiers: [
+      {
+        id: 'action-taken',
+        label: 'Action Taken',
+        options: [
+          { id: 'act-phone',      label: 'Phone Call' },
+          { id: 'act-blog',       label: 'Blog Post' },
+          { id: 'act-email',      label: 'Email' },
+          { id: 'act-letter',     label: 'Letter' },
+          { id: 'act-meeting',    label: 'In-Person Meeting' },
+          { id: 'act-newsletter', label: 'Newsletter' },
+          { id: 'act-oped',       label: 'Op Ed' },
+          { id: 'act-speech',     label: 'Speech' },
+          { id: 'act-other',      label: 'Other' },
+          { id: 'act-none',       label: 'None' },
+        ],
+      },
+    ],
+  },
+
+];
+
 // ── Context configuration ─────────────────────────────────────
 const CONTEXTS = {
+  inbox:                { label: 'Inbox',                groups: FILTER_GROUPS_INBOX,                  savedSetsKey: 'onflo-filter-sets-inbox'            },
   assets:               { label: 'Assets Table',        groups: FILTER_GROUPS_ASSETS,                savedSetsKey: 'onflo-filter-sets-assets'           },
   service:              { label: 'Service Overview',     groups: FILTER_GROUPS_SERVICE_OVERVIEW,       savedSetsKey: 'onflo-filter-sets-service'          },
   'chatbot-overview':   { label: 'Chatbot Overview',     groups: FILTER_GROUPS_CHATBOT_OVERVIEW,       savedSetsKey: 'onflo-filter-sets-chatbot-overview' },
   'chatbot-optimization':{ label: 'Chatbot Optimization',groups: FILTER_GROUPS_CHATBOT_OPTIMIZATION,  savedSetsKey: 'onflo-filter-sets-chatbot-optim'    },
   'chatbot-chat-logs':  { label: 'Chat Logs',            groups: FILTER_GROUPS_CHATBOT_CHAT_LOGS,      savedSetsKey: 'onflo-filter-sets-chatbot-logs'     },
+  'call-center-overview':     { label: 'Call Center Overview',     groups: FILTER_GROUPS_CALL_CENTER_CSAT,     savedSetsKey: 'onflo-filter-sets-call-center-overview'     },
+  'call-center-csat':         { label: 'Call Center CSAT',         groups: FILTER_GROUPS_CALL_CENTER_CSAT, savedSetsKey: 'onflo-filter-sets-call-center-csat'         },
+  'call-center-call-metrics': { label: 'Call Center Call Metrics', groups: FILTER_GROUPS_CALL_CENTER_CSAT, savedSetsKey: 'onflo-filter-sets-call-center-call-metrics'  },
+  'call-center-call-details':   { label: 'Call Details',             groups: FILTER_GROUPS_CALL_DETAILS,                savedSetsKey: 'onflo-filter-sets-call-details'                },
+  'call-center-agent-status':  { label: 'Agent Status',             groups: FILTER_GROUPS_CALL_CENTER_AGENT_STATUS, savedSetsKey: 'onflo-filter-sets-call-center-agent-status'   },
+  'comparison-categories':     { label: 'Comparison — Categories',  groups: FILTER_GROUPS_SERVICE_OVERVIEW,         savedSetsKey: 'onflo-filter-sets-comparison-categories'      },
+  'comparison-topics':         { label: 'Comparison — Topics',      groups: FILTER_GROUPS_SERVICE_OVERVIEW,         savedSetsKey: 'onflo-filter-sets-comparison-topics'          },
+  'comparison-users':          { label: 'Comparison — Users',       groups: FILTER_GROUPS_SERVICE_OVERVIEW,         savedSetsKey: 'onflo-filter-sets-comparison-users'           },
+  fees:                        { label: 'Fees',                      groups: FILTER_GROUPS_FEES,                     savedSetsKey: 'onflo-filter-sets-fees'                        },
+  'custom-reports':            { label: 'Custom Reports',            groups: FILTER_GROUPS_CUSTOM_REPORTS,           savedSetsKey: 'onflo-filter-sets-custom-reports'              },
 };
 
 let activeContext     = 'service';
 let activeFilterGroups = CONTEXTS[activeContext].groups;
+let boundOverlay = null;
 
 // ── Build flat option lookup ──────────────────────────────────
 // optionId -> { groupId, groupLabel, tierId, tierLabel, label }
@@ -1071,6 +1858,10 @@ const state = {
   // Numeric range drafts (Service Overview: CX Score, Ticket Age)
   // keyed by tier.id → { min: number | null, max: number | null }
   numericRangeDrafts: {},
+  // Time range drafts — keyed by tier.id → { min: number | null, max: number | null } (minutes 0–1439)
+  timeRangeDrafts: {},
+  // Text match drafts — keyed by tier.id → { operator: string, value: string }
+  textMatchDrafts: {},
   // Whether the custom date range picker is expanded in the date-preset group
   datePresetCustomOpen: false,
   // Custom date range picker (legacy — kept for Service Overview reuse)
@@ -1084,6 +1875,42 @@ const state = {
   activeFilterSetId:   null,      // ID of the currently loaded saved set, or null
   savedSetsOpen:       false,     // whether the saved sets panel is visible
 };
+
+// ── Portal state — floating text-match operator dropdown ──────
+let _tmFloating = null; // { tierId, el: HTMLElement, trigger: HTMLElement }
+
+// ── Committed snapshot — restored when modal is cancelled ─────
+let _committedSnapshot = null;
+
+function _snapshotSelectionState() {
+  return {
+    selected:            new Set(state.selected),
+    excludedBuckets:     new Set(state.excludedBuckets),
+    fieldDateDrafts:     JSON.parse(JSON.stringify(state.fieldDateDrafts)),
+    costRangeDraft:      { ...state.costRangeDraft },
+    numericRangeDrafts:  JSON.parse(JSON.stringify(state.numericRangeDrafts)),
+    timeRangeDrafts:     JSON.parse(JSON.stringify(state.timeRangeDrafts)),
+    textMatchDrafts:     JSON.parse(JSON.stringify(state.textMatchDrafts)),
+    dateRangeDraft:      { ...state.dateRangeDraft },
+    datePickerMode:      state.datePickerMode,
+    datePresetCustomOpen: state.datePresetCustomOpen,
+    activeFilterSetId:   state.activeFilterSetId,
+  };
+}
+
+function _restoreSelectionState(snapshot) {
+  state.selected            = new Set(snapshot.selected);
+  state.excludedBuckets     = new Set(snapshot.excludedBuckets);
+  state.fieldDateDrafts     = JSON.parse(JSON.stringify(snapshot.fieldDateDrafts));
+  state.costRangeDraft      = { ...snapshot.costRangeDraft };
+  state.numericRangeDrafts  = JSON.parse(JSON.stringify(snapshot.numericRangeDrafts));
+  state.timeRangeDrafts     = JSON.parse(JSON.stringify(snapshot.timeRangeDrafts));
+  state.textMatchDrafts     = JSON.parse(JSON.stringify(snapshot.textMatchDrafts));
+  state.dateRangeDraft      = { ...snapshot.dateRangeDraft };
+  state.datePickerMode      = snapshot.datePickerMode;
+  state.datePresetCustomOpen = snapshot.datePresetCustomOpen;
+  state.activeFilterSetId   = snapshot.activeFilterSetId;
+}
 
 // ── DOM refs ──────────────────────────────────────────────────
 // DOM refs — assigned in filterModalInit()
@@ -1239,6 +2066,40 @@ function formatNumericRangeLabel(min, max, tierMin, tierMax, unit, maxLabel) {
   return `${min}–${maxStr}${u}`;
 }
 
+// ── Time range helpers ────────────────────────────────────────
+
+function formatTime(minutes) {
+  const h    = Math.floor(minutes / 60) % 12 || 12;
+  const m    = minutes % 60;
+  const ampm = minutes < 720 ? 'AM' : 'PM';
+  return `${h}:${String(m).padStart(2, '0')} ${ampm}`;
+}
+
+function formatTimeRangeLabel(min, max, tierMin, tierMax) {
+  if (min === tierMin && max === tierMax) return 'Any time';
+  return `${formatTime(min)} – ${formatTime(max)}`;
+}
+
+// ── Text match helpers ────────────────────────────────────────
+
+const TEXT_MATCH_OPERATORS = [
+  { value: 'contains',     label: 'Contains' },
+  { value: 'not-contains', label: 'Does not contain' },
+  { value: 'equals',       label: 'Equals' },
+  { value: 'not-equals',   label: 'Does not equal' },
+  { value: 'begins-with',  label: 'Begins with' },
+  { value: 'ends-with',    label: 'Ends with' },
+  { value: 'blank',        label: 'Blank' },
+  { value: 'not-blank',    label: 'Not blank' },
+];
+
+function formatTextMatchLabel(operator, value) {
+  const op = TEXT_MATCH_OPERATORS.find(o => o.value === operator);
+  const label = op ? op.label : operator;
+  if (operator === 'blank' || operator === 'not-blank') return label;
+  return `${label}: “${value}”`;
+}
+
 // Sync the two text inputs from draft state (used after full re-render would stomp them)
 function syncInputsFromState() {
   const { start, end } = state.dateRangeDraft;
@@ -1248,15 +2109,12 @@ function syncInputsFromState() {
   if (endEl)   endEl.value   = end   ? formatDateInput(end)   : '';
 }
 
-// Refresh only the Add/Clear button states without a full re-render
+// Refresh only the Add button state without a full re-render
 function updateDatePickerButtons() {
   const { start, end } = state.dateRangeDraft;
-  const canAdd   = state.datePickerMode === 'single' ? !!start : !!(start && end);
-  const canClear = !!(start || end);
-  const addBtn   = document.querySelector('[data-add-date-range]');
-  const clearBtn = document.querySelector('[data-clear-date-draft]');
-  if (addBtn)   addBtn.disabled   = !canAdd;
-  if (clearBtn) clearBtn.disabled = !canClear;
+  const canAdd = state.datePickerMode === 'single' ? !!start : !!(start && end);
+  const addBtn = document.querySelector('[data-add-date-range]');
+  if (addBtn) addBtn.disabled = !canAdd;
 }
 
 // ── Date calendar builder ─────────────────────────────────────
@@ -1336,8 +2194,7 @@ function buildDateRangePicker(opts = {}) {
 
   const startVal = start ? formatDateInput(start) : '';
   const endVal   = end   ? formatDateInput(end)   : '';
-  const canAdd   = mode === 'single' ? !!start : !!(start && end);
-  const canClear = !!(start || end);
+  const canAdd = mode === 'single' ? !!start : !!(start && end);
 
   // ── Mode toggle (segmented control) ──
   const modeToggle = `
@@ -1447,22 +2304,69 @@ function buildDateRangePicker(opts = {}) {
 
       <div class="date-range-picker__actions">
         <button
-          class="ds-button ds-button--text ds-button--sm"
-          data-clear-date-draft
-          type="button"
-          ${canClear ? '' : 'disabled'}
-        >Clear</button>
-        <button
-          class="ds-button ds-button--filled ds-button--sm"
+          class="ds-button ds-button--filled ds-button--xs"
           data-add-date-range
           type="button"
           ${canAdd ? '' : 'disabled'}
-        >
-          <span class="ds-icon ds-icon--sm" aria-hidden="true">${addIcon}</span>
-          ${addLabel}
-        </button>
+        >${addLabel}</button>
       </div>
 
+      ${!opts.suppressChips && customRangeChips ? `
+        <div class="date-range-picker__chips">
+          <span class="date-range-picker__chips-label">Added dates</span>
+          ${customRangeChips}
+        </div>` : ''}
+    </div>`;
+}
+
+// ── Native date range picker (matches preview HTML — no custom calendar) ──
+
+function buildNativeDateRangePicker(opts = {}) {
+  const { start, end } = state.dateRangeDraft;
+  const nativeFrom = start ? start.toISOString().slice(0, 10) : '';
+  const nativeTo   = end   ? end.toISOString().slice(0, 10)   : '';
+  const canAdd     = !!(start && end);
+
+  const customRangeChips = Array.from(state.selected)
+    .filter(id => id.startsWith('custom-dr-'))
+    .map(id => {
+      const meta = OPTION_META.get(id);
+      if (!meta) return '';
+      return `
+        <div class="ds-chip">
+          <span class="ds-icon ds-icon--sm ds-chip__icon" aria-hidden="true">date_range</span>
+          <span class="ds-chip__label">${esc(meta.label)}</span>
+          <button class="ds-chip__remove" data-remove-id="${id}" type="button" aria-label="Remove ${esc(meta.label)}">
+            <span class="ds-icon ds-icon--xs">close</span>
+          </button>
+        </div>`;
+    }).join('');
+
+  return `
+    <div class="date-range-picker" id="date-range-picker">
+      <div class="filter-date-field__row" style="margin-bottom:8px">
+        <div class="filter-date-field__group">
+          <label class="filter-date-field__label" for="dr-preset-start">Start date</label>
+          <div class="dp-demo-field">
+            <input type="date" id="dr-preset-start" data-native-date-start value="${nativeFrom}">
+            <button class="dp-demo-field__icon-btn" type="button" aria-label="Open date picker" data-open-picker="dr-preset-start">
+              <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
+            </button>
+          </div>
+        </div>
+        <div class="filter-date-field__group">
+          <label class="filter-date-field__label" for="dr-preset-end">End date</label>
+          <div class="dp-demo-field">
+            <input type="date" id="dr-preset-end" data-native-date-end value="${nativeTo}">
+            <button class="dp-demo-field__icon-btn" type="button" aria-label="Open date picker" data-open-picker="dr-preset-end">
+              <span class="ds-icon ds-icon--sm" aria-hidden="true">calendar_today</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="date-range-picker__actions">
+        <button class="ds-button ds-button--filled ds-button--xs" data-add-native-date-range type="button"${canAdd ? '' : ' disabled'}>Add Range</button>
+      </div>
       ${!opts.suppressChips && customRangeChips ? `
         <div class="date-range-picker__chips">
           <span class="date-range-picker__chips-label">Added dates</span>
@@ -1521,13 +2425,20 @@ function clearCalendarPreview() {
 
 function buildCard(opt, query = '') {
   const selected = state.selected.has(opt.id);
+  const hasSublabel = !!opt.sublabel;
+  const inner = hasSublabel
+    ? `<span class="filter-card__body">
+         <span class="filter-card__label">${highlightMatch(opt.label, query)}</span>
+         <span class="filter-card__sublabel">${highlightMatch(opt.sublabel, query)}</span>
+       </span>`
+    : `<span>${highlightMatch(opt.label, query)}</span>`;
   return `
     <button
-      class="filter-card${selected ? ' filter-card--selected' : ''}"
+      class="filter-card${hasSublabel ? ' filter-card--has-sublabel' : ''}${selected ? ' filter-card--selected' : ''}"
       data-option-id="${opt.id}"
       aria-pressed="${selected}"
     >
-      <span>${highlightMatch(opt.label, query)}</span>
+      ${inner}
       <span class="ds-icon ds-icon--sm filter-card__check" aria-hidden="true">check</span>
     </button>`;
 }
@@ -1538,9 +2449,8 @@ function buildTierSection(tier) {
   // ── Date-range tier ──────────────────────────────────────────
   if (tier.type === 'date-range') {
     const appliedId   = 'dr-' + tier.id;
-    const applied     = state.selected.has(appliedId);
-    const appliedMeta = applied ? OPTION_META.get(appliedId) : null;
-    const draft       = state.fieldDateDrafts[tier.id] || { from: '', to: '' };
+    const applied = state.selected.has(appliedId);
+    const draft   = state.fieldDateDrafts[tier.id] || { from: '', to: '' };
     const canApply    = !!(draft.from || draft.to);
     const badge       = collapsed && applied
       ? `<span class="filter-tier__badge" aria-label="1 selected">1</span>` : '';
@@ -1565,19 +2475,9 @@ function buildTierSection(tier) {
             </div>
           </div>
           <div class="filter-date-field__actions">
-            ${applied
-              ? `<button class="ds-button ds-button--text ds-button--sm"
-                   data-clear-date-field="${tier.id}" type="button">Clear</button>`
-              : ''}
-            <button class="ds-button ds-button--filled ds-button--sm"
-              data-apply-date-field="${tier.id}" type="button" ${canApply ? '' : 'disabled'}>Apply</button>
+            <button class="ds-button ds-button--filled ds-button--xs"
+              data-apply-date-field="${tier.id}" type="button" ${canApply ? '' : 'disabled'}>Add</button>
           </div>
-          ${applied
-            ? `<div class="filter-date-field__applied">
-                 <span class="ds-icon ds-icon--sm" aria-hidden="true">check_circle</span>
-                 ${esc(appliedMeta.label)}
-               </div>`
-            : ''}
         </div>
       </div>`;
 
@@ -1639,19 +2539,9 @@ function buildTierSection(tier) {
             <span>$${tierMax.toLocaleString()}</span>
           </div>
           <div class="filter-cost-range__actions">
-            ${applied
-              ? `<button class="ds-button ds-button--text ds-button--sm"
-                   data-clear-cost-range="${tier.id}" type="button">Clear</button>`
-              : ''}
-            <button class="ds-button ds-button--filled ds-button--sm"
-              data-apply-cost-range="${tier.id}" type="button">Apply</button>
+            <button class="ds-button ds-button--filled ds-button--xs"
+              data-apply-cost-range="${tier.id}" type="button">Add</button>
           </div>
-          ${applied
-            ? `<div class="filter-date-field__applied">
-                 <span class="ds-icon ds-icon--sm" aria-hidden="true">check_circle</span>
-                 ${esc(OPTION_META.get(appliedId)?.label ?? '')}
-               </div>`
-            : ''}
         </div>
       </div>`;
 
@@ -1717,19 +2607,134 @@ function buildTierSection(tier) {
             <span>${maxBound}${u}</span>
           </div>
           <div class="filter-numeric-range__actions">
-            ${applied
-              ? `<button class="ds-button ds-button--text ds-button--sm"
-                   data-clear-nr="${tier.id}" type="button">Clear</button>`
-              : ''}
-            <button class="ds-button ds-button--filled ds-button--sm"
-              data-apply-nr="${tier.id}" type="button">Apply</button>
+            <button class="ds-button ds-button--filled ds-button--xs"
+              data-apply-nr="${tier.id}" type="button">Add</button>
           </div>
-          ${applied
-            ? `<div class="filter-date-field__applied">
-                 <span class="ds-icon ds-icon--sm" aria-hidden="true">check_circle</span>
-                 ${esc(OPTION_META.get(appliedId)?.label ?? '')}
-               </div>`
-            : ''}
+        </div>
+      </div>`;
+
+    return `
+      <div class="filter-tier" data-tier-id="${tier.id}">
+        <div class="filter-tier__top-row">
+          <button class="filter-tier__header" aria-expanded="${!collapsed}" data-tier-toggle="${tier.id}">
+            <span>${esc(tier.label)}</span>
+            <span class="ds-icon ds-icon--sm ds-icon--filled filter-tier__chevron" aria-hidden="true">arrow_drop_down</span>
+            <span class="filter-tier__end">${badge}</span>
+          </button>
+        </div>
+        ${body}
+      </div>`;
+  }
+
+  // ── Text-match tier ──────────────────────────────────────────
+  if (tier.type === 'text-match') {
+    const appliedId = 'tm-' + tier.id;
+    const applied   = state.selected.has(appliedId);
+    const draft     = state.textMatchDrafts[tier.id] || { operator: 'contains', value: '' };
+    const op        = draft.operator;
+    const val       = draft.value;
+    const noValue   = op === 'blank' || op === 'not-blank';
+    const canApply  = noValue || val.trim().length > 0;
+    const badge     = collapsed && applied ? `<span class="filter-tier__badge" aria-label="1 selected">1</span>` : '';
+
+    const currentOpLabel = TEXT_MATCH_OPERATORS.find(o => o.value === op)?.label ?? 'Contains';
+
+    const body = collapsed ? '' : `
+      <div class="filter-tier__body">
+        <div class="filter-text-match" data-tier-id="${tier.id}">
+          <div class="ds-select">
+            <div class="ds-select__field-row">
+              <button class="ds-select__field" type="button"
+                      data-tm-trigger="${tier.id}"
+                      aria-haspopup="listbox"
+                      aria-expanded="false"
+                      aria-controls="tm-floating-${tier.id}">
+                <span class="ds-select__value" id="tm-label-${tier.id}">${esc(currentOpLabel)}</span>
+                <span class="ds-icon ds-icon--sm ds-select__arrow" aria-hidden="true">arrow_drop_down</span>
+              </button>
+            </div>
+          </div>
+          <div class="ds-input" ${noValue ? 'hidden' : ''}>
+            <div class="ds-input__field">
+              <input class="ds-input__control"
+                     type="text"
+                     placeholder="Enter text…"
+                     value="${esc(val)}"
+                     data-tm-value="${tier.id}"
+                     aria-label="${esc(tier.label)} value"
+                     ${noValue ? 'disabled' : ''} />
+            </div>
+          </div>
+          <div class="filter-numeric-range__actions">
+            <button class="ds-button ds-button--filled ds-button--xs"
+              data-apply-tm="${tier.id}" type="button"
+              ${canApply ? '' : 'disabled'}>Add</button>
+          </div>
+        </div>
+      </div>`;
+
+    return `
+      <div class="filter-tier" data-tier-id="${tier.id}">
+        <div class="filter-tier__top-row">
+          <button class="filter-tier__header" aria-expanded="${!collapsed}" data-tier-toggle="${tier.id}">
+            <span>${esc(tier.label)}</span>
+            <span class="ds-icon ds-icon--sm ds-icon--filled filter-tier__chevron" aria-hidden="true">arrow_drop_down</span>
+            <span class="filter-tier__end">${badge}</span>
+          </button>
+        </div>
+        ${body}
+      </div>`;
+  }
+
+  // ── Time-range tier ───────────────────────────────────────────
+  if (tier.type === 'time-range') {
+    const appliedId = 'tr-' + tier.id;
+    const applied   = state.selected.has(appliedId);
+    const tierMin   = tier.min ?? 0;
+    const tierMax   = tier.max ?? 1439;
+    const step      = tier.step ?? 15;
+    const draft     = state.timeRangeDrafts[tier.id];
+    const curMin    = draft?.min !== null && draft?.min !== undefined ? draft.min : tierMin;
+    const curMax    = draft?.max !== null && draft?.max !== undefined ? draft.max : tierMax;
+    const minPct    = ((curMin - tierMin) / (tierMax - tierMin) * 100).toFixed(1);
+    const maxPct    = ((curMax - tierMin) / (tierMax - tierMin) * 100).toFixed(1);
+    const badge     = collapsed && applied
+      ? `<span class="filter-tier__badge" aria-label="1 selected">1</span>` : '';
+
+    const body = collapsed ? '' : `
+      <div class="filter-tier__body">
+        <div class="filter-numeric-range" data-tier-id="${tier.id}">
+          <div class="filter-numeric-range__values">
+            <span class="filter-numeric-range__value" id="tr-min-val-${tier.id}">${formatTime(curMin)}</span>
+            <span class="filter-numeric-range__dash">–</span>
+            <span class="filter-numeric-range__value" id="tr-max-val-${tier.id}">${formatTime(curMax)}</span>
+          </div>
+          <div class="filter-numeric-range__slider-wrap" id="tr-wrap-${tier.id}"
+               style="--cr-min:${minPct}%;--cr-max:${maxPct}%">
+            <div class="filter-numeric-range__track" aria-hidden="true">
+              <div class="filter-numeric-range__fill"></div>
+            </div>
+            <input type="range" class="filter-numeric-range__thumb filter-numeric-range__thumb--min"
+              id="tr-thumb-min-${tier.id}"
+              min="${tierMin}" max="${tierMax}" step="${step}" value="${curMin}"
+              data-tr-min data-tr-tier="${tier.id}"
+              data-tr-tier-min="${tierMin}" data-tr-tier-max="${tierMax}"
+              aria-label="Start time">
+            <input type="range" class="filter-numeric-range__thumb filter-numeric-range__thumb--max"
+              id="tr-thumb-max-${tier.id}"
+              min="${tierMin}" max="${tierMax}" step="${step}" value="${curMax}"
+              data-tr-max data-tr-tier="${tier.id}"
+              data-tr-tier-min="${tierMin}" data-tr-tier-max="${tierMax}"
+              aria-label="End time">
+          </div>
+          <div class="filter-numeric-range__bounds">
+            <span>12:00 AM</span>
+            <span>11:59 PM</span>
+          </div>
+          <div class="filter-numeric-range__actions">
+            <button class="ds-button ds-button--filled ds-button--xs"
+              data-apply-tr="${tier.id}" type="button">Add</button>
+          </div>
         </div>
       </div>`;
 
@@ -1813,7 +2818,7 @@ function buildDatePresetOptions(group) {
     </button>`;
 
   const customPicker = customOpen
-    ? `<div class="filter-preset-custom-picker">${buildDateRangePicker({ suppressChips: true })}</div>`
+    ? `<div class="filter-preset-custom-picker">${buildNativeDateRangePicker({ suppressChips: true })}</div>`
     : '';
 
   return `<div class="filter-preset-list"><div class="filter-preset-pill-grid">${presetItems}</div>${customToggle}${customPicker}</div>`;
@@ -1829,23 +2834,44 @@ function buildGroupOptions(groupId) {
   }
 
   if (group.options) {
+    const tierId      = group.id;
+    const collapsed   = state.collapsedTiers.has(tierId);
     const allIds      = group.options.map(o => o.id).join(',');
     const allSelected = group.options.every(o => state.selected.has(o.id));
     const addAllLabel   = allSelected ? 'Remove all' : 'Add all';
     const addAllVariant = allSelected ? 'ds-button--destructive' : 'ds-button--text';
-    const cards = group.options.map(opt => buildCard(opt)).join('');
+    const cards       = group.options.map(opt => buildCard(opt)).join('');
+    const selCount    = group.options.filter(o => state.selected.has(o.id)).length;
+    const tierBadge   = collapsed && selCount > 0
+      ? `<span class="filter-tier__badge" aria-label="${selCount} selected">${selCount}</span>`
+      : '';
     return `
-      <div class="filter-group-header-row">
-        <div class="ds-tooltip-wrapper">
+      <div class="filter-tier" data-tier-id="${tierId}">
+        <div class="filter-tier__top-row">
           <button
-            class="ds-button ds-button--xs ds-button--leading-icon ${addAllVariant}"
-            data-add-all="${allIds}"
-            aria-label="${addAllLabel} ${esc(group.label)} filters"
-          ><span class="ds-icon" aria-hidden="true">${allSelected ? 'remove' : 'add'}</span> All</button>
-          <div class="ds-tooltip" role="tooltip">${addAllLabel}</div>
+            class="filter-tier__header"
+            aria-expanded="${!collapsed}"
+            data-tier-toggle="${tierId}"
+          >
+            <span>${esc(group.label)}</span>
+            <span class="ds-icon ds-icon--sm ds-icon--filled filter-tier__chevron" aria-hidden="true">arrow_drop_down</span>
+            <span class="filter-tier__end">${tierBadge}</span>
+          </button>
+          <div class="ds-tooltip-wrapper">
+            <button
+              class="ds-button ds-button--xs ds-button--leading-icon ${addAllVariant}"
+              data-add-all="${allIds}"
+              aria-label="${addAllLabel} ${esc(group.label)} filters"
+            ><span class="ds-icon" aria-hidden="true">${allSelected ? 'remove' : 'add'}</span> All</button>
+            <div class="ds-tooltip" role="tooltip">${addAllLabel}</div>
+          </div>
         </div>
-      </div>
-      <div class="filter-cards-grid">${cards}${GRID_SPACERS}</div>`;
+        ${collapsed ? '' : `
+          <div class="filter-tier__body">
+            <div class="filter-cards-grid">${cards}${GRID_SPACERS}</div>
+          </div>
+        `}
+      </div>`;
   }
 
   return group.tiers.map(tier => buildTierSection(tier)).join('');
@@ -1884,8 +2910,10 @@ function buildSearchResults(rawQuery) {
         group.options.forEach(opt => hits.push({ opt, rank: -1 }));
       } else {
         group.options.forEach(opt => {
-          if (opt.label.toLowerCase().includes(q))
-            hits.push({ opt, rank: rankMatch(opt.label, q) });
+          const matchLabel    = opt.label.toLowerCase().includes(q);
+          const matchSublabel = opt.sublabel && opt.sublabel.toLowerCase().includes(q);
+          if (matchLabel || matchSublabel)
+            hits.push({ opt, rank: matchSublabel && !matchLabel ? 2 : rankMatch(opt.label, q) });
         });
         hits.sort((a, b) => a.rank - b.rank || a.opt.label.localeCompare(b.opt.label));
       }
@@ -2182,7 +3210,9 @@ function render() {
 
 // ── Saved Filter Sets ─────────────────────────────────────────
 
-function getSavedSetsKey() { return CONTEXTS[activeContext].savedSetsKey; }
+function getSavedSetsKey() {
+  return CONTEXTS[activeContext]?.savedSetsKey ?? `onflo-filter-sets-${activeContext}`;
+}
 
 function getSavedSets() {
   try { return JSON.parse(localStorage.getItem(getSavedSetsKey()) || '[]'); }
@@ -2256,13 +3286,14 @@ function renderSavedSetsPanel() {
               id="save-set-name-input"
               placeholder="Name this filter set…"
               maxlength="60"
+              autocomplete="off"
               ${!hasFilters ? 'disabled' : ''}
               aria-label="Filter set name"
             >
           </div>
         </div>
         <button
-          class="ds-button ds-button--filled ds-button--sm"
+          class="ds-button ds-button--filled"
           id="confirm-save-set-btn"
           ${!hasFilters ? 'disabled' : ''}
         >Save</button>
@@ -2277,7 +3308,11 @@ function renderSavedSetsPanel() {
            <p class="ds-empty-state__heading">No saved filter sets yet.</p>
          </div>
        </div>`
-    : sets.slice().reverse().map(set => {
+    : sets.slice().reverse().sort((a, b) => {
+        const aActive = a.id === state.activeFilterSetId ? 0 : 1;
+        const bActive = b.id === state.activeFilterSetId ? 0 : 1;
+        return aActive - bActive;
+      }).map(set => {
         const isActive = set.id === state.activeFilterSetId;
         const date = new Date(set.savedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         const count = set.selected.length;
@@ -2297,10 +3332,7 @@ function renderSavedSetsPanel() {
         return `
           <div class="saved-set-item${isActive ? ' saved-set-item--active' : ''}">
             <div class="saved-set-item__info">
-              <span class="saved-set-item__name">
-                ${esc(set.name)}
-                ${isActive ? '<span class="saved-set-item__loaded-badge">Loaded</span>' : ''}
-              </span>
+              <span class="saved-set-item__name">${esc(set.name)}</span>
               <span class="saved-set-item__meta">${count} filter${count !== 1 ? 's' : ''} · ${esc(date)}</span>
             </div>
             <div class="saved-set-item__actions">
@@ -2327,7 +3359,10 @@ function renderSavedSetsPanel() {
   // Auto-focus name input if filters are already selected
   if (hasFilters) {
     requestAnimationFrame(() => {
-      document.getElementById('save-set-name-input')?.focus();
+      const input = document.getElementById('save-set-name-input');
+      const wrap = input?.closest('.saved-sets-save-form__input-wrap');
+      if (wrap) wrap.setAttribute('data-mouse-focus', '');
+      input?.focus();
     });
   }
 }
@@ -2568,6 +3603,7 @@ function applyDateField(tierId) {
     toISO:   draft.to,
   });
   state.selected.add(id);
+  state.fieldDateDrafts[tierId] = { from: '', to: '' };
   render();
 }
 
@@ -2597,6 +3633,7 @@ function applyCostRange(tierId) {
     label: formatCostLabel(min, max, tierMin, tierMax),
   });
   state.selected.add(id);
+  state.costRangeDraft = { min: null, max: null };
   render();
 }
 
@@ -2627,6 +3664,7 @@ function applyNumericRange(tierId) {
     label: formatNumericRangeLabel(min, max, tierMin, tierMax, tier.unit, tier.maxLabel),
   });
   state.selected.add(id);
+  state.numericRangeDrafts[tierId] = { min: null, max: null };
   render();
 }
 
@@ -2661,6 +3699,145 @@ function updateNumericRangeDOM(tierId, minVal, maxVal) {
   if (wrap)  { wrap.style.setProperty('--cr-min', `${minPct}%`); wrap.style.setProperty('--cr-max', `${maxPct}%`); }
   if (minEl) minEl.textContent = `${minVal}${u}`;
   if (maxEl) maxEl.textContent = `${maxDisp}${u}`;
+}
+
+// ── Time range DOM update ──────────────────────────────────────
+
+function updateTimeRangeDOM(tierId, minVal, maxVal) {
+  const found = findTierMeta(tierId);
+  if (!found) return;
+  const { tier } = found;
+  const tierMin = tier.min ?? 0;
+  const tierMax = tier.max ?? 1439;
+
+  if (!state.timeRangeDrafts[tierId]) state.timeRangeDrafts[tierId] = {};
+  state.timeRangeDrafts[tierId].min = minVal;
+  state.timeRangeDrafts[tierId].max = maxVal;
+
+  const minPct = ((minVal - tierMin) / (tierMax - tierMin) * 100).toFixed(1);
+  const maxPct = ((maxVal - tierMin) / (tierMax - tierMin) * 100).toFixed(1);
+
+  const wrap  = document.getElementById(`tr-wrap-${tierId}`);
+  const minEl = document.getElementById(`tr-min-val-${tierId}`);
+  const maxEl = document.getElementById(`tr-max-val-${tierId}`);
+  if (wrap)  { wrap.style.setProperty('--cr-min', `${minPct}%`); wrap.style.setProperty('--cr-max', `${maxPct}%`); }
+  if (minEl) minEl.textContent = formatTime(minVal);
+  if (maxEl) maxEl.textContent = formatTime(maxVal);
+}
+
+// ── Text match actions ─────────────────────────────────────────
+
+function closeAllTmDropdowns() {
+  if (!_tmFloating) return;
+  _tmFloating.el.remove();
+  _tmFloating.trigger?.setAttribute('aria-expanded', 'false');
+  _tmFloating = null;
+}
+
+function openTmDropdown(tierId, triggerEl) {
+  closeAllTmDropdowns();
+
+  const rect = triggerEl.getBoundingClientRect();
+  const op   = state.textMatchDrafts[tierId]?.operator ?? 'contains';
+
+  const menu = document.createElement('div');
+  menu.className = 'ds-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.setAttribute('id', `tm-floating-${tierId}`);
+  menu.dataset.tmFloating = tierId;
+  menu.style.cssText = `position:fixed;top:${rect.bottom + 4}px;left:${rect.left}px;width:${rect.width}px;z-index:9999;overflow-y:auto;max-height:256px;`;
+
+  TEXT_MATCH_OPERATORS.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'ds-menu__item' + (o.value === op ? ' ds-menu__item--selected' : '');
+    btn.setAttribute('role', 'option');
+    btn.setAttribute('aria-selected', String(o.value === op));
+    btn.setAttribute('type', 'button');
+    btn.textContent = o.label;
+    btn.addEventListener('mousedown', e => e.preventDefault()); // keep trigger focused
+    btn.addEventListener('click', () => selectTmOperator(tierId, o.value));
+    menu.appendChild(btn);
+  });
+
+  document.body.appendChild(menu);
+  triggerEl.setAttribute('aria-expanded', 'true');
+  _tmFloating = { tierId, el: menu, trigger: triggerEl };
+}
+
+function selectTmOperator(tierId, opValue) {
+  if (!state.textMatchDrafts[tierId]) state.textMatchDrafts[tierId] = { operator: 'contains', value: '' };
+  state.textMatchDrafts[tierId].operator = opValue;
+  const noValue = opValue === 'blank' || opValue === 'not-blank';
+
+  const labelEl = document.getElementById(`tm-label-${tierId}`);
+  const opLabel = TEXT_MATCH_OPERATORS.find(o => o.value === opValue)?.label ?? opValue;
+  if (labelEl) labelEl.textContent = opLabel;
+
+  const container = document.querySelector(`.filter-text-match[data-tier-id="${tierId}"]`);
+  const inputWrap = container?.querySelector('.ds-input');
+  const inputEl   = container?.querySelector('[data-tm-value]');
+  const applyBtn  = container?.querySelector('[data-apply-tm]');
+  if (inputWrap) inputWrap.hidden  = noValue;
+  if (inputEl)   inputEl.disabled  = noValue;
+  if (applyBtn)  applyBtn.disabled = !noValue && !state.textMatchDrafts[tierId].value.trim();
+
+  closeAllTmDropdowns();
+}
+
+function applyTextMatch(tierId) {
+  const found = findTierMeta(tierId);
+  if (!found) return;
+  const { group, tier } = found;
+  const draft   = state.textMatchDrafts[tierId] || { operator: 'contains', value: '' };
+  const noValue = draft.operator === 'blank' || draft.operator === 'not-blank';
+  if (!noValue && !draft.value.trim()) return;
+  const id = 'tm-' + tierId;
+  OPTION_META.set(id, {
+    groupId: group.id, groupLabel: group.label,
+    tierId, tierLabel: tier.label,
+    label: formatTextMatchLabel(draft.operator, draft.value),
+  });
+  state.selected.add(id);
+  state.textMatchDrafts[tierId] = { operator: 'contains', value: '' };
+  render();
+}
+
+function clearTextMatch(tierId) {
+  const id = 'tm-' + tierId;
+  state.selected.delete(id);
+  OPTION_META.delete(id);
+  state.textMatchDrafts[tierId] = { operator: 'contains', value: '' };
+  render();
+}
+
+// ── Time range actions ─────────────────────────────────────────
+
+function applyTimeRange(tierId) {
+  const found = findTierMeta(tierId);
+  if (!found) return;
+  const { group, tier } = found;
+  const tierMin = tier.min ?? 0;
+  const tierMax = tier.max ?? 1439;
+  const draft   = state.timeRangeDrafts[tierId];
+  const min     = draft?.min !== null && draft?.min !== undefined ? draft.min : tierMin;
+  const max     = draft?.max !== null && draft?.max !== undefined ? draft.max : tierMax;
+  const id      = 'tr-' + tierId;
+  OPTION_META.set(id, {
+    groupId: group.id, groupLabel: group.label,
+    tierId, tierLabel: tier.label,
+    label: formatTimeRangeLabel(min, max, tierMin, tierMax),
+  });
+  state.selected.add(id);
+  state.timeRangeDrafts[tierId] = { min: null, max: null };
+  render();
+}
+
+function clearTimeRange(tierId) {
+  const id = 'tr-' + tierId;
+  state.selected.delete(id);
+  OPTION_META.delete(id);
+  state.timeRangeDrafts[tierId] = { min: null, max: null };
+  render();
 }
 
 // ── Date preset actions ────────────────────────────────────────
@@ -2855,6 +4032,8 @@ function toggleTier(tierId) {
 }
 
 function openModal() {
+  _committedSnapshot = _snapshotSelectionState();
+  render();
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   // Focus search on open — mark as mouse-focus to suppress the ADA focus ring
@@ -2866,6 +4045,12 @@ function openModal() {
 }
 
 function closeModal() {
+  if (!overlay || overlay.hidden) return;
+  closeAllTmDropdowns();
+  if (_committedSnapshot) {
+    _restoreSelectionState(_committedSnapshot);
+    _committedSnapshot = null;
+  }
   overlay.hidden = true;
   document.body.style.overflow = '';
   window.dispatchEvent(new CustomEvent('filterModalClose'));
@@ -2874,6 +4059,8 @@ function closeModal() {
 function renderAppliedBar() {
   const bar      = document.getElementById('filter-applied-bar');
   const cardsEl  = document.getElementById('filter-applied-cards');
+
+  if (!bar) return;
 
   if (state.selected.size === 0) {
     bar.hidden = true;
@@ -2955,8 +4142,9 @@ function updateFilterBadge() {
 function applyFilters() {
   renderAppliedBar();
   updateFilterBadge();
+  _committedSnapshot = null; // commit — don't restore on close
   closeModal();
-  const hasDateFilter = Array.from(state.selected).some(id => id.startsWith('dp-') || id.startsWith('custom-dr-'));
+  const hasDateFilter = Array.from(state.selected).some(id => id.startsWith('dp-') || id.startsWith('custom-dr-') || id.startsWith('dr-'));
   window.dispatchEvent(new CustomEvent('filterApplied', { detail: { count: state.selected.size, hasDateFilter } }));
 }
 
@@ -2964,16 +4152,40 @@ function applyFilters() {
 
 // ── Angular integration ──────────────────────────────────────────
 window.filterModalInit = function(context) {
-  if (context && CONTEXTS[context] && context !== activeContext) {
-    activeContext      = context;
-    activeFilterGroups = CONTEXTS[context].groups;
-    OPTION_META        = buildOptionMeta(activeFilterGroups);
-    state.activeGroupId = activeFilterGroups[0]?.id ?? null;
+  if (context && context !== activeContext) {
+    activeContext = context;
+    if (CONTEXTS[context]) {
+      activeFilterGroups = CONTEXTS[context].groups;
+      OPTION_META        = buildOptionMeta(activeFilterGroups);
+    } else {
+      activeFilterGroups = [];
+      OPTION_META        = new Map();
+    }
+    state.activeGroupId             = activeFilterGroups[0]?.id ?? null;
+    state.searchQuery               = '';
     state.selected.clear();
     state.excludedBuckets.clear();
+    state.collapsedTiers.clear();
+    state.expandedSearchGroups.clear();
+    state.collapsedSelectedBuckets.clear();
+    state.expandedSelectedBuckets.clear();
+    state.dateRangeDraft            = { start: null, end: null };
+    state.fieldDateDrafts           = {};
+    state.costRangeDraft            = { min: null, max: null };
+    state.numericRangeDrafts        = {};
+    state.datePresetCustomOpen      = false;
+    state.datePickerViewYear        = new Date().getFullYear();
+    state.datePickerViewMonth       = new Date().getMonth();
+    state.calendarOpen              = false;
+    state.activeDateInput           = 'start';
+    state.activeFilterSetId         = null;
+    state.savedSetsOpen             = false;
+    _committedSnapshot              = null;
   }
   // Assign DOM refs
   overlay        = document.getElementById('filter-overlay');
+  const freshDOM = overlay !== boundOverlay;
+  if (freshDOM) boundOverlay = overlay;
   modal          = document.getElementById('filter-modal');
   navEl          = document.getElementById('filter-nav');
   optionsEl      = document.getElementById('filter-options');
@@ -2989,8 +4201,9 @@ window.filterModalInit = function(context) {
   activeSetNameEl    = document.getElementById('active-set-name');
   updateSetBtnEl     = document.getElementById('update-set-btn');
 
-  // ── Events ────────────────────────────────────────────────────
-  
+  // ── Events — attached once per DOM lifetime ──────────────────
+  if (freshDOM) {
+
   // Event delegation on modal body
   modal.addEventListener('click', e => {
     // Field-specific date picker: Apply
@@ -3034,7 +4247,45 @@ window.filterModalInit = function(context) {
       clearNumericRange(clearNrBtn.dataset.clearNr);
       return;
     }
-  
+
+    // Text match: operator dropdown trigger — opens portal above the modal
+    const tmTrigger = e.target.closest('[data-tm-trigger]');
+    if (tmTrigger) {
+      const tierId  = tmTrigger.dataset.tmTrigger;
+      const isOpen  = _tmFloating?.tierId === tierId;
+      closeAllTmDropdowns();
+      if (!isOpen) openTmDropdown(tierId, tmTrigger);
+      return;
+    }
+
+    // Text match: Apply
+    const applyTmBtn = e.target.closest('[data-apply-tm]');
+    if (applyTmBtn && !applyTmBtn.hasAttribute('disabled')) {
+      applyTextMatch(applyTmBtn.dataset.applyTm);
+      return;
+    }
+
+    // Text match: Clear
+    const clearTmBtn = e.target.closest('[data-clear-tm]');
+    if (clearTmBtn) {
+      clearTextMatch(clearTmBtn.dataset.clearTm);
+      return;
+    }
+
+    // Time range: Apply
+    const applyTrBtn = e.target.closest('[data-apply-tr]');
+    if (applyTrBtn) {
+      applyTimeRange(applyTrBtn.dataset.applyTr);
+      return;
+    }
+
+    // Time range: Clear
+    const clearTrBtn = e.target.closest('[data-clear-tr]');
+    if (clearTrBtn) {
+      clearTimeRange(clearTrBtn.dataset.clearTr);
+      return;
+    }
+
     // Cost range: Apply
     const applyCostBtn = e.target.closest('[data-apply-cost-range]');
     if (applyCostBtn) {
@@ -3065,10 +4316,30 @@ window.filterModalInit = function(context) {
     // Date range picker: add range
     const addRangeBtn = e.target.closest('[data-add-date-range]');
     if (addRangeBtn && !addRangeBtn.hasAttribute('disabled')) { addDateRange(); return; }
-  
+
     // Date range picker: clear draft
     const clearDraftBtn = e.target.closest('[data-clear-date-draft]');
     if (clearDraftBtn) { clearDateDraft(); return; }
+
+    // Native date range picker: open browser picker
+    const openPickerBtn = e.target.closest('[data-open-picker]');
+    if (openPickerBtn) {
+      const inputEl = document.getElementById(openPickerBtn.dataset.openPicker);
+      if (inputEl) { try { inputEl.showPicker(); } catch (_) { inputEl.focus(); } }
+      return;
+    }
+
+    // Native date range picker: add range
+    const addNativeRangeBtn = e.target.closest('[data-add-native-date-range]');
+    if (addNativeRangeBtn && !addNativeRangeBtn.hasAttribute('disabled')) {
+      state.datePickerMode = 'range';
+      addDateRange();
+      return;
+    }
+
+    // Native date range picker: clear draft
+    const clearNativeDraftBtn = e.target.closest('[data-clear-native-date-draft]');
+    if (clearNativeDraftBtn) { clearDateDraft(); return; }
   
     // Date range picker: mode toggle
     const modeBtn = e.target.closest('[data-date-mode]');
@@ -3298,6 +4569,21 @@ window.filterModalInit = function(context) {
     if (floatPanel && e.target === floatPanel) clearCalendarPreview();
   });
   
+  // Native date range picker inputs — update dateRangeDraft state
+  optionsEl.addEventListener('change', e => {
+    const startEl = e.target.closest('[data-native-date-start]');
+    const endEl   = e.target.closest('[data-native-date-end]');
+    if (!startEl && !endEl) return;
+
+    const value = (startEl || endEl).value;
+    const parsed = value ? new Date(value + 'T12:00:00') : null;
+    if (startEl) state.dateRangeDraft.start = parsed;
+    else         state.dateRangeDraft.end   = parsed;
+
+    const addBtn = document.querySelector('[data-add-native-date-range]');
+    if (addBtn) addBtn.disabled = !(state.dateRangeDraft.start && state.dateRangeDraft.end);
+  });
+
   // Field-specific date inputs — update draft without re-render
   optionsEl.addEventListener('input', e => {
     const fromEl = e.target.closest('[data-date-field-from]');
@@ -3346,21 +4632,87 @@ window.filterModalInit = function(context) {
     const minInput = e.target.closest('[data-nr-min]');
     const maxInput = e.target.closest('[data-nr-max]');
     if (!minInput && !maxInput) return;
-  
+
     const tierId   = (minInput || maxInput).dataset.nrTier;
     const minThumb = document.getElementById(`nr-thumb-min-${tierId}`);
     const maxThumb = document.getElementById(`nr-thumb-max-${tierId}`);
     if (!minThumb || !maxThumb) return;
-  
+
     let minVal = Number(minThumb.value);
     let maxVal = Number(maxThumb.value);
-  
+
     if (minInput && minVal > maxVal) { minVal = maxVal; minThumb.value = minVal; }
     if (maxInput && maxVal < minVal) { maxVal = minVal; maxThumb.value = maxVal; }
-  
+
     updateNumericRangeDOM(tierId, minVal, maxVal);
   });
-  
+
+  // Time range sliders — update DOM in place without re-render
+  optionsEl.addEventListener('input', e => {
+    const minInput = e.target.closest('[data-tr-min]');
+    const maxInput = e.target.closest('[data-tr-max]');
+    if (!minInput && !maxInput) return;
+
+    const tierId   = (minInput || maxInput).dataset.trTier;
+    const minThumb = document.getElementById(`tr-thumb-min-${tierId}`);
+    const maxThumb = document.getElementById(`tr-thumb-max-${tierId}`);
+    if (!minThumb || !maxThumb) return;
+
+    let minVal = Number(minThumb.value);
+    let maxVal = Number(maxThumb.value);
+
+    if (minInput && minVal > maxVal) { minVal = maxVal; minThumb.value = minVal; }
+    if (maxInput && maxVal < minVal) { maxVal = minVal; maxThumb.value = maxVal; }
+
+    updateTimeRangeDOM(tierId, minVal, maxVal);
+  });
+
+  // Close portal if the options panel scrolls (trigger moves, portal would misalign)
+  optionsEl.addEventListener('scroll', () => closeAllTmDropdowns(), { passive: true });
+
+  // Close the portal dropdown when clicking outside the trigger or the portal itself
+  document.addEventListener('pointerdown', e => {
+    if (!_tmFloating) return;
+    if (e.target.closest('[data-tm-trigger]')) return;
+    if (_tmFloating.el.contains(e.target)) return;
+    closeAllTmDropdowns();
+  });
+
+  // Mouse-focus suppression — prevents ADA ring on pointer interactions
+  optionsEl.addEventListener('pointerdown', e => {
+    const selectWrap = e.target.closest('.ds-select');
+    if (selectWrap && selectWrap.querySelector('[data-tm-trigger]')) {
+      selectWrap.setAttribute('data-mouse-focus', '');
+    }
+    const inputWrap = e.target.closest('.ds-input');
+    if (inputWrap && inputWrap.querySelector('[data-tm-value]')) {
+      inputWrap.setAttribute('data-mouse-focus', '');
+    }
+  });
+
+  optionsEl.addEventListener('focusout', e => {
+    const selectWrap = e.target.closest('.ds-select');
+    if (selectWrap && !selectWrap.contains(e.relatedTarget)) {
+      selectWrap.removeAttribute('data-mouse-focus');
+    }
+    const inputWrap = e.target.closest('.ds-input');
+    if (inputWrap && !inputWrap.contains(e.relatedTarget)) {
+      inputWrap.removeAttribute('data-mouse-focus');
+    }
+  });
+
+  // Text match value input — enable/disable Apply
+  optionsEl.addEventListener('input', e => {
+    const textInput = e.target.closest('[data-tm-value]');
+    if (!textInput) return;
+    const tierId = textInput.dataset.tmValue;
+    if (!state.textMatchDrafts[tierId]) state.textMatchDrafts[tierId] = { operator: 'contains', value: '' };
+    state.textMatchDrafts[tierId].value = textInput.value;
+    const container = textInput.closest('.filter-text-match');
+    const applyBtn  = container?.querySelector('[data-apply-tm]');
+    if (applyBtn) applyBtn.disabled = !textInput.value.trim();
+  });
+
   // Date inputs: typing a valid date updates state + calendar without re-rendering inputs
   optionsEl.addEventListener('input', e => {
     const inputEl = e.target.closest('[data-date-input]');
@@ -3472,6 +4824,17 @@ window.filterModalInit = function(context) {
     saveCurrentSet(input.value);
     renderSavedSetsPanel();
   });
+
+  // Mouse-focus suppression for save-set name input
+  savedSetsBody.addEventListener('pointerdown', e => {
+    const inputWrap = e.target.closest('.saved-sets-save-form__input-wrap');
+    if (inputWrap) inputWrap.setAttribute('data-mouse-focus', '');
+  });
+  savedSetsBody.addEventListener('focusout', e => {
+    if (e.target.id === 'save-set-name-input') {
+      e.target.closest('.saved-sets-save-form__input-wrap')?.removeAttribute('data-mouse-focus');
+    }
+  });
   
   // Search
   searchInput.addEventListener('input', e => setSearch(e.target.value));
@@ -3505,6 +4868,8 @@ window.filterModalInit = function(context) {
       removeBucket(removeBtn.dataset.removeBucket);
       renderAppliedBar();
       updateFilterBadge();
+      const hasDateFilter = Array.from(state.selected).some(id => id.startsWith('dp-') || id.startsWith('custom-dr-') || id.startsWith('dr-'));
+      window.dispatchEvent(new CustomEvent('filterApplied', { detail: { count: state.selected.size, hasDateFilter } }));
       return;
     }
     // Click anywhere else on the card → open modal at that group
@@ -3530,12 +4895,16 @@ window.filterModalInit = function(context) {
     if (e.target === overlay) closeModal();
   });
   
-  // Close on Escape
+  // Close on Escape — closes open tm dropdowns first, then the modal
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && !overlay.hidden) closeModal();
+    if (e.key !== 'Escape') return;
+    const openDropdown = document.querySelector('.ds-select__dropdown.is-open');
+    if (openDropdown) { closeAllTmDropdowns(); return; }
+    if (!overlay.hidden) closeModal();
   });
-  
-  
+
+  } // end freshDOM guard
+
   // ── Context switcher ─────────────────────────────────────────
   function switchContext(contextKey) {
     if (!CONTEXTS[contextKey] || contextKey === activeContext) return;
@@ -3583,6 +4952,8 @@ window.filterModalInit = function(context) {
 
   // ── Init ──────────────────────────────────────────────────────
   render();
+  renderAppliedBar();
+  updateFilterBadge();
   updateSavedSetsToggleBtn();
 };
 
@@ -3593,13 +4964,14 @@ window.filterModalClose = function() { if (overlay) closeModal(); };
 // Called by the dashboard date dropdown when the user picks a date there instead.
 window.filterModalClearDates = function() {
   Array.from(state.selected).forEach(id => {
-    if (id.startsWith('dp-') || id.startsWith('custom-dr-')) {
+    if (id.startsWith('dp-') || id.startsWith('custom-dr-') || id.startsWith('dr-')) {
       state.selected.delete(id);
       OPTION_META.delete(id);
     }
   });
   state.datePresetCustomOpen = false;
-  state.dateRangeDraft = { start: null, end: null };
+  state.dateRangeDraft  = { start: null, end: null };
+  state.fieldDateDrafts = {};
   renderAppliedBar();
   updateFilterBadge();
   if (overlay) render();
@@ -3748,4 +5120,74 @@ window.openDateRangePicker = function() {
     if (e.key === 'Escape') closeStandalone();
   }
   document.addEventListener('keydown', escHandler);
+};
+
+// ── Saved-view integration ────────────────────────────────────────────────
+
+window.filterModalGetState = function() {
+  const snap = _snapshotSelectionState();
+  return {
+    selected:           Array.from(snap.selected),
+    excludedBuckets:    Array.from(snap.excludedBuckets),
+    fieldDateDrafts:    JSON.parse(JSON.stringify(snap.fieldDateDrafts)),
+    costRangeDraft:     { ...snap.costRangeDraft },
+    numericRangeDrafts: JSON.parse(JSON.stringify(snap.numericRangeDrafts)),
+    timeRangeDrafts:    JSON.parse(JSON.stringify(snap.timeRangeDrafts)),
+    textMatchDrafts:    JSON.parse(JSON.stringify(snap.textMatchDrafts)),
+    dateRangeDraft:     { ...snap.dateRangeDraft },
+    datePickerMode:     snap.datePickerMode,
+    context:            activeContext,
+  };
+};
+
+window.filterModalSetState = function(savedState) {
+  if (!savedState) return;
+  _restoreSelectionState({
+    selected:             new Set(savedState.selected ?? []),
+    excludedBuckets:      new Set(savedState.excludedBuckets ?? []),
+    fieldDateDrafts:      savedState.fieldDateDrafts ?? {},
+    costRangeDraft:       savedState.costRangeDraft ?? { min: null, max: null },
+    numericRangeDrafts:   savedState.numericRangeDrafts ?? {},
+    timeRangeDrafts:      savedState.timeRangeDrafts ?? {},
+    textMatchDrafts:      savedState.textMatchDrafts ?? {},
+    dateRangeDraft:       savedState.dateRangeDraft ?? { start: null, end: null },
+    datePickerMode:       savedState.datePickerMode ?? 'single',
+    datePresetCustomOpen: false,
+    activeFilterSetId:    null,
+  });
+};
+
+window.filterModalApplySilent = function() {
+  renderAppliedBar();
+  const hasDateFilter = Array.from(state.selected).some(
+    id => id.startsWith('dp-') || id.startsWith('custom-dr-') || id.startsWith('dr-')
+  );
+  window.dispatchEvent(new CustomEvent('filterApplied', {
+    detail: { count: state.selected.size, hasDateFilter }
+  }));
+};
+
+window.filterModalReset = function() {
+  state.activeGroupId        = activeFilterGroups[0]?.id ?? null;
+  state.searchQuery          = '';
+  state.selected.clear();
+  state.excludedBuckets.clear();
+  state.collapsedTiers.clear();
+  state.expandedSearchGroups.clear();
+  state.collapsedSelectedBuckets.clear();
+  state.expandedSelectedBuckets.clear();
+  state.dateRangeDraft       = { start: null, end: null };
+  state.fieldDateDrafts      = {};
+  state.costRangeDraft       = { min: null, max: null };
+  state.numericRangeDrafts   = {};
+  state.timeRangeDrafts      = {};
+  state.textMatchDrafts      = {};
+  state.datePresetCustomOpen = false;
+  state.activeFilterSetId    = null;
+  state.savedSetsOpen        = false;
+  _committedSnapshot         = null;
+  renderAppliedBar();
+  window.dispatchEvent(new CustomEvent('filterApplied', {
+    detail: { count: 0, hasDateFilter: false }
+  }));
 };

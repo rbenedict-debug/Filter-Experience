@@ -5,8 +5,112 @@
   min-height: 0;
 }
 
+.ds-page-content__heading {
+  gap: 0;
+}
+
+.comparison-categories__title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.comparison-categories__heading-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.comparison-categories__stats-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.comparison-categories__stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  padding-left: var(--spacing-lg);
+  padding-top: var(--spacing-sm);
+}
+
+.comparison-categories__stat-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  position: relative;
+
+  &:not(:last-child) {
+    padding-right: var(--spacing-md);
+    margin-right: var(--spacing-xs);
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 15%;
+      height: 70%;
+      width: 1px;
+      background: var(--color-border-default);
+    }
+  }
+
+  &:hover .comparison-categories__stat-count { text-decoration: underline; }
+  &:focus-visible {
+    outline: none;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+  }
+}
+
+.comparison-categories__stat-count {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  line-height: var(--ref-typescale-body-small-line-height);
+  font-weight: 600;
+  color: var(--color-text-brand);
+  white-space: nowrap;
+}
+
+.comparison-categories__stat-label {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.comparison-categories__toolbar-controls {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.comparison-categories__toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.comparison-categories__toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .comparison-categories__date-wrapper {
   position: relative;
+
+  .ds-dashboard-toolbar__date-select > .ds-icon:first-child {
+    color: var(--color-icon-default);
+  }
 }
 
 .comparison-categories__date-custom {
@@ -38,4 +142,67 @@
   font-weight: var(--ref-typescale-body-small-weight);
   line-height: var(--ref-typescale-body-small-line-height);
   color: var(--color-text-secondary);
+}
+
+.ds-dashboard-toolbar__date-select--overridden {
+  opacity: 0.4;
+  pointer-events: auto;
+}
+
+// ── Applied filters bar ─────────────────────────────────────────────────────
+
+.filter-applied-bar {
+  background: transparent;
+  border-bottom: none;
+  padding: 0;
+  align-items: flex-start;
+
+  .filter-bar__count-chip {
+    display: none;
+    flex-shrink: 0;
+    box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  }
+
+  .filter-bar__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+    font-family: var(--ref-typescale-label-small-font);
+    font-size: var(--ref-typescale-label-small-size);
+    font-weight: var(--ref-typescale-label-small-weight);
+    line-height: var(--ref-typescale-label-small-line-height);
+
+    .filter-bar__toggle-arrow--right {
+      transform: rotate(-90deg);
+    }
+
+    &:hover {
+      background: var(--overlay-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+    }
+  }
+
+  &.is-collapsed {
+    .filter-applied-bar__cards {
+      display: none;
+    }
+
+    .filter-bar__count-chip {
+      display: inline-flex;
+      cursor: pointer;
+    }
+  }
 }

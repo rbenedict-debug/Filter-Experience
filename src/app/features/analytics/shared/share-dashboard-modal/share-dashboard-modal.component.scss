@@ -1,0 +1,29 @@
+// Cap modal growth at viewport minus page padding on each side
+.ds-modal-backdrop {
+  padding: var(--spacing-page);
+}
+
+.ds-modal {
+  max-height: calc(100vh - 2 * var(--spacing-page));
+}
+
+// Scrollable body so content doesn't overflow the modal cap
+.share-modal__body {
+  overflow-y: auto;
+}
+
+.share-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+// Enable textarea resize — override DS defaults
+.ds-textarea__field {
+  overflow: auto; // must not be hidden or the resize handle is clipped
+}
+
+.ds-textarea__control {
+  resize: vertical;
+}

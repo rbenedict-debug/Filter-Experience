@@ -146,41 +146,19 @@
             icon="search"
             [expanded]="savedViewsExpanded()"
             (expandedChange)="savedViewsExpanded.set($event)">
-            <div class="saved-view-item"
-              dsTooltip="Q1 Chatbot CSAT — EN Only"
-              dsTooltipPosition="right">
-              <ds-subnav-button label="Q1 Chatbot CSAT — EN Only"
-                [selected]="analyticsNavItem() === 'sv-q1-chatbot-csat'"
-                (navClick)="analyticsNavItem.set('sv-q1-chatbot-csat')" />
-            </div>
-            <div class="saved-view-item"
-              dsTooltip="Call Center Volume — Last 30 Days"
-              dsTooltipPosition="right">
-              <ds-subnav-button label="Call Center Volume — Last 30 Days"
-                [selected]="analyticsNavItem() === 'sv-call-center-volume'"
-                (navClick)="analyticsNavItem.set('sv-call-center-volume')" />
-            </div>
-            <div class="saved-view-item"
-              dsTooltip="Weekend vs. Weekday Traffic"
-              dsTooltipPosition="right">
-              <ds-subnav-button label="Weekend vs. Weekday Traffic"
-                [selected]="analyticsNavItem() === 'sv-weekend-weekday'"
-                (navClick)="analyticsNavItem.set('sv-weekend-weekday')" />
-            </div>
-            <div class="saved-view-item"
-              dsTooltip="Escalation Rate by Category"
-              dsTooltipPosition="right">
-              <ds-subnav-button label="Escalation Rate by Category"
-                [selected]="analyticsNavItem() === 'sv-escalation-rate'"
-                (navClick)="analyticsNavItem.set('sv-escalation-rate')" />
-            </div>
-            <div class="saved-view-item"
-              dsTooltip="Peak Hours — March 2026"
-              dsTooltipPosition="right">
-              <ds-subnav-button label="Peak Hours — March 2026"
-                [selected]="analyticsNavItem() === 'sv-peak-hours-mar'"
-                (navClick)="analyticsNavItem.set('sv-peak-hours-mar')" />
-            </div>
+            @for (view of savedViews(); track view.id) {
+              <div class="saved-view-item"
+                [dsTooltip]="view.name"
+                dsTooltipPosition="right">
+                <ds-subnav-button
+                  [label]="view.name"
+                  [selected]="analyticsNavItem() === view.id"
+                  (navClick)="go('/analytics/saved-views/' + view.id)" />
+              </div>
+            }
+            @if (savedViews().length === 0) {
+              <p class="saved-views-empty">No saved views yet</p>
+            }
           </ds-subnav-header>
         }
 

@@ -21,14 +21,14 @@ declare global {
 }
 
 @Component({
-  selector: 'app-comparison-topics-filter-shell',
+  selector: 'app-call-details-filter-shell',
   standalone: true,
-  templateUrl: './comparison-topics-filter-shell.component.html',
+  templateUrl: './call-details-filter-shell.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ComparisonTopicsFilterShellComponent implements OnChanges, AfterViewInit, OnDestroy {
+export class CallDetailsFilterShellComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input()  open    = false;
-  @Input()  context = 'comparison-topics';
+  @Input()  context = 'call-details';
   @Output() openChange             = new EventEmitter<boolean>();
   @Output() filterCountChange      = new EventEmitter<number>();
   @Output() filterDateActiveChange = new EventEmitter<boolean>();
@@ -50,11 +50,15 @@ export class ComparisonTopicsFilterShellComponent implements OnChanges, AfterVie
     }
     window.addEventListener('filterModalClose', this._onClose);
     window.addEventListener('filterApplied',    this._onApplied);
+
     if (this.open) window.filterModalOpen?.();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this._initialized) return;
+    if ('context' in changes && !changes['context'].firstChange) {
+      window.filterModalInit?.(changes['context'].currentValue);
+    }
     if ('open' in changes) {
       changes['open'].currentValue
         ? window.filterModalOpen?.()

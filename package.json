@@ -19,7 +19,7 @@
     "@angular/platform-browser": "^21.2.7",
     "@angular/platform-browser-dynamic": "^21.2.7",
     "@angular/router": "^21.2.7",
-    "@onflo/design-system": "file:./vendor/onflo-design-system-0.2.0.tgz",
+    "@onflo/design-system": "github:rbenedict-debug/Design-System#main",
     "ag-grid-angular": "^35.2.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

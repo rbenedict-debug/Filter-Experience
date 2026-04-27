@@ -582,6 +582,47 @@
 
 .filter-card--selected .filter-card__check { visibility: visible; }
 
+/* Two-line card variant — name + sublabel (e.g. phone line name + number) */
+.filter-card--has-sublabel {
+  align-items: flex-start;
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* Override the single-line clipping applied to span:first-child */
+.filter-card--has-sublabel > .filter-card__body {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+.filter-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-card__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-card__sublabel {
+  font-size: var(--ref-typescale-body-small-size);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-card--selected .filter-card__sublabel {
+  color: var(--color-text-brand);
+  opacity: 0.8;
+}
+
 
 /* Invisible spacers — used by flex fallback, hidden in CSS Grid layout */
 .filter-card-spacer {
@@ -1019,7 +1060,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) var(--spacing-xl);
   background: var(--color-surface-page);
   border-top: 1px solid var(--color-border-subtle);
 }
@@ -1605,6 +1646,10 @@
   flex: 1;
 }
 
+.saved-sets-save-form__input-wrap .ds-input__control {
+  caret-color: var(--color-text-on-brand);
+}
+
 .saved-sets-save-form__hint {
   margin: 0;
   font-size: var(--ref-typescale-label-small-size);
@@ -1752,6 +1797,59 @@
 .filter-date-field__applied .ds-icon {
   font-size: var(--ref-typescale-label-large-size);
   color: var(--color-text-brand);
+}
+
+/* ============================================================
+   dp-demo-field — native date input styled to match ds-input
+   Used in filter-preset-custom-picker for the custom date range.
+   ============================================================ */
+
+.dp-demo-field {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-input);
+  padding: 0 0 0 var(--spacing-md);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  gap: 2px;
+}
+.dp-demo-field:hover { border-color: var(--color-border-input-hover); }
+.dp-demo-field:focus-within { border-color: var(--color-border-input-active); }
+.dp-demo-field input[type="date"] {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  color: var(--color-text-primary);
+  min-width: 0;
+  cursor: text;
+  padding: 0;
+}
+.dp-demo-field input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
+.dp-demo-field__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 100%;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-icon-subtle);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition: color 0.1s ease;
+}
+.dp-demo-field__icon-btn:hover { color: var(--color-icon-default); }
+.dp-demo-field__icon-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-border-ada-focus-ring);
 }
 
 
@@ -2237,3 +2335,16 @@
   color: var(--color-text-brand);
   transform: rotate(180deg);
 }
+
+/* ============================================================
+   filter-text-match — operator dropdown + text input filter
+   ============================================================ */
+
+.filter-text-match {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+}
+
+/* ds-select and ds-input handle all visual styling for the operator and value fields */

@@ -1,0 +1,215 @@
+@if (open) {
+  <div
+    class="ds-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="notify-modal-title"
+    (click)="onBackdropClick($event)"
+  >
+    <div class="ds-modal">
+
+      <!-- Header -->
+      <div class="ds-modal__header ds-modal__header--with-tabs">
+        <h2 class="ds-modal__title" id="notify-modal-title">Notify Users</h2>
+        <button class="ds-modal__dismiss" type="button" aria-label="Close" (click)="close()">
+          <span class="ds-icon" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="ds-modal__tabs">
+        <div class="ds-tabs" role="tablist" aria-label="Notification type">
+          <button class="ds-tabs__tab" [class.is-selected]="activeTab === 'age'"
+                  role="tab" type="button" (click)="setTab('age')">Age</button>
+          <button class="ds-tabs__tab" [class.is-selected]="activeTab === 'scores'"
+                  role="tab" type="button" (click)="setTab('scores')">Scores</button>
+          <button class="ds-tabs__tab" [class.is-selected]="activeTab === 'critical'"
+                  role="tab" type="button" (click)="setTab('critical')">Critical</button>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="notify-modal__body">
+        <div class="notify-modal__form">
+
+          <!-- Send to -->
+          <div class="notify-modal__field">
+            <span class="ds-input__label">
+              Send to<span class="ds-input__required" aria-hidden="true">*</span>
+            </span>
+            <button
+              #selectTrigger
+              class="notify-modal__select-trigger"
+              type="button"
+              [class.is-open]="menuOpen"
+              [class.has-value]="hasSelection"
+              aria-haspopup="listbox"
+              [attr.aria-expanded]="menuOpen"
+              (click)="toggleMenu($event)"
+            >
+              <span class="notify-modal__select-value">{{ selectPlaceholder }}</span>
+              <span class="ds-icon ds-icon--sm" aria-hidden="true">
+                {{ menuOpen ? 'expand_less' : 'expand_more' }}
+              </span>
+            </button>
+          </div>
+
+          <!-- Subject -->
+          <div class="ds-input"
+               (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
+               (focusout)="$any($event.currentTarget).removeAttribute('data-mouse-focus')">
+            <label class="ds-input__label" for="notify-subject">
+              Subject<span class="ds-input__required" aria-hidden="true">*</span>
+            </label>
+            <div class="ds-input__field">
+              <input id="notify-subject" class="ds-input__control" type="text"
+                     placeholder="Subject" [value]="subject"
+                     (input)="subject = $any($event.target).value" />
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="ds-textarea"
+               (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
+               (focusout)="$any($event.currentTarget).removeAttribute('data-mouse-focus')">
+            <label class="ds-textarea__label" for="notify-message">
+              Message<span class="ds-input__required" aria-hidden="true">*</span>
+            </label>
+            <div class="ds-textarea__field">
+              <textarea id="notify-message" class="ds-textarea__control"
+                        placeholder="Message" rows="4" [value]="message"
+                        (input)="message = $any($event.target).value"></textarea>
+            </div>
+          </div>
+
+          <!-- Send me a copy -->
+          <label class="ds-checkbox">
+            <input class="ds-checkbox__control" type="checkbox"
+                   [checked]="sendMeCopy"
+                   (change)="sendMeCopy = $any($event.target).checked" />
+            <span class="ds-checkbox__touch">
+              <span class="ds-checkbox__box"></span>
+            </span>
+            <span class="ds-checkbox__label">Send me a copy</span>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="ds-modal__actions">
+        <button class="ds-button ds-button--text" type="button" (click)="close()">Cancel</button>
+        <button class="ds-button ds-button--filled" type="button" (click)="send()">Send</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!--
+    Both menus use position:fixed so they escape ds-modal's overflow:hidden.
+    Coordinates are calculated from getBoundingClientRect() when opened.
+  -->
+
+  @if (menuOpen) {
+    <div
+      class="ds-menu notify-modal__menu"
+      role="listbox"
+      aria-label="Select team members"
+      aria-multiselectable="true"
+      [style.top.px]="menuTop"
+      [style.left.px]="menuLeft"
+      [style.min-width.px]="menuWidth"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Sticky search -->
+      <div class="ds-menu__search" (keydown)="$event.stopPropagation()">
+        <div class="ds-input"
+             (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
+             (focusout)="$any($event.currentTarget).removeAttribute('data-mouse-focus')">
+          <div class="ds-input__field">
+            <span class="ds-icon ds-icon--sm ds-input__icon" aria-hidden="true">search</span>
+            <input
+              class="ds-input__control"
+              type="search"
+              placeholder="Search team members"
+              [value]="searchQuery"
+              (input)="onSearchChange($any($event.target).value)"
+              aria-label="Search team members"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Groups — submenu trigger -->
+      <button
+        class="ds-menu__item"
+        type="button"
+        role="menuitem"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="groupsOpen"
+        (mouseenter)="openGroupsMenu($event)"
+        (mouseleave)="scheduleGroupsClose()"
+      >
+        <span class="ds-icon ds-icon--sm ds-menu__item-icon" aria-hidden="true">group</span>
+        Performance Groups
+        <span class="ds-menu__item-trailing">
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">chevron_right</span>
+        </span>
+      </button>
+
+      <hr class="ds-menu__divider" />
+
+      <!-- Individual team members -->
+      @for (user of filteredUsers; track user.id) {
+        <button
+          class="ds-menu__item"
+          type="button"
+          role="option"
+          [attr.aria-selected]="isUserSelected(user.id)"
+          (click)="toggleUser(user.id)"
+        >
+          <span class="ds-menu__item-check">
+            @if (isUserSelected(user.id)) {
+              <span class="ds-icon ds-icon--filled ds-icon--sm" aria-hidden="true">check</span>
+            }
+          </span>
+          {{ user.name }}
+        </button>
+      }
+
+      @if (filteredUsers.length === 0) {
+        <div class="notify-modal__menu-empty">No members match your search.</div>
+      }
+    </div>
+  }
+
+  @if (groupsOpen) {
+    <div
+      class="ds-menu notify-modal__groups-submenu"
+      role="menu"
+      aria-label="Performance groups"
+      [style.top.px]="groupsMenuTop"
+      [style.left.px]="groupsMenuLeft"
+      (mouseenter)="cancelGroupsClose()"
+      (mouseleave)="scheduleGroupsClose()"
+      (click)="$event.stopPropagation()"
+    >
+      @for (group of performanceGroups; track group.id) {
+        <button
+          class="ds-menu__item"
+          type="button"
+          role="menuitemcheckbox"
+          [attr.aria-checked]="isGroupSelected(group.id)"
+          (click)="toggleGroup(group.id)"
+        >
+          <span class="ds-menu__item-check">
+            @if (isGroupSelected(group.id)) {
+              <span class="ds-icon ds-icon--filled ds-icon--sm" aria-hidden="true">check</span>
+            }
+          </span>
+          {{ group.label }}
+        </button>
+      }
+    </div>
+  }
+}

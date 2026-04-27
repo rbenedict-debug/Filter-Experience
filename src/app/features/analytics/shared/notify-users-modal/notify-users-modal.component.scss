@@ -1,0 +1,108 @@
+// Backdrop — page-padding edges (same as share modal)
+.ds-modal-backdrop {
+  padding: var(--spacing-page);
+}
+
+.ds-modal {
+  max-height: calc(100vh - 2 * var(--spacing-page));
+}
+
+// Scrollable body
+.notify-modal__body {
+  overflow-y: auto;
+}
+
+.notify-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+// ── Send to field ─────────────────────────────────────────
+
+.notify-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.notify-modal__select-trigger {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  height: 42px;
+  background: var(--color-surface-input);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--spacing-md);
+  cursor: pointer;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  color: var(--color-text-placeholder);
+  transition: border-color 0.15s ease;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--color-border-input-hover);
+  }
+
+  &.is-open {
+    border-color: var(--color-border-input-active);
+  }
+
+  &.has-value {
+    color: var(--color-text-primary);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+  }
+}
+
+// ── Send to menus ─────────────────────────────────────────
+// Both panels use position:fixed to escape ds-modal's overflow:hidden.
+// ds-menu provides background, border, shadow, and item styles.
+
+.notify-modal__menu,
+.notify-modal__groups-submenu {
+  position: fixed;
+  z-index: 1001;
+  max-height: 320px;
+  overflow-y: auto;
+  // Allow menu to grow wider than ds-menu's default max-width
+  max-width: none;
+}
+
+.notify-modal__groups-submenu {
+  // Performance group labels are long — give the submenu room
+  min-width: 280px;
+}
+
+// ── Menu empty state ─────────────────────────────────────
+
+.notify-modal__menu-empty {
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--color-text-subtle);
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-body-medium-size);
+  font-weight: var(--ref-typeface-weight-regular);
+  line-height: var(--ref-typescale-body-medium-line-height);
+}
+
+// ── Textarea resize (same as share modal) ────────────────
+
+.ds-textarea__field {
+  overflow: auto;
+}
+
+.ds-textarea__control {
+  resize: vertical;
+}
