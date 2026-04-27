@@ -9,7 +9,7 @@ Includes the full platform shell (top nav, sidebar, routing) with the design sys
 
 A live preview of `main` and active feature branches is published to GitHub Pages on every push:
 
-**https://rbenedict-debug.github.io/filter-experience/**
+**https://rbenedict-debug.github.io/Filter-Experience/**
 
 The deployment is driven by `.github/workflows/deploy-preview.yml`. To enable it the first time,
 in the GitHub repo go to **Settings → Pages → Build and deployment → Source → GitHub Actions**.

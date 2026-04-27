@@ -36,7 +36,7 @@ jobs:
         run: npm ci
 
       - name: Build Angular app
-        run: npx ng build --base-href "/filter-experience/"
+        run: npx ng build --base-href "/Filter-Experience/"
 
       - name: Locate build output
         id: build_output
