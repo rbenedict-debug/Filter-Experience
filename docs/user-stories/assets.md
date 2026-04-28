@@ -3,12 +3,17 @@
 Owner: **Assets engineering team**
 Format reference: [`./README.md`](./README.md)
 
+## Scope
+
+Stories for the filter modal + custom-view integration on the four Assets list pages.
+Overview, Actions, and Standard Views are not part of this handoff.
+
 ---
 
-## Epic: Overview
+## Epic: Asset Views — filter, applied bar, Save View → custom view
 
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/overview
-Spec: `.claude/specs/assets/specs-overview.md`
+Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/asset-views
+Spec: `.claude/specs/assets/specs-asset-views.md`
 
 ### AST-1 · _Story title_
 
@@ -28,25 +33,7 @@ Spec: `.claude/specs/assets/specs-overview.md`
 
 ---
 
-## Epic: Asset Views
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/asset-views
-Spec: `.claude/specs/assets/specs-asset-views.md`
-
-### AST-? · _Story title_
-
----
-
-## Epic: Standard Views
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/standard-views
-Spec: `.claude/specs/assets/specs-standard-views.md`
-
-### AST-? · _Story title_
-
----
-
-## Epic: By Locations
+## Epic: By Locations — filter, applied bar, Save View → custom view
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/by-locations
 Spec: `.claude/specs/assets/specs-by-locations.md`
@@ -55,16 +42,7 @@ Spec: `.claude/specs/assets/specs-by-locations.md`
 
 ---
 
-## Epic: By Purchase Order
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/by-purchase-order
-Spec: `.claude/specs/assets/specs-by-purchase-order.md`
-
-### AST-? · _Story title_
-
----
-
-## Epic: By Users
+## Epic: By Users — filter, applied bar, Save View → custom view
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/by-users
 Spec: `.claude/specs/assets/specs-by-users.md`
@@ -73,9 +51,9 @@ Spec: `.claude/specs/assets/specs-by-users.md`
 
 ---
 
-## Epic: Actions
+## Epic: By Purchase Order — filter, applied bar, Save View → custom view
 
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/actions
-Spec: `.claude/specs/assets/specs-actions.md`
+Prototype: https://rbenedict-debug.github.io/Filter-Experience/assets/by-purchase-order
+Spec: `.claude/specs/assets/specs-by-purchase-order.md`
 
 ### AST-? · _Story title_
