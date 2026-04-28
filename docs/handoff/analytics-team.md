@@ -1,32 +1,46 @@
 # Analytics team — handoff
 
-You own the **Analytics** feature area: every dashboard under `/analytics`.
+## What you're delivering
 
-## Scope
+You're integrating the **filter modal + saved-views experience** plus the **new page
+header** and **new dashboard toolbar** into the existing production analytics
+dashboards. The chart data, chart configurations, and underlying analytics function
+are already in production — you are **not** rebuilding the dashboards. You're
+adding/replacing the chrome around them:
 
-Code: `src/app/features/analytics/`
+1. New page header (title row, last-updated meta, learn-more, tabs/stats where applicable)
+2. New dashboard toolbar (date select, filter, Save/Edit View, Download, Share)
+3. Applied filters bar
+4. Saved-view integration — Save flow, URL routing, load flow, Edit/Delete
+5. Saved views in the Analytics subnav (already in `app.component.html`)
+6. Two new shared modals: Share Dashboard and Notify Users
 
-| Dashboard | Route | Component |
+## Pages in scope
+
+| Page | Route | Spec |
 |---|---|---|
-| Service Overview | `/analytics/service-overview` | `service-overview/service-overview.component.ts` |
-| Call Center | `/analytics/call-center` | `call-center/call-center.component.ts` |
-| Chatbot | `/analytics/chatbot` | `chatbot/chatbot.component.ts` |
-| Custom Reports | `/analytics/custom-reports` | `custom-reports/custom-reports.component.ts` |
-| Fees | `/analytics/fees` | `fees/fees.component.ts` |
-| Comparison · Users | `/analytics/comparison/users` | `comparison/users/comparison-users.component.ts` |
-| Comparison · Categories | `/analytics/comparison/categories` | `comparison/categories/comparison-categories.component.ts` |
-| Comparison · Topics | `/analytics/comparison/topics` | `comparison/topics/comparison-topics.component.ts` |
+| Service Overview | `/analytics/service-overview` | `specs-service-overview.md` |
+| Chatbot | `/analytics/chatbot` | `specs-chatbot.md` |
+| Call Center | `/analytics/call-center` | `specs-call-center.md` |
+| Custom Reports | `/analytics/custom-reports` | `specs-custom-reports.md` |
+| Fees | `/analytics/fees` | `specs-fees.md` |
+| Comparison · Users | `/analytics/comparison/users` | `specs-comparison-users.md` |
+| Comparison · Categories | `/analytics/comparison/categories` | `specs-comparison-categories.md` |
+| Comparison · Topics | `/analytics/comparison/topics` | `specs-comparison-topics.md` |
 
-Cross-page modals you also own: `src/app/features/analytics/shared/` (notify users, save view, share dashboard).
+You also own the cross-page modals at `src/app/features/analytics/shared/`:
+**save-view-modal**, **share-dashboard-modal**, **notify-users-modal**.
 
 ## Live preview
 
-Open Service Overview as your reference dashboard:
+Service Overview is the canonical reference — every other page follows its pattern
+with page-specific tweaks (tabs, stats, extra buttons):
 
 **https://rbenedict-debug.github.io/Filter-Experience/analytics/service-overview**
 
-Service Overview is the canonical dashboard implementation — every other dashboard
-follows its structure.
+Try the full saved-view flow: open the filter modal, apply some filters, click
+**Save View**, give it a name, watch the URL change to `/saved-views/:id`, see the
+new view in the subnav, click it to navigate back to it (state restores).
 
 ## Required reading — in this order
 
@@ -36,31 +50,33 @@ follows its structure.
 - [`/README.md`](../../README.md) — local setup
 - [`docs/handoff/README.md`](./README.md) — handoff overview
 
-**2. Shared patterns your pages use:**
+**2. Shared specs (the meat of the work):**
 
-- [`.claude/specs/shared/specs-dashboard.md`](../../.claude/specs/shared/specs-dashboard.md) — **the canonical dashboard layout. Read this before touching any analytics page.**
-- [`.claude/specs/shared/specs-filter-engine.md`](../../.claude/specs/shared/specs-filter-engine.md) — every dashboard has a filter shell
-- [`.claude/specs/shared/specs-saved-views.md`](../../.claude/specs/shared/specs-saved-views.md) — analytics is the primary surface for saved views
+- [`.claude/specs/shared/specs-dashboard.md`](../../.claude/specs/shared/specs-dashboard.md)
+  — **the canonical dashboard layout pattern.** Sticky header, toolbar, applied bar,
+  scrolling canvas. Includes the tabs variant and the table-tab variant. Read first.
+- [`.claude/specs/shared/specs-filter-engine.md`](../../.claude/specs/shared/specs-filter-engine.md)
+  — the entire filter modal. The whole engine is in scope for engineering.
+- [`.claude/specs/shared/specs-saved-views.md`](../../.claude/specs/shared/specs-saved-views.md)
+  — saved-view storage, routing, and load flow. Analytics is the primary surface.
 
-**3. Per-feature specs (your team's behavior docs):**
+**3. Per-page specs:**
 
-Each dashboard has its own spec at `.claude/specs/analytics/specs-{page}.md`.
-These cover charts, metric definitions, drill-downs, and any toolbar customizations
-beyond the canonical pattern.
-
-> **Status:** the per-feature specs are still being authored. Check `.claude/specs/analytics/`
-> for what's available. If a dashboard doesn't have a spec yet, raise it before starting work.
+- [`.claude/specs/analytics/specs-service-overview.md`](../../.claude/specs/analytics/specs-service-overview.md)
+  — read this once. Other per-page specs reference back to it.
+- Then the per-page spec for whichever page you're starting on.
 
 ## User stories
 
-Your stories live at [`docs/user-stories/analytics.md`](../user-stories/analytics.md).
-They are organized by epic (one epic per dashboard).
+Stories live at [`docs/user-stories/analytics.md`](../user-stories/analytics.md) — one
+epic per page. The design/PM team owns filling in the bodies; engineering reviews
+acceptance criteria before sprint planning.
 
 ## How to work with this prototype using Claude Code
 
-Run `claude` in the project root. Claude will auto-load `CLAUDE.md`, the design-system
-guide, and the shared specs (including the dashboard pattern). When you start work on
-a dashboard, ask Claude to also read that dashboard's spec — for example:
+Run `claude` in the project root. Claude auto-loads `CLAUDE.md`, the design-system
+guide, and the shared specs. When you start on a specific page, ask Claude to also
+read that page's per-page spec — for example:
 
 ```
 Read .claude/specs/analytics/specs-call-center.md, then implement story ANL-12.
@@ -68,9 +84,21 @@ Read .claude/specs/analytics/specs-call-center.md, then implement story ANL-12.
 
 ## What is **not** in scope for this team
 
-- The app shell (top nav, sidebar, agent status) — owned by platform
-- The filter modal engine itself — owned by platform; you only consume it via the filter-shell pattern
-- The dashboard pattern itself — owned by design; if it needs to evolve, raise it
+- The chart data and chart logic itself — already in production, unchanged
+- The app shell (top nav, sidebar, agent status)
 - Anything under `src/app/features/{tickets,assets,settings}`
 
 If you find a bug or a gap that crosses into one of these, file it; don't fix it.
+
+## Backend dependencies
+
+The prototype uses in-memory state and `localStorage`. Production needs:
+
+- A saved-views API for analytics (`/api/analytics/saved-views`) — see endpoint
+  sketches in `.claude/specs/shared/specs-saved-views.md`
+- A saved-filter-sets API for the filter engine's internal sets (currently in
+  localStorage) — see migration plan in `.claude/specs/shared/specs-filter-engine.md`
+- Stats-bar endpoints for Service Overview and Comparison pages (see those specs)
+- A cohort-message endpoint for the Notify Users modal on Comparison pages
+
+Coordinate with the backend team early — these are blocking for the integration work.
