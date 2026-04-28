@@ -146,9 +146,9 @@ a shared component used by every analytics page.
 />
 ```
 
-Engineering wires the actual share mechanism (URL copy, email, etc.) — the prototype
-just shows the modal UI. See `src/app/features/analytics/shared/share-dashboard-modal/`
-for the component contract.
+Engineering wires the actual share mechanism on the backend (URL copy, email, etc.) —
+the modal UI itself is **a final design**, not a placeholder. See
+`src/app/features/analytics/shared/share-dashboard-modal/` for the component contract.
 
 ## Download
 

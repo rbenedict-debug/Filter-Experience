@@ -58,8 +58,8 @@ The toolbar adds a **Send Message** icon button (after Share):
 
 Clicking opens `<app-notify-users-modal [(open)]="notifyOpen" />`. The modal lets the
 user message the cohort represented by the current comparison view. Engineering wires
-the actual send mechanism (channel, recipient list, audit trail) — the prototype only
-shows the modal UI.
+the actual send mechanism (channel, recipient list, audit trail) on the backend — the
+modal UI itself is **a final design**, not a placeholder.
 
 The Notify Users modal is a shared component used only by the three comparison pages.
 

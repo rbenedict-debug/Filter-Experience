@@ -67,10 +67,12 @@ adjustments.
 
 ## Toolbar variants per tab
 
-- All six tabs have the standard dashboard toolbar (date, filter, Save View, Download, Share)
-- Table tabs (Call Details, Agent Status) use the table layout but keep the same toolbar
-- Queue Management may have additional controls (TBD with design — check the prototype's
-  current state before implementing)
+- **Overview / CSAT / Call Metrics:** standard dashboard toolbar (date, filter, Save View, Download, Share)
+- **Call Details / Agent Status:** standard dashboard toolbar with the table layout below it (`ds-page-content__main--table` instead of `--dashboard`)
+- **Queue Management:** **the date select is removed** because Queue Management shows
+  live queue data — there is no "past tense" to view. Render the toolbar without the
+  `ds-dashboard-toolbar__date-select` button on this tab. Filter, Save View, Download,
+  and Share remain.
 
 ## Required reading
 
