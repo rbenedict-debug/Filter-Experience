@@ -1,185 +1,225 @@
-# Inbox — feature spec
+# Inbox — filter, applied bar, save view, subnav
 
-The Inbox is the agent's daily-driver list of tickets. It is the default landing page
-of the Tickets feature.
+## Scope of this spec
 
-## Route and component
+This spec covers **only** the four pieces being handed off to engineering:
 
-| | |
+1. The **filter button** in the inbox toolbar and how it opens the filter modal
+2. The **applied filters bar** that appears below the toolbar when filters are active
+3. The **Save View** button in the toolbar and what happens when the user clicks it
+4. The **saved views entries** in the subnav for the Tickets section
+
+Everything else on the inbox page (the tabs, the search input, the settings panel,
+the ticket table, the page shell) is **already in production** and is not part of
+this handoff. Engineering should not change those.
+
+## Where things live
+
+| Concern | File |
 |---|---|
-| Route | `/tickets/inbox` |
-| Component | `src/app/features/tickets/inbox/inbox.component.ts` |
-| Template | `src/app/features/tickets/inbox/inbox.component.html` |
+| Inbox component | `src/app/features/tickets/inbox/inbox.component.ts` (reference) |
+| Inbox template | `src/app/features/tickets/inbox/inbox.component.html` (reference) |
 | Filter shell | `src/app/features/tickets/inbox/filter-shell/filter-shell.component.ts` |
-| Filter context key | `inbox` |
+| Save view modal | `src/app/features/analytics/shared/save-view-modal/` (shared with analytics) |
+| Saved views service | `src/app/core/services/tickets-saved-views.service.ts` |
+| Subnav | `src/app/app.component.html` (search for `'tickets'` section) |
+| Saved-view detail page | `src/app/features/tickets/saved-view/saved-view.component.ts` |
 
-## Required reading
+## 1 — Filter button → filter modal
 
-Before implementing, read in this order:
+The filter button is the existing filter toggle inside `<ds-table-toolbar>` (production
+component). The inbox does **not** render its own filter button.
 
-1. `CLAUDE.md` (project rules and Angular conventions)
-2. `.claude/specs/shared/specs-filter-engine.md` (the filter-shell pattern this page consumes)
-3. `.claude/specs/shared/specs-saved-views.md` (saved-views storage and routing)
+**Wiring:**
 
-## Page structure
+| Binding | Notes |
+|---|---|
+| `[(filterActive)]="filterOpen"` | Two-way bound to the inbox component |
+| `<app-filter-shell [(open)]="filterOpen">` | Shell mounted in the inbox template |
+| Filter context key | `inbox` (passed to `filterModalInit('inbox')` in the filter shell) |
+| Filter groups | `FILTER_GROUPS_INBOX` in `filter-modal-engine.js` |
 
-The inbox uses a list-page layout (not a dashboard layout). DOM order, top to bottom:
+For the full filter modal behavior, read `.claude/specs/shared/specs-filter-engine.md`.
 
-1. **Heading row** with tabs (no visible title — the title is screen-reader only)
-2. **Table toolbar** (`<ds-table-toolbar>`) with search, custom buttons, filter toggle, settings toggle
-3. **Applied filters bar** (hidden when filter count is 0)
-4. **Table area** (currently a placeholder; engineering builds the real ag-grid table here)
-5. **Filter shell** (the JS modal, mounted but invisible until opened)
-6. **Save view modal** (mounted but invisible until opened)
+## 2 — Applied filters bar
 
-## Tabs
+Appears below the toolbar and above the table when `filterCount > 0`. Hidden otherwise.
 
-Four tabs in fixed order. The active tab is held in a signal: `activeTab()`.
+**HTML:**
 
-| Tab | Value | Badge |
-|---|---|---|
-| My Tickets | `my-tickets` | `12` (numeric) |
-| Team | `team` | `99+` (cap shown when count exceeds 99) |
-| All | `all` | none |
-| Closed | `closed` | none |
-
-**Behavior:**
-
-- The default selected tab on first load is **My Tickets**
-- Switching tabs updates `activeTab()` only; it does **not** clear active filters or the saved-view dirty state
-- Each tab represents a different server-side ticket query; the filter shell layers on top
-- Badge counts come from the tickets API (count of unread / unassigned per scope) — wire when API is available
-- Badge cap rule: show the integer when ≤ 99, show `99+` when > 99
-- Aria: `role="tab"`, `aria-selected`, and `tabindex="0"` only on the active tab; inactive tabs use `tabindex="-1"`
-
-## Toolbar
-
-Uses the design system `<ds-table-toolbar>` component with these inputs:
-
-- `[showActions]="false"` (no add/edit/delete buttons in the inbox)
-- `[showDownload]="false"` (no download in the inbox)
-- `[searchPlaceholder]="'Search tickets'"`
-- `[(filterActive)]="filterOpen"` — two-way bound to filter shell open state
-- `[(settingsActive)]="settingsActive"` — two-way bound to settings panel open state
-
-**Custom buttons projected into the toolbar:**
-
-| Slot | Button | Action |
-|---|---|---|
-| `toolbar-extra` | **Advanced Search** (filled) | **Not in scope for this handoff** — see "Out of scope" below |
-| `toolbar-trailing` | **Save View** (text button) | Opens the save-view modal (`onSaveView()`) |
-
-The toolbar's built-in search input is wired to a debounced ticket-search query. (Engineering owns the search implementation; the prototype has a placeholder input only.)
-
-The toolbar's filter toggle and settings toggle are owned by `<ds-table-toolbar>` and surface via the two-way bindings above. The component's only job for these is to react to `filterOpen` changes (passes through to the filter shell).
-
-## Filter integration
-
-The inbox embeds `<app-filter-shell>` with context key `inbox`. Two-way `open` binding
-keeps the toolbar's filter button and the modal in sync.
-
-**Filter count signal flow:**
-
-```
-filter-modal-engine.js → 'filterApplied' window event
-  → FilterShellComponent.filterCountChange (Output)
-  → InboxComponent.onFilterCountChange(count)
-  → updates filterCount + viewDirty
+```html
+<div class="filter-applied-bar" id="filter-applied-bar"
+     hidden
+     [class.is-collapsed]="filterBarCollapsed()">
+  <span class="ds-label ds-label--brand ds-label--pill ds-label--sm filter-bar__count-chip"
+        aria-hidden="true"
+        (click)="toggleFilterBar()">{{ filterCount }} active filters</span>
+  <div class="filter-applied-bar__cards"
+       id="filter-applied-cards"
+       role="group" aria-label="Applied filters"></div>
+  <button class="filter-bar__toggle" type="button"
+          [attr.aria-expanded]="!filterBarCollapsed()"
+          [attr.aria-label]="filterBarCollapsed() ? 'Show filters, ' + filterCount + ' active' : 'Hide filters'"
+          (click)="toggleFilterBar()">
+    {{ filterBarCollapsed() ? 'Show filters' : 'Hide filters' }}
+    <span class="ds-icon ds-icon--sm filter-bar__toggle-arrow"
+          [class.filter-bar__toggle-arrow--right]="filterBarCollapsed()"
+          aria-hidden="true">arrow_drop_down</span>
+  </button>
+</div>
 ```
 
-**Filter-driven side effects in the inbox:**
+**Element ID `filter-applied-cards` is required.** The filter engine renders the chips
+into this element directly. Do not rename.
 
-- `filterCount > 0` → `viewDirty = true` (the saved view has unsaved changes)
-- `filterCount === 0` → `viewDirty = false` AND auto-expand the applied-filters bar (`filterBarCollapsed = false`)
-- The applied-filters bar is rendered with `hidden` attribute when count is 0; the JS engine toggles it
-- **Engineering note:** the `hidden` attribute is set by the filter engine, not by Angular bindings — do not try to bind `[hidden]` to `filterCount === 0`
+**The `hidden` attribute is set by the filter engine, not by an Angular `[hidden]` binding.**
+The engine toggles it as `filterCount` rises above 0 / falls to 0.
 
-## Applied filters bar
+**States:**
 
-Three states — collapsed, expanded, hidden:
-
-| State | When | What's shown |
+| State | Trigger | What's shown |
 |---|---|---|
-| Hidden | `filterCount === 0` | Bar is not rendered (filter engine sets `hidden`) |
-| Expanded (default) | `filterCount > 0`, bar not collapsed | Filter chips are visible; "Hide filters" button on the right |
-| Collapsed | User clicked "Hide filters" or the count chip | Chips hidden; chip showing `{count} active filters` is shown; "Show filters" button on the right |
+| Hidden | `filterCount === 0` | Bar not visible (engine sets `hidden`) |
+| Expanded | `filterCount > 0` and not collapsed | Chips visible; "Hide filters" button on right |
+| Collapsed | User clicks "Hide filters" or the count chip | Chips hidden; `{count} active filters` chip shown; "Show filters" button on right |
 
-**Toggle interactions:**
+**Auto-expand rule:** when `filterCount` drops to 0, set `filterBarCollapsed = false` so
+that the next time a filter is added, the bar opens expanded.
 
-- Click "Hide filters" button → collapse
-- Click "Show filters" button → expand
-- Click the count chip (only shown while collapsed) → expand
-- When `filterCount` drops to 0, the bar auto-expands so the next filter add is visible
+**Component state:**
 
-**Aria:**
+```typescript
+filterCount        = 0;
+filterBarCollapsed = signal(false);
 
-- The toggle button uses `aria-expanded` and a contextual `aria-label`:
-  - Collapsed: `"Show filters, {count} active"`
-  - Expanded: `"Hide filters"`
+onFilterCountChange(count: number) {
+  this.filterCount = count;
+  if (count === 0) this.filterBarCollapsed.set(false);
+}
 
-## Save view
+toggleFilterBar() { this.filterBarCollapsed.update(v => !v); }
+```
 
-Clicking **Save View** in the toolbar opens the save-view modal (`<app-save-view-modal>`)
-with `mode="save"`. The modal accepts a name and emits `(confirmed)` with the typed name.
+## 3 — Save View button
 
-On confirm:
+Projected into the `<ds-table-toolbar>` `toolbar-trailing` slot:
 
-1. Call `TicketsSavedViewsService.save({ name, activeTab, filterCount, ticketCount: 0 })`
-   - `ticketCount` is currently `0` because there's no real list yet; engineering wires this to the row count once the table is implemented
-2. The service returns a `SavedView` with a generated `id`
-3. Navigate to `/tickets/saved-views/{id}` (route resolves to `saved-view.component.ts`)
+```html
+<button toolbar-trailing
+        class="ds-table-toolbar__text-btn"
+        type="button"
+        (click)="onSaveView()">Save View</button>
+```
 
-**Validation rules** (engineering owns):
+**On click:** opens `<app-save-view-modal>` with `mode="save"`. The modal accepts a name
+and emits `(confirmed)` when the user clicks Save.
 
-- Name is required
-- Name max length: TBD with PM (recommend 80)
-- Duplicate names: TBD with PM (recommend warn-then-allow)
+**On confirm:**
 
-The save modal itself is shared with analytics — see `src/app/features/analytics/shared/save-view-modal/`.
+```typescript
+onSaveViewConfirmed(name: string) {
+  const newView = this.savedViewsService.save({
+    name,
+    activeTab:   this.activeTab(),       // 'my-tickets' | 'team' | 'all' | 'closed'
+    filterCount: this.filterCount,
+    ticketCount: 0,                      // filled by backend; see notes below
+  });
+  this.router.navigateByUrl('/tickets/saved-views/' + newView.id);
+}
+```
 
-## Data dependencies
+The user navigates to the saved-view route immediately on save. That route renders
+`saved-view.component.ts`, which restores the filter state (see
+`.claude/specs/shared/specs-saved-views.md` for the load flow).
 
-| Concern | Source | Status |
-|---|---|---|
-| Ticket list rows | `TicketsService.getTickets({ scope, filters, search })` | Service file does not exist yet — engineering creates |
-| Tab badge counts | `TicketsService.getCounts()` | Service file does not exist yet — engineering creates |
-| Saved views | `TicketsSavedViewsService` | Exists at `src/app/core/services/tickets-saved-views.service.ts` (currently in-memory) |
-| Filter values | Filter engine, context `inbox` | See `specs-filter-engine.md` |
+**`ticketCount` is always 0 from the frontend.** The backend must populate the count
+asynchronously — recommended endpoint shape: `GET /api/tickets/saved-views/:id/count`
+returning `{ count: number }`. Engineering wires this when the API is built.
 
-## States the prototype does not yet show
+## 4 — Saved views in the subnav
 
-Engineering must implement and design must sign off on:
+The Tickets subnav lives in `app.component.html` (search for `activeSection() === 'tickets'`).
+Saved views render under a "Saved Views" `<ds-subnav-header>`.
 
-- **Loading** while tickets are being fetched (skeleton rows, not a spinner)
-- **Empty** when the filter or tab returns zero rows (different copy per tab — e.g. "No tickets assigned to you" vs "No tickets in this view")
-- **Error** when the fetch fails (inline retry, not a redirect)
-- **Stale** when a refetch is happening but old data is still visible (subtle indicator)
+**Required structure** (already in the prototype, don't change):
 
-When designs land for these, append them to this spec under a new "States" section.
+```html
+<ds-subnav-header
+  class="saved-views-header"
+  text="Saved Views"
+  icon="bookmark"
+  [expanded]="ticketSavedViewsExpanded()"
+  (expandedChange)="ticketSavedViewsExpanded.set($event)">
 
-## Accessibility
+  @for (view of ticketSavedViews(); track view.id) {
+    <div class="tickets-saved-view-item">
+      <ds-subnav-button
+        [label]="view.name"
+        [selected]="ticketsNavItem() === 'saved-view-' + view.id"
+        (navClick)="go('/tickets/saved-views/' + view.id)" />
 
-- Page title is rendered as `<h1 class="ds-sr-only">Inbox</h1>` — visible to screen readers, not visually
-- Tabs use `role="tablist"` / `role="tab"` / `aria-selected`
-- Filter and settings toggle buttons get aria from `<ds-table-toolbar>`
-- The applied-filters bar uses `role="group"` with `aria-label="Applied filters"`
-- The bar's collapse toggle uses `aria-expanded` and a context-sensitive `aria-label`
+      @if (view.ticketCount > 0) {
+        <div class="tickets-saved-view-item__badge ds-badge-indicator ds-badge-indicator--grey"
+             aria-hidden="true">
+          {{ view.ticketCount > 999 ? '999+' : view.ticketCount }}
+        </div>
+      }
+    </div>
+  }
 
-## Out of scope
+  @if (ticketSavedViews().length === 0) {
+    <p class="saved-views-empty">No saved views yet</p>
+  }
+</ds-subnav-header>
+```
 
-These are **not** part of this handoff. Engineering should not implement them
-without a separate spec and design review:
+**Data source:** `TicketsSavedViewsService.savedViews` (a `computed()` signal).
 
-- **Advanced Search** — the button is present in the prototype but is a visual placeholder.
-  Do not wire `onAdvancedSearch()` to anything. Either leave the button as a no-op or
-  remove it entirely; do not invent behavior for it.
-- The `<ds-table-toolbar>` component itself — comes from `@onflo/design-system`
-- The `<app-save-view-modal>` component itself — owned by Analytics team (it's shared),
-  Tickets team only consumes it
-- The app shell (top nav, sidebar, agent status)
+**Badge rules:**
+
+- Show only when `view.ticketCount > 0`
+- Cap display at `999+` when count exceeds 999
+- Use `ds-badge-indicator--grey` modifier (not the brand-colored badge)
+
+**Note about the demo view:** the service prepends a hardcoded `DEMO_VIEW`
+(`id: 'demo-badge-view'`, `ticketCount: 247`) for visual reference. It cannot be
+deleted or updated. Engineering should preserve this fixture or remove it explicitly
+once real saved views exist; do not silently drop it during refactor.
+
+## What engineering integrates into the production inbox
+
+Concretely, the changes engineering applies to the existing prod inbox:
+
+1. **Wire the existing toolbar's filter toggle** to a new `<app-filter-shell>` instance
+   with `context="inbox"`
+2. **Add the applied filters bar HTML** below the toolbar (markup above)
+3. **Add the Save View button** to the toolbar-trailing slot
+4. **Add `<app-save-view-modal>`** at the end of the inbox template
+5. **Add saved views rendering** to the Tickets subnav (markup above)
+6. **Add the saved-view route** (`/tickets/saved-views/:id`) and component
+7. **Wire `TicketsSavedViewsService`** (in-memory in the prototype; engineering replaces
+   with API calls — see "Backend" below)
+
+## Backend
+
+The prototype uses in-memory state and `localStorage`. Engineering replaces these with
+API calls. Endpoints needed for the inbox piece (final shapes TBD with backend team):
+
+| Need | Suggested endpoint |
+|---|---|
+| Save a view | `POST /api/tickets/saved-views` body `{ name, activeTab, filterState }` returns `{ id, ... }` |
+| List user's saved views | `GET /api/tickets/saved-views` returns `[{ id, name, activeTab, ticketCount, ... }]` |
+| Get count for one saved view | `GET /api/tickets/saved-views/:id/count` returns `{ count }` |
+| Get a saved view by id | `GET /api/tickets/saved-views/:id` returns full record incl. `filterState` |
+| Update a saved view | `PUT /api/tickets/saved-views/:id` |
+| Delete a saved view | `DELETE /api/tickets/saved-views/:id` |
+
+The `filterState` payload is the result of `filterModalGetState()` — opaque to the backend,
+just round-tripped. See `.claude/specs/shared/specs-saved-views.md` for the schema.
 
 ## Open questions
 
-- **Search debounce** — what duration? (Recommend 300ms)
-- **Persistence of `activeTab`** across page reloads — is it remembered per user? Needs PM input.
-- **Real-time updates** — do tab badges live-update as tickets arrive, or only on refresh? Needs PM input.
+- Do we cap the number of saved views per user? Soft warn vs. hard block? Needs PM input.
+- What happens if a saved view references filter option IDs that no longer exist
+  (e.g. a deleted location)? Stale-show vs. silently skip vs. surface a warning. Needs PM input.
+- Real-time sync of `ticketCount` badges in the subnav — push from backend, or polling? Needs PM input.
