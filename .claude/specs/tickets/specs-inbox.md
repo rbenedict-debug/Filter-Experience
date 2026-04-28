@@ -66,7 +66,7 @@ Uses the design system `<ds-table-toolbar>` component with these inputs:
 
 | Slot | Button | Action |
 |---|---|---|
-| `toolbar-extra` | **Advanced Search** (filled) | Opens advanced search (`onAdvancedSearch()` — currently a TODO; see "Open questions" below) |
+| `toolbar-extra` | **Advanced Search** (filled) | **Not in scope for this handoff** — see "Out of scope" below |
 | `toolbar-trailing` | **Save View** (text button) | Opens the save-view modal (`onSaveView()`) |
 
 The toolbar's built-in search input is wired to a debounced ticket-search query. (Engineering owns the search implementation; the prototype has a placeholder input only.)
@@ -165,16 +165,21 @@ When designs land for these, append them to this spec under a new "States" secti
 - The applied-filters bar uses `role="group"` with `aria-label="Applied filters"`
 - The bar's collapse toggle uses `aria-expanded` and a context-sensitive `aria-label`
 
-## Out of scope for the Tickets team
+## Out of scope
 
-- The filter modal engine itself (vanilla JS, owned by platform)
-- The `<ds-table-toolbar>` and `<app-save-view-modal>` components (shared)
-- The shell (top nav, sidebar)
+These are **not** part of this handoff. Engineering should not implement them
+without a separate spec and design review:
+
+- **Advanced Search** — the button is present in the prototype but is a visual placeholder.
+  Do not wire `onAdvancedSearch()` to anything. Either leave the button as a no-op or
+  remove it entirely; do not invent behavior for it.
+- The `<ds-table-toolbar>` component itself — comes from `@onflo/design-system`
+- The `<app-save-view-modal>` component itself — owned by Analytics team (it's shared),
+  Tickets team only consumes it
+- The app shell (top nav, sidebar, agent status)
 
 ## Open questions
 
-- **Advanced Search** (`onAdvancedSearch()`) — what does this open? A modal? A separate route?
-  Currently a TODO in the prototype. Needs PM input before engineering implements.
 - **Search debounce** — what duration? (Recommend 300ms)
 - **Persistence of `activeTab`** across page reloads — is it remembered per user? Needs PM input.
 - **Real-time updates** — do tab badges live-update as tickets arrive, or only on refresh? Needs PM input.
