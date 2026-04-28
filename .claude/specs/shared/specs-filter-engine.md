@@ -605,15 +605,70 @@ team owning the engine — the three product teams collectively maintain it.
 
 ---
 
-## Open questions for design
+## Product decisions
 
-These need resolution before engineering hardens the filter system for production:
+These decisions are settled. Engineering implements them as specified.
 
-- **Saved filter sets in localStorage** — should they sync to the user's account so they
-  follow the user across devices? Currently browser-only.
-- **Maximum option count per group** — some groups (locations, users) could have hundreds
-  of items. Should there be virtualization? Pagination? Server-side search?
-- **Filter persistence across sessions** — should the *applied* filter state (not just
-  saved sets) survive a refresh? Currently it does not.
-- **Migration path** — the engine is vanilla JS. Long-term, should it become a real Angular
-  component? (Probably yes, but it's a non-trivial port; see [Adding a new field type](#adding-a-new-field-type) for the size of touch points.)
+### Saved filter sets sync to the user account
+
+The prototype stores saved filter sets in `localStorage` (per-context, key
+`onflo-filter-sets-{context}`). **In production, saved filter sets must sync to the
+user's account so they follow the user across browsers and devices.**
+
+Recommended migration path:
+
+1. Backend exposes a saved-filter-sets API (CRUD per user per context).
+2. Engine's `getSavedSets` / `persistSets` swap from localStorage reads/writes to API calls.
+3. On the user's first authenticated request after the migration ships, copy any
+   existing localStorage entries into the backend so users don't lose their sets.
+4. After migration, localStorage is no longer the source of truth.
+
+Per-context scoping (the `savedSetsKey` namespace) carries over to the backend — the
+API stores sets per-user-per-context.
+
+### Large option lists — "show more" expansion
+
+When a group has many options (locations, users, departments), the modal must not
+render every option at once. **Use a "show more" pattern**: render the first N options
+inline, with a "Show more" button that expands the rest. The exact threshold is a UI
+detail (start with 10–15).
+
+The filter modal already has a search input — large groups are easier to navigate by
+typing. The "show more" expansion is the secondary mechanism for browse-mode users.
+
+If "show more" was previously in the design system and is missing from the engine,
+engineering re-adds it — do not introduce server-side search or virtualization unless
+real-world performance forces it.
+
+### Applied filters persist across page refreshes (in-session)
+
+The current behavior is that applied filters reset on refresh. **In production, applied
+filters should persist across page refreshes within a session, but should not survive a
+logout.** Implementation: serialize the applied state into a URL query param on apply.
+
+```
+/tickets/inbox?filters={base64-encoded-state}
+```
+
+A page refresh re-reads the URL and re-applies the state. A user-initiated logout
+redirects to `/login` (no query params), and post-login lands on the base route with
+no filter params — which means filters naturally clear without any extra logic.
+
+A user who wants their filters to outlive logout uses the **Save View** flow — saved
+views are the durable persistence mechanism.
+
+### Migration from vanilla JS to Angular
+
+The filter modal engine is intentionally a vanilla JS carve-out inside an otherwise
+Angular + .NET Core app. The engine is loaded as a global script via
+`angular.json scripts[]` and rendered into a DOM anchor that an Angular filter-shell
+component owns.
+
+**This is fine for v1.** Engineering does not need to port the engine to Angular before
+launch. The vanilla JS engine is well-isolated, has a clean window API, and the
+filter-shell pattern keeps Angular components from caring about the implementation
+detail. Engineering decides whether to port to Angular as a separate v2 effort with
+its own spec.
+
+If engineering does port it, the touch points are listed in the [Adding a new field type](#adding-a-new-field-type)
+section above — those are the same surfaces that need migration.

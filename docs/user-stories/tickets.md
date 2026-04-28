@@ -3,9 +3,15 @@
 Owner: **Tickets engineering team**
 Format reference: [`./README.md`](./README.md)
 
+## Scope
+
+Stories for the filter + saved-views integration into the existing Tickets section.
+For v1, only the Inbox has these features — Bookmarks, Drafts, and Spam stay as they
+are in production.
+
 ---
 
-## Epic: Inbox
+## Epic: Inbox — filter, applied bar, Save View, saved-views subnav
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/tickets/inbox
 Spec: `.claude/specs/tickets/specs-inbox.md`
@@ -25,39 +31,3 @@ Spec: `.claude/specs/tickets/specs-inbox.md`
 - Prototype:
 - Spec:
 - Design:
-
----
-
-## Epic: Bookmarks
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/tickets/bookmarks
-Spec: `.claude/specs/tickets/specs-bookmarks.md`
-
-### TICK-? · _Story title_
-
----
-
-## Epic: Drafts
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/tickets/drafts
-Spec: `.claude/specs/tickets/specs-drafts.md`
-
-### TICK-? · _Story title_
-
----
-
-## Epic: Spam
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/tickets/spam
-Spec: `.claude/specs/tickets/specs-spam.md`
-
-### TICK-? · _Story title_
-
----
-
-## Epic: Saved view
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/tickets/saved-view
-Spec: `.claude/specs/tickets/specs-saved-view.md`
-
-### TICK-? · _Story title_

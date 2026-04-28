@@ -2,19 +2,27 @@
 
 Per-feature behavior specs owned by the **Tickets** engineering team.
 
-Each feature in `src/app/features/tickets/` should have a corresponding spec file here:
+## What this team is delivering
 
-- `specs-inbox.md`
-- `specs-bookmarks.md`
-- `specs-drafts.md`
-- `specs-spam.md`
-- `specs-saved-view.md`
+Only the filter + saved-views experience for the Tickets section is being handed off.
+The existing pages (Inbox, Bookmarks, Drafts, Spam) are already in production and are
+not part of this handoff. Engineering integrates the prototype's filter modal,
+applied filters bar, Save View button, and saved-views subnav into the existing
+production pages — they are not building those pages from scratch.
 
-A feature spec covers: states, interactions, edge cases, empty states, error states,
-loading behavior, and the data the page depends on. It does **not** cover layout
-patterns shared across the app — those live in `.claude/specs/shared/`.
+## Specs in this folder
 
-Tickets team also reads:
+- `specs-inbox.md` — filter, applied bar, Save View, and subnav saved-views integration for the Inbox
 
-- `.claude/specs/shared/specs-filter-engine.md` — every ticket list page uses the filter shell
-- `.claude/specs/shared/specs-saved-views.md` — saved views apply to ticket lists too
+The saved-view detail route (`/tickets/saved-views/:id`) is documented in the shared
+saved-views spec (`.claude/specs/shared/specs-saved-views.md`), since the load flow is
+identical for analytics and tickets.
+
+## Required reading
+
+In order:
+
+1. `CLAUDE.md` — project rules and Angular conventions
+2. `.claude/specs/shared/specs-filter-engine.md` — the entire filter modal (in scope for engineering)
+3. `.claude/specs/shared/specs-saved-views.md` — saved-view storage, routing, and load flow
+4. `.claude/specs/tickets/specs-inbox.md` — the per-page integration spec

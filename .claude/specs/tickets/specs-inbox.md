@@ -217,9 +217,28 @@ API calls. Endpoints needed for the inbox piece (final shapes TBD with backend t
 The `filterState` payload is the result of `filterModalGetState()` — opaque to the backend,
 just round-tripped. See `.claude/specs/shared/specs-saved-views.md` for the schema.
 
-## Open questions
+## Product decisions
 
-- Do we cap the number of saved views per user? Soft warn vs. hard block? Needs PM input.
-- What happens if a saved view references filter option IDs that no longer exist
-  (e.g. a deleted location)? Stale-show vs. silently skip vs. surface a warning. Needs PM input.
-- Real-time sync of `ticketCount` badges in the subnav — push from backend, or polling? Needs PM input.
+These decisions are settled. Engineering implements them as specified.
+
+### Saved view limit
+
+**No cap on the number of saved views per user.** The subnav scrolls if the list grows long.
+If performance becomes an issue at scale, backend should paginate the list — but that's a
+v2 problem, not a v1 constraint.
+
+### Stale filter options in saved views
+
+If a saved view references a filter option that no longer exists (e.g. a deleted
+location, a removed user), **silently drop the missing filter** when the view is loaded.
+The view re-applies with the remaining valid filters; no banner, no warning, no
+broken-state UI. The backend should also clean up the stored `filterState` so subsequent
+loads don't re-process the missing option.
+
+### Subnav `ticketCount` badge updates
+
+**Real-time updates are the target.** If real-time infrastructure (websockets / SSE) is
+not ready at launch, **polling on a 60-second interval is acceptable as a fallback** while
+the user is in the Tickets section. Pause polling when the browser tab is hidden
+(`document.visibilityState !== 'visible'`). Engineering picks the implementation; the
+product requirement is that the badge reflects current reality without requiring a manual refresh.
