@@ -2,9 +2,11 @@
 
 ## Scope of this spec
 
-Same scope as Asset Views and By Locations: integrate the new filter modal, updated
-toolbar, applied filters bar, and Save View → custom view wiring on the existing
-production page.
+The By Users page (`/assets/by-users`) is already in production. The handoff adds the
+new filter modal integration with an updated toolbar and the applied filters bar.
+
+The Save View button hooks into the existing custom-views feature, which is already
+on production and not part of this handoff.
 
 ## Where things live
 
@@ -21,18 +23,6 @@ production page.
 | Filter context key | `assets-users` (engineering creates) |
 | Filter groups | `FILTER_GROUPS_USERS` (engineering defines) |
 | Base route | `/assets/by-users` |
-
-## Tabs
-
-No tabs — single view of assets grouped by user.
-
-## Toolbar
-
-Same `<ds-table-toolbar>` shape as Asset Views. Differences:
-
-- `[showActions]="false"` — no Add/Import/Export
-- `searchPlaceholder="Search users"`
-- `toolbar-trailing` slot has the **Save View** text button
 
 ## Filter integration
 
@@ -54,13 +44,7 @@ modal's existing search input handles the find-by-name case.
 
 Standard markup — already present.
 
-## Save View → custom view
-
-Same pattern as Asset Views — creates a custom view on the Asset Views page that
-carries the filter state plus the source page identifier (`by-users`) so the
-custom-view loader knows where to route when the user re-opens it.
-
 ## Required reading
 
 1. `.claude/specs/shared/specs-filter-engine.md`
-2. `.claude/specs/assets/specs-asset-views.md` — the canonical Save View → custom view flow
+2. `.claude/specs/assets/specs-asset-views.md` — same-pattern reference page

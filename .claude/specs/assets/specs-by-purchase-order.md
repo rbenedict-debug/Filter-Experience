@@ -2,9 +2,12 @@
 
 ## Scope of this spec
 
-Same scope as Asset Views and the other By-X pages: integrate the new filter modal,
-updated toolbar, applied filters bar, and Save View → custom view wiring on the
-existing production page.
+The By Purchase Order page (`/assets/by-purchase-order`) is already in production.
+The handoff adds the new filter modal integration with an updated toolbar and the
+applied filters bar.
+
+The Save View button hooks into the existing custom-views feature, which is already
+on production and not part of this handoff.
 
 ## Where things live
 
@@ -22,35 +25,26 @@ existing production page.
 | Filter groups | `FILTER_GROUPS_PURCHASE_ORDERS` (engineering defines) |
 | Base route | `/assets/by-purchase-order` |
 
-## Tabs
-
-No tabs — single view of assets grouped by purchase order.
-
-## Toolbar
-
-Same `<ds-table-toolbar>` shape as Asset Views. Differences:
-
-- `[showActions]="false"` — no Add/Import/Export
-- `searchPlaceholder="Search purchase orders"`
-- `toolbar-trailing` slot has the **Save View** text button
-
 ## Filter integration
 
-Same as the other By-X pages — engineering creates a filter shell for this page
-following the filter-shell pattern. The purchase-order filter group should include
-the same kinds of fields as `FILTER_GROUPS_FEES` (cost-range, text-match for PO numbers,
-date-range for issue/delivery dates) — see `specs-filter-engine.md` for field types.
+Same as By Locations — engineering creates a filter shell for this page. The purchase
+order filter group should include the same kinds of fields as `FILTER_GROUPS_FEES`
+(cost-range, text-match for PO numbers, date-range for issue/delivery dates) — see
+`specs-filter-engine.md` for field types.
+
+```html
+<app-by-purchase-order-filter-shell
+  [(open)]="filterOpen"
+  (filterCountChange)="onFilterCountChange($event)"
+/>
+```
 
 ## Applied filters bar
 
 Standard markup — already present.
 
-## Save View → custom view
-
-Same pattern as Asset Views.
-
 ## Required reading
 
 1. `.claude/specs/shared/specs-filter-engine.md` — pay attention to `cost-range`,
-   `text-match`, and `date-range` field types since this page's filter group will use them
-2. `.claude/specs/assets/specs-asset-views.md` — the canonical Save View → custom view flow
+   `text-match`, and `date-range` field types
+2. `.claude/specs/assets/specs-asset-views.md` — same-pattern reference page
