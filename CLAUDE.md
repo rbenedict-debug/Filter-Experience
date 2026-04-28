@@ -56,16 +56,31 @@ src/app/features/tickets/
 
 **Analytics dashboards** — layout, toolbar, date filter, applied-filters bar:
 
-@.claude/specs/specs-dashboard.md
+@.claude/specs/shared/specs-dashboard.md
 
 **Filter modal and filter-shell pattern** — how the JS engine works, how to add a new context,
 and how to wire a filter-shell to a parent page:
 
-@.claude/specs/specs-filter-engine.md
+@.claude/specs/shared/specs-filter-engine.md
 
 **Saved views** — how analytics and ticket saved views are stored, loaded, and routed:
 
-@.claude/specs/specs-saved-views.md
+@.claude/specs/shared/specs-saved-views.md
+
+---
+
+## Engineering handoff — three teams
+
+This prototype is being handed to three engineering teams. Each team owns one feature area
+and reads only the specs that apply to their area:
+
+| Team | Owns | Spec folder | Handoff doc |
+|---|---|---|---|
+| Tickets | `src/app/features/tickets/` | `.claude/specs/tickets/` | `docs/handoff/tickets-team.md` |
+| Analytics | `src/app/features/analytics/` | `.claude/specs/analytics/` | `docs/handoff/analytics-team.md` |
+| Assets | `src/app/features/assets/` | `.claude/specs/assets/` | `docs/handoff/assets-team.md` |
+
+All three teams also read everything in `.claude/specs/shared/`.
 
 ---
 
