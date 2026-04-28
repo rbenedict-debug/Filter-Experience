@@ -1,0 +1,40 @@
+<div class="ds-page-content__heading">
+  <h1 class="ds-page-content__title">Assets by Users</h1>
+</div>
+
+<div class="ds-page-content__main ds-page-content__main--table"
+     [attr.data-panel-open]="settingsActive || null">
+
+  <ds-table-toolbar
+    [showActions]="false"
+    [showDownload]="false"
+    [searchPlaceholder]="'Search users'"
+    [(filterActive)]="filterOpen"
+    [(settingsActive)]="settingsActive"
+    (settingsActiveChange)="onSettingsToggle($event)"
+    (filterActiveChange)="onFilterToggle($event)"
+  >
+    <button toolbar-trailing class="ds-table-toolbar__text-btn" type="button">Save View</button>
+  </ds-table-toolbar>
+
+  <div class="filter-applied-bar" hidden [class.is-collapsed]="filterBarCollapsed()">
+    <span class="ds-label ds-label--brand ds-label--pill ds-label--sm filter-bar__count-chip"
+          aria-hidden="true" (click)="toggleFilterBar()">{{ filterCount }} active filters</span>
+    <div class="filter-applied-bar__cards" role="group" aria-label="Applied filters"></div>
+    <button class="filter-bar__toggle" type="button"
+            [attr.aria-expanded]="!filterBarCollapsed()"
+            [attr.aria-label]="filterBarCollapsed() ? 'Show filters, ' + filterCount + ' active' : 'Hide filters'"
+            (click)="toggleFilterBar()">
+      {{ filterBarCollapsed() ? 'Show filters' : 'Hide filters' }}
+      <span class="ds-icon ds-icon--sm filter-bar__toggle-arrow"
+            [class.filter-bar__toggle-arrow--right]="filterBarCollapsed()"
+            aria-hidden="true">arrow_drop_down</span>
+    </button>
+  </div>
+
+  <div class="by-users__table-placeholder">
+    <span class="ds-icon ds-icon--xl" aria-hidden="true">group</span>
+    <span class="by-users__placeholder-label">Table placeholder</span>
+  </div>
+
+</div>

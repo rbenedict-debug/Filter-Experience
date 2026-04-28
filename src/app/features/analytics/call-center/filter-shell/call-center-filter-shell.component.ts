@@ -17,6 +17,10 @@ declare global {
     filterModalClose: () => void;
     filterModalClearDates: () => void;
     openDateRangePicker: () => void;
+    filterModalGetState: () => Record<string, unknown>;
+    filterModalSetState: (state: Record<string, unknown>) => void;
+    filterModalApplySilent: () => void;
+    filterModalReset: () => void;
   }
 }
 
@@ -63,6 +67,30 @@ export class CallCenterFilterShellComponent implements OnChanges, AfterViewInit,
       changes['open'].currentValue
         ? window.filterModalOpen?.()
         : window.filterModalClose?.();
+    }
+  }
+
+  getState(): Record<string, unknown> | null {
+    return typeof window.filterModalGetState === 'function'
+      ? window.filterModalGetState()
+      : null;
+  }
+
+  setState(savedState: Record<string, unknown>): void {
+    if (typeof window.filterModalSetState === 'function') {
+      window.filterModalSetState(savedState);
+    }
+  }
+
+  applySilent(): void {
+    if (typeof window.filterModalApplySilent === 'function') {
+      window.filterModalApplySilent();
+    }
+  }
+
+  resetState(): void {
+    if (typeof window.filterModalReset === 'function') {
+      window.filterModalReset();
     }
   }
 

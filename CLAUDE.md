@@ -23,9 +23,10 @@ src/
       tickets/         ← tickets feature
       assets/          ← assets feature
       analytics/       ← analytics feature
-      settings/        ← settings feature
     core/
       services/        ← API services and shared business logic
+  assets/
+    filter-proto/      ← vanilla JS filter engine + CSS (see filter engine spec below)
   styles.scss          ← global base styles only, no component styles
   index.html           ← app shell HTML
 ```
@@ -53,9 +54,34 @@ src/app/features/tickets/
 
 ## Page patterns
 
-Before building any analytics dashboard, read the canonical dashboard spec:
+**Analytics dashboards** — layout, toolbar, date filter, applied-filters bar:
 
 @.claude/specs/specs-dashboard.md
+
+**Filter modal and filter-shell pattern** — how the JS engine works, how to add a new context,
+and how to wire a filter-shell to a parent page:
+
+@.claude/specs/specs-filter-engine.md
+
+**Saved views** — how analytics and ticket saved views are stored, loaded, and routed:
+
+@.claude/specs/specs-saved-views.md
+
+---
+
+## Filter system — critical architecture note
+
+The filter modal in this project is **not** an Angular component. It is a vanilla JS engine
+loaded as a global script (`src/assets/filter-proto/filter-modal-engine.js`).
+
+Every page that has a filter wraps it in a thin Angular "filter-shell" component. The filter-shell
+renders the modal HTML, initializes the engine with a context key, and re-emits JS window events
+as Angular `@Output()` bindings.
+
+**Never** try to replace this with the design system's `<ds-filter>` component — the HTML
+structure, state management, and saved-set logic are all owned by the JS engine.
+
+Read `specs-filter-engine.md` before touching any filter-shell or adding filters to a new page.
 
 ---
 

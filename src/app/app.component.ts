@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { SavedViewsService } from './core/services/saved-views.service';
+import { TicketsSavedViewsService } from './core/services/tickets-saved-views.service';
 import { filter, Subscription } from 'rxjs';
 import {
   NavSidebarComponent,
@@ -83,8 +84,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // ── Tickets sub-nav ───────────────────────────────────────────────────────
 
-  ticketsNavItem        = signal<string>('inbox');
-  savedSearchesExpanded = signal<boolean>(false);
+  ticketsNavItem              = signal<string>('inbox');
+  ticketSavedViewsExpanded    = signal<boolean>(true);
+  savedSearchesExpanded       = signal<boolean>(false);
+  readonly ticketSavedViews   = inject(TicketsSavedViewsService).savedViews;
 
   // ── Assets sub-nav ────────────────────────────────────────────────────────
 
@@ -299,14 +302,25 @@ export class AppComponent implements OnInit, OnDestroy {
     this.openOrActivateTab(section);
 
     if (section === 'tickets') {
-      this.ticketsNavItem.set(p1 || 'inbox');
+      if (p1 === 'saved-views' && p2) {
+        this.ticketsNavItem.set('saved-view-' + p2);
+        this.ticketSavedViewsExpanded.set(true);
+      } else {
+        this.ticketsNavItem.set(p1 || 'inbox');
+      }
     } else if (section === 'assets') {
-      this.assetsNavItem.set(p1 || 'asset-views');
+      this.assetsNavItem.set(p1 || 'standard-views');
     } else if (section === 'analytics') {
-      if (p1 === 'comparison' && p2) {
+      if (p1 === 'comparison' && parts[3] === 'saved-views' && parts[4]) {
+        this.analyticsNavItem.set(parts[4]);
+        this.savedViewsExpanded.set(true);
+      } else if (p1 === 'comparison' && p2) {
         this.analyticsNavItem.set(`comparison-${p2}`);
       } else if (p1 === 'saved-views' && p2) {
         this.analyticsNavItem.set(p2);
+        this.savedViewsExpanded.set(true);
+      } else if (p2 === 'saved-views' && parts[3]) {
+        this.analyticsNavItem.set(parts[3]);
         this.savedViewsExpanded.set(true);
       } else {
         this.analyticsNavItem.set(p1 || 'service-overview');

@@ -1,0 +1,54 @@
+<div class="ds-page-content__heading">
+  <h1 class="ds-page-content__title">Assets</h1>
+</div>
+
+<div class="ds-page-content__main">
+  <div class="standard-views__body">
+
+    <p class="standard-views__section-label">Standard Views</p>
+
+    <div class="standard-views__grid">
+
+      <button class="standard-views__card" type="button" (click)="navigate('all-assets')">
+        <div class="standard-views__icon-wrap standard-views__icon-wrap--green">
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">bar_chart</span>
+        </div>
+        <div class="standard-views__card-body">
+          <span class="standard-views__card-title">View All Assets</span>
+          <span class="standard-views__card-desc">View and manage all assets</span>
+        </div>
+      </button>
+
+      <button class="standard-views__card" type="button" (click)="navigate('by-locations')">
+        <div class="standard-views__icon-wrap standard-views__icon-wrap--blue">
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">location_on</span>
+        </div>
+        <div class="standard-views__card-body">
+          <span class="standard-views__card-title">View by Locations</span>
+          <span class="standard-views__card-desc">Geographic distribution</span>
+        </div>
+      </button>
+
+      <button class="standard-views__card" type="button" (click)="navigate('by-users')">
+        <div class="standard-views__icon-wrap standard-views__icon-wrap--purple">
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">group</span>
+        </div>
+        <div class="standard-views__card-body">
+          <span class="standard-views__card-title">View by Users</span>
+          <span class="standard-views__card-desc">User-based distribution</span>
+        </div>
+      </button>
+
+      <button class="standard-views__card" type="button" (click)="navigate('by-purchase-order')">
+        <div class="standard-views__icon-wrap standard-views__icon-wrap--orange">
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">receipt_long</span>
+        </div>
+        <div class="standard-views__card-body">
+          <span class="standard-views__card-title">View By Purchase Order</span>
+          <span class="standard-views__card-desc">Purchase order tracking</span>
+        </div>
+      </button>
+
+    </div>
+  </div>
+</div>

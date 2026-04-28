@@ -96,11 +96,11 @@
           }
         </div>
 
-        <button
-          class="ds-dashboard-toolbar__text-btn"
-          type="button"
-          (click)="onSave()"
-        >Save View</button>
+        @if (isSavedView) {
+          <button class="ds-dashboard-toolbar__text-btn" type="button" (click)="onEditView()">Edit View</button>
+        } @else {
+          <button class="ds-dashboard-toolbar__text-btn" type="button" (click)="onSave()">Save View</button>
+        }
 
           <button
             class="ds-dashboard-toolbar__btn"
@@ -170,6 +170,15 @@
   [(open)]="filterOpen"
   (filterCountChange)="onFilterCountChange($event)"
   (filterDateActiveChange)="onFilterDateActiveChange($event)"
+/>
+
+<app-save-view-modal
+  [(open)]="saveViewModalOpen"
+  [mode]="saveViewModalMode"
+  [initialName]="currentSavedView?.name ?? ''"
+  [filterCount]="filterCount"
+  (confirmed)="onSaveViewConfirmed($event)"
+  (deleted)="onSaveViewDeleted()"
 />
 
 <app-share-dashboard-modal

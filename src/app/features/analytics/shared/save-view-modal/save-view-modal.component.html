@@ -22,6 +22,22 @@
 
       <div class="save-view-modal__body">
 
+        @if (mode === 'edit') {
+          <p class="save-view-modal__help-text">
+            To change filters, close this modal and use the filter button. Then open Edit View to save.
+          </p>
+          <span class="ds-label ds-label--brand ds-label--pill ds-label--sm">
+            <span class="ds-label__icon" aria-hidden="true">filter_alt</span>
+            @if (filterCount === 0) {
+              No active filters
+            } @else if (filterCount === 1) {
+              1 active filter
+            } @else {
+              {{ filterCount }} active filters
+            }
+          </span>
+        }
+
         <div
           class="ds-input"
           (mousedown)="$any($event.currentTarget).setAttribute('data-mouse-focus', '')"
@@ -42,47 +58,29 @@
           </div>
         </div>
 
-        @if (mode === 'edit') {
-          <p class="save-view-modal__filter-summary">
-            <span class="ds-icon ds-icon--sm" aria-hidden="true">filter_alt</span>
-            @if (filterCount === 0) {
-              No active filters
-            } @else if (filterCount === 1) {
-              1 active filter
-            } @else {
-              {{ filterCount }} active filters
-            }
-          </p>
-          <p class="save-view-modal__filter-hint">
-            To change filters, close this modal and use the filter button. Then open Edit View to save.
-          </p>
-        }
-
       </div>
 
-      <div class="ds-modal__actions" [class.save-view-modal__actions--edit]="mode === 'edit'">
+      <div class="ds-modal__actions save-view-modal__actions">
+        <button class="ds-button ds-button--text" type="button" (click)="close()">
+          Cancel
+        </button>
         @if (mode === 'edit') {
           <button
-            class="ds-button ds-button--text save-view-modal__delete-btn"
+            class="ds-button ds-button--destructive-outlined"
             type="button"
             (click)="confirmDelete()"
           >
             Delete View
           </button>
         }
-        <div class="save-view-modal__right-actions">
-          <button class="ds-button ds-button--text" type="button" (click)="close()">
-            Cancel
-          </button>
-          <button
-            class="ds-button ds-button--filled"
-            type="button"
-            [disabled]="!viewName.trim()"
-            (click)="confirm()"
-          >
-            {{ confirmLabel }}
-          </button>
-        </div>
+        <button
+          class="ds-button ds-button--filled"
+          type="button"
+          [disabled]="!viewName.trim()"
+          (click)="confirm()"
+        >
+          {{ confirmLabel }}
+        </button>
       </div>
 
     </div>

@@ -34,6 +34,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/tickets/drafts/drafts.component').then(m => m.DraftsComponent),
       },
+      {
+        path: 'saved-views/:id',
+        loadComponent: () =>
+          import('./features/tickets/saved-view/saved-view.component').then(m => m.SavedViewComponent),
+      },
     ],
   },
 
@@ -43,16 +48,36 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/assets/assets.component').then(m => m.AssetsComponent),
     children: [
-      { path: '', redirectTo: 'asset-views', pathMatch: 'full' },
+      { path: '', redirectTo: 'standard-views', pathMatch: 'full' },
+      {
+        path: 'standard-views',
+        loadComponent: () =>
+          import('./features/assets/standard-views/standard-views.component').then(m => m.StandardViewsComponent),
+      },
       {
         path: 'overview',
         loadComponent: () =>
           import('./features/assets/overview/overview.component').then(m => m.OverviewComponent),
       },
       {
-        path: 'asset-views',
+        path: 'all-assets',
         loadComponent: () =>
           import('./features/assets/asset-views/asset-views.component').then(m => m.AssetViewsComponent),
+      },
+      {
+        path: 'by-locations',
+        loadComponent: () =>
+          import('./features/assets/by-locations/by-locations.component').then(m => m.ByLocationsComponent),
+      },
+      {
+        path: 'by-users',
+        loadComponent: () =>
+          import('./features/assets/by-users/by-users.component').then(m => m.ByUsersComponent),
+      },
+      {
+        path: 'by-purchase-order',
+        loadComponent: () =>
+          import('./features/assets/by-purchase-order/by-purchase-order.component').then(m => m.ByPurchaseOrderComponent),
       },
       {
         path: 'actions',
@@ -112,7 +137,47 @@ export const routes: Routes = [
       {
         path: 'saved-views/:id',
         loadComponent: () =>
+          import('./features/analytics/saved-view-loader/saved-view-loader.component').then(m => m.SavedViewLoaderComponent),
+      },
+      {
+        path: 'service-overview/saved-views/:id',
+        loadComponent: () =>
           import('./features/analytics/service-overview/service-overview.component').then(m => m.ServiceOverviewComponent),
+      },
+      {
+        path: 'chatbot/saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/chatbot/chatbot.component').then(m => m.ChatbotComponent),
+      },
+      {
+        path: 'call-center/saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/call-center/call-center.component').then(m => m.CallCenterComponent),
+      },
+      {
+        path: 'fees/saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/fees/fees.component').then(m => m.FeesComponent),
+      },
+      {
+        path: 'custom-reports/saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/custom-reports/custom-reports.component').then(m => m.CustomReportsComponent),
+      },
+      {
+        path: 'comparison/users/saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/comparison/users/comparison-users.component').then(m => m.ComparisonUsersComponent),
+      },
+      {
+        path: 'comparison/categories/saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/comparison/categories/comparison-categories.component').then(m => m.ComparisonCategoriesComponent),
+      },
+      {
+        path: 'comparison/topics/saved-views/:id',
+        loadComponent: () =>
+          import('./features/analytics/comparison/topics/comparison-topics.component').then(m => m.ComparisonTopicsComponent),
       },
     ],
   },

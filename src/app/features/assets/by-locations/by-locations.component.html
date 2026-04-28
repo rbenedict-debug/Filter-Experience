@@ -1,0 +1,54 @@
+<div class="ds-page-content__heading">
+  <h1 class="ds-page-content__title">Assets by Locations</h1>
+  <div class="ds-tabs" role="tablist" aria-label="Location types">
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'building'" role="tab"
+      [attr.aria-selected]="activeTab() === 'building'" [attr.tabindex]="activeTab() === 'building' ? 0 : -1"
+      (click)="setTab('building')"><span class="ds-icon ds-icon--sm" aria-hidden="true">apartment</span>Building</button>
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'room'" role="tab"
+      [attr.aria-selected]="activeTab() === 'room'" [attr.tabindex]="activeTab() === 'room' ? 0 : -1"
+      (click)="setTab('room')"><span class="ds-icon ds-icon--sm" aria-hidden="true">meeting_room</span>Room</button>
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'container'" role="tab"
+      [attr.aria-selected]="activeTab() === 'container'" [attr.tabindex]="activeTab() === 'container' ? 0 : -1"
+      (click)="setTab('container')"><span class="ds-icon ds-icon--sm" aria-hidden="true">inventory_2</span>Container</button>
+    <button class="ds-tabs__tab" [class.is-selected]="activeTab() === 'special-area'" role="tab"
+      [attr.aria-selected]="activeTab() === 'special-area'" [attr.tabindex]="activeTab() === 'special-area' ? 0 : -1"
+      (click)="setTab('special-area')"><span class="ds-icon ds-icon--sm" aria-hidden="true">place</span>Special Area</button>
+  </div>
+</div>
+
+<div class="ds-page-content__main ds-page-content__main--table"
+     [attr.data-panel-open]="settingsActive || null">
+
+  <ds-table-toolbar
+    [showActions]="false"
+    [showDownload]="false"
+    [searchPlaceholder]="'Search locations'"
+    [(filterActive)]="filterOpen"
+    [(settingsActive)]="settingsActive"
+    (settingsActiveChange)="onSettingsToggle($event)"
+    (filterActiveChange)="onFilterToggle($event)"
+  >
+    <button toolbar-trailing class="ds-table-toolbar__text-btn" type="button">Save View</button>
+  </ds-table-toolbar>
+
+  <div class="filter-applied-bar" hidden [class.is-collapsed]="filterBarCollapsed()">
+    <span class="ds-label ds-label--brand ds-label--pill ds-label--sm filter-bar__count-chip"
+          aria-hidden="true" (click)="toggleFilterBar()">{{ filterCount }} active filters</span>
+    <div class="filter-applied-bar__cards" role="group" aria-label="Applied filters"></div>
+    <button class="filter-bar__toggle" type="button"
+            [attr.aria-expanded]="!filterBarCollapsed()"
+            [attr.aria-label]="filterBarCollapsed() ? 'Show filters, ' + filterCount + ' active' : 'Hide filters'"
+            (click)="toggleFilterBar()">
+      {{ filterBarCollapsed() ? 'Show filters' : 'Hide filters' }}
+      <span class="ds-icon ds-icon--sm filter-bar__toggle-arrow"
+            [class.filter-bar__toggle-arrow--right]="filterBarCollapsed()"
+            aria-hidden="true">arrow_drop_down</span>
+    </button>
+  </div>
+
+  <div class="by-locations__table-placeholder">
+    <span class="ds-icon ds-icon--xl" aria-hidden="true">location_on</span>
+    <span class="by-locations__placeholder-label">Table placeholder</span>
+  </div>
+
+</div>

@@ -1,23 +1,48 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, inject, signal, computed, OnDestroy } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ViewChild,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { DsTableToolbarComponent } from '@onflo/design-system';
 import { ChatbotFilterShellComponent } from './filter-shell/chatbot-filter-shell.component';
 import { ShareDashboardModalComponent } from '../shared/share-dashboard-modal/share-dashboard-modal.component';
+import { SaveViewModalComponent } from '../shared/save-view-modal/save-view-modal.component';
+import { SavedViewsService, SavedView } from '../../../core/services/saved-views.service';
 
 type ChatbotTab = 'overview' | 'optimization' | 'chat-logs';
 
 @Component({
   selector: 'app-chatbot',
   standalone: true,
-  imports: [DatePipe, DsTableToolbarComponent, ChatbotFilterShellComponent, ShareDashboardModalComponent],
+  imports: [DatePipe, DsTableToolbarComponent, ChatbotFilterShellComponent, ShareDashboardModalComponent, SaveViewModalComponent],
   templateUrl: './chatbot.component.html',
   styleUrls: ['./chatbot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChatbotComponent implements OnDestroy {
-  private readonly cdr = inject(ChangeDetectorRef);
+export class ChatbotComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly cdr               = inject(ChangeDetectorRef);
+  private readonly route             = inject(ActivatedRoute);
+  private readonly router            = inject(Router);
+  private readonly savedViewsService = inject(SavedViewsService);
+
+  @ViewChild(ChatbotFilterShellComponent) private filterShell!: ChatbotFilterShellComponent;
 
   activeTab = signal<ChatbotTab>('overview');
+
+  isSavedView       = false;
+  currentSavedView: SavedView | null = null;
+  saveViewModalOpen = false;
+  saveViewModalMode: 'save' | 'edit' = 'save';
 
   filterOpen          = false;
   filterCount         = 0;
@@ -34,6 +59,9 @@ export class ChatbotComponent implements OnDestroy {
   languageMenuOpen  = false;
   dateLabel      = 'Last 90 Days';
   tableDateLabel = 'Last 30 Days';
+
+  private _viewReady = false;
+  private _paramSub?: Subscription;
 
   private readonly onDateRangeSelected = (e: Event) => {
     const { label } = (e as CustomEvent<{ label: string }>).detail;
@@ -107,13 +135,96 @@ export class ChatbotComponent implements OnDestroy {
     this.activeTab.set(tab);
   }
 
+  ngOnInit(): void {
+    this._paramSub = this.route.paramMap.subscribe(params => {
+      const id   = params.get('id');
+      const view = id ? this.savedViewsService.getById(id) : null;
+
+      if (view) {
+        this.isSavedView      = true;
+        this.currentSavedView = view;
+        this.dateLabel        = view.dateLabel || 'Last 90 Days';
+        this.filterCount      = view.filterCount;
+        this.filterBarCollapsed.set(true);
+      } else {
+        this.isSavedView      = false;
+        this.currentSavedView = null;
+        this.dateLabel        = 'Last 90 Days';
+        this.filterBarCollapsed.set(false);
+        this.filterCount      = 0;
+      }
+      this.cdr.markForCheck();
+
+      if (this._viewReady) {
+        if (view) {
+          this.filterShell.setState(view.filterState as unknown as Record<string, unknown>);
+          this.filterShell.applySilent();
+        } else {
+          this.filterShell.resetState();
+        }
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this._viewReady = true;
+    if (this.isSavedView && this.currentSavedView) {
+      this.filterShell.setState(this.currentSavedView.filterState as unknown as Record<string, unknown>);
+      this.filterShell.applySilent();
+    } else {
+      this.filterShell.resetState();
+    }
+  }
+
+  onSave(): void {
+    this.saveViewModalMode = 'save';
+    this.saveViewModalOpen = true;
+  }
+
+  onEditView(): void {
+    this.saveViewModalMode = 'edit';
+    this.saveViewModalOpen = true;
+  }
+
+  onSaveViewConfirmed(name: string): void {
+    const filterState = this.filterShell.getState();
+    if (!filterState) return;
+
+    if (this.isSavedView && this.currentSavedView) {
+      this.savedViewsService.update(this.currentSavedView.id, {
+        name,
+        filterState: filterState as unknown as SavedView['filterState'],
+        filterCount: this.filterCount,
+        dateLabel:   this.dateLabel,
+      });
+      this.currentSavedView = { ...this.currentSavedView, name, filterCount: this.filterCount, dateLabel: this.dateLabel };
+      this.cdr.markForCheck();
+    } else {
+      const newView = this.savedViewsService.save({
+        name,
+        sourcePage:  'chatbot',
+        filterState: filterState as unknown as SavedView['filterState'],
+        filterCount: this.filterCount,
+        dateLabel:   this.dateLabel,
+      });
+      this.router.navigate(['/analytics/chatbot/saved-views', newView.id]);
+    }
+  }
+
+  onSaveViewDeleted(): void {
+    if (this.currentSavedView) {
+      this.savedViewsService.delete(this.currentSavedView.id);
+    }
+    this.router.navigate(['/analytics/chatbot']);
+  }
+
   toggleDateMenu():      void { this.dateMenuOpen      = !this.dateMenuOpen; }
   toggleTableDateMenu(): void { this.tableDateMenuOpen = !this.tableDateMenuOpen; }
   toggleProfileMenu():   void { this.profileMenuOpen   = !this.profileMenuOpen;  this.languageMenuOpen = false; }
   toggleLanguageMenu():  void { this.languageMenuOpen  = !this.languageMenuOpen; this.profileMenuOpen  = false; }
 
   selectTableDate(label: string): void {
-    this.tableDateLabel   = label;
+    this.tableDateLabel    = label;
     this.tableDateMenuOpen = false;
   }
 
@@ -153,7 +264,8 @@ export class ChatbotComponent implements OnDestroy {
   onFilterCountChange(count: number): void {
     this.filterCount = count;
     this.filterOpen  = false;
-    if (count === 0) this.filterBarCollapsed.set(false);
+    if (count === 0 && !this.isSavedView) this.filterBarCollapsed.set(false);
+    this.cdr.markForCheck();
   }
 
   toggleFilterBar(): void {
@@ -167,10 +279,9 @@ export class ChatbotComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     window.removeEventListener('dateRangeSelected', this.onDateRangeSelected);
+    this._paramSub?.unsubscribe();
   }
 
   onDownload(): void {}
   onShare():    void { this.shareOpen = true; }
-  onSave():     void {}
-
 }

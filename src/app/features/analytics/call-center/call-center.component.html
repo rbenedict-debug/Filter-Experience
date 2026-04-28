@@ -143,11 +143,11 @@
             }
           </div>
 
-          <button
-            class="ds-dashboard-toolbar__text-btn"
-            type="button"
-            (click)="onSave()"
-          >Save View</button>
+          @if (isSavedView) {
+            <button class="ds-dashboard-toolbar__text-btn" type="button" (click)="onEditView()">Edit View</button>
+          } @else {
+            <button class="ds-dashboard-toolbar__text-btn" type="button" (click)="onSave()">Save View</button>
+          }
 
           <button
             class="ds-dashboard-toolbar__btn"
@@ -224,8 +224,11 @@
       [searchPlaceholder]="'Search call details'"
     >
       <ng-container toolbar-trailing>
-        <button class="ds-table-toolbar__text-btn" type="button"
-                (click)="onSave()">Save View</button>
+        @if (isSavedView) {
+          <button class="ds-table-toolbar__text-btn" type="button" (click)="onEditView()">Edit View</button>
+        } @else {
+          <button class="ds-table-toolbar__text-btn" type="button" (click)="onSave()">Save View</button>
+        }
         <button class="ds-table-toolbar__btn" type="button" aria-label="Download"
                 (click)="onDownload()">
           <span class="ds-icon" aria-hidden="true">download</span>
@@ -312,8 +315,11 @@
         </div>
       </ng-container>
       <ng-container toolbar-trailing>
-        <button class="ds-table-toolbar__text-btn" type="button"
-                (click)="onSave()">Save View</button>
+        @if (isSavedView) {
+          <button class="ds-table-toolbar__text-btn" type="button" (click)="onEditView()">Edit View</button>
+        } @else {
+          <button class="ds-table-toolbar__text-btn" type="button" (click)="onSave()">Save View</button>
+        }
         <button class="ds-table-toolbar__btn" type="button" aria-label="Download"
                 (click)="onDownload()">
           <span class="ds-icon" aria-hidden="true">download</span>
@@ -356,6 +362,15 @@
   [context]="filterContext()"
   (filterCountChange)="onFilterCountChange($event)"
   (filterDateActiveChange)="onFilterDateActiveChange($event)"
+/>
+
+<app-save-view-modal
+  [(open)]="saveViewModalOpen"
+  [mode]="saveViewModalMode"
+  [initialName]="currentSavedView?.name ?? ''"
+  [filterCount]="filterCount"
+  (confirmed)="onSaveViewConfirmed($event)"
+  (deleted)="onSaveViewDeleted()"
 />
 
 <app-share-dashboard-modal

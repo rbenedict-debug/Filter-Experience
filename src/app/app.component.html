@@ -103,8 +103,8 @@
             [selected]="assetsNavItem() === 'overview'"
             (navClick)="go('/assets/overview')" />
           <ds-subnav-button label="Asset Views"
-            [selected]="assetsNavItem() === 'asset-views'"
-            (navClick)="go('/assets/asset-views')" />
+            [selected]="['standard-views','all-assets','by-locations','by-users','by-purchase-order'].includes(assetsNavItem())"
+            (navClick)="go('/assets/standard-views')" />
           <ds-subnav-button label="Actions"
             [selected]="assetsNavItem() === 'actions'"
             (navClick)="go('/assets/actions')" />
@@ -142,8 +142,9 @@
               (navClick)="go('/analytics/comparison/topics')" />
           </ds-subnav-header>
           <ds-subnav-header
+            class="saved-views-header"
             text="Saved Views"
-            icon="search"
+            icon="bookmark"
             [expanded]="savedViewsExpanded()"
             (expandedChange)="savedViewsExpanded.set($event)">
             @for (view of savedViews(); track view.id) {
@@ -175,6 +176,31 @@
           <ds-subnav-button label="Drafts"
             [selected]="ticketsNavItem() === 'drafts'"
             (navClick)="go('/tickets/drafts')" />
+          <ds-subnav-header
+            class="saved-views-header"
+            text="Saved Views"
+            icon="bookmark"
+            [expanded]="ticketSavedViewsExpanded()"
+            (expandedChange)="ticketSavedViewsExpanded.set($event)">
+            @for (view of ticketSavedViews(); track view.id) {
+              <div class="tickets-saved-view-item">
+                <ds-subnav-button
+                  [label]="view.name"
+                  [selected]="ticketsNavItem() === 'saved-view-' + view.id"
+                  (navClick)="go('/tickets/saved-views/' + view.id)" />
+                @if (view.ticketCount > 0) {
+                  <div class="tickets-saved-view-item__badge ds-badge-indicator ds-badge-indicator--grey"
+                       aria-hidden="true">
+                    {{ view.ticketCount > 999 ? '999+' : view.ticketCount }}
+                  </div>
+                }
+              </div>
+            }
+            @if (ticketSavedViews().length === 0) {
+              <p class="saved-views-empty">No saved views yet</p>
+            }
+          </ds-subnav-header>
+
           <ds-subnav-header
             text="Saved Searches"
             icon="search"

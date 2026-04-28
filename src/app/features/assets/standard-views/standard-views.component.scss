@@ -1,0 +1,105 @@
+:host {
+  display: contents;
+}
+
+.standard-views__body {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.standard-views__section-label {
+  margin: 0;
+  font-family: var(--ref-typescale-title-small-font);
+  font-size: var(--ref-typescale-title-small-size);
+  font-weight: var(--ref-typescale-title-small-weight);
+  line-height: var(--ref-typescale-title-small-line-height);
+  color: var(--color-text-primary);
+}
+
+.standard-views__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+}
+
+.standard-views__card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-surface-page);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--motion-duration-short),
+    background var(--motion-duration-short),
+    box-shadow var(--motion-duration-short);
+
+  &:hover {
+    border-color: var(--color-border-input-hover);
+    background: var(--overlay-hovered);
+    box-shadow: 0 1px 4px var(--shadow-elevation-1), 0 2px 8px var(--shadow-elevation-2);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+  }
+}
+
+.standard-views__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+
+  &--green {
+    background: var(--color-surface-success);
+    color: var(--color-icon-success);
+  }
+
+  &--blue {
+    background: var(--color-surface-info);
+    color: var(--color-icon-info);
+  }
+
+  &--purple {
+    background: var(--ref-color-accent-purple-bg);
+    color: var(--ref-color-accent-purple-default);
+  }
+
+  &--orange {
+    background: var(--ref-color-accent-orange-bg);
+    color: var(--ref-color-accent-orange-default);
+  }
+}
+
+.standard-views__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.standard-views__card-title {
+  font-family: var(--ref-typescale-label-large-font);
+  font-size: var(--ref-typescale-label-large-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  line-height: var(--ref-typescale-label-large-line-height);
+  color: var(--color-text-primary);
+}
+
+.standard-views__card-desc {
+  font-family: var(--ref-typescale-body-small-font);
+  font-size: var(--ref-typescale-body-small-size);
+  font-weight: var(--ref-typescale-body-small-weight);
+  line-height: var(--ref-typescale-body-small-line-height);
+  color: var(--color-text-secondary);
+}

@@ -10,10 +10,13 @@
     [showDownload]="false"
     [searchPlaceholder]="'Search fees'"
   >
-    <button toolbar-trailing
-      class="ds-table-toolbar__text-btn"
-      type="button"
-    >Save View</button>
+    <ng-container toolbar-trailing>
+      @if (isSavedView) {
+        <button class="ds-table-toolbar__text-btn" type="button" (click)="onEditView()">Edit View</button>
+      } @else {
+        <button class="ds-table-toolbar__text-btn" type="button" (click)="onSave()">Save View</button>
+      }
+    </ng-container>
   </ds-table-toolbar>
 
   <div
@@ -48,4 +51,13 @@
 <app-fees-filter-shell
   [(open)]="filterOpen"
   (filterCountChange)="onFilterCountChange($event)"
+/>
+
+<app-save-view-modal
+  [(open)]="saveViewModalOpen"
+  [mode]="saveViewModalMode"
+  [initialName]="currentSavedView?.name ?? ''"
+  [filterCount]="filterCount"
+  (confirmed)="onSaveViewConfirmed($event)"
+  (deleted)="onSaveViewDeleted()"
 />
