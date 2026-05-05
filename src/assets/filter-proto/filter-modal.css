@@ -839,6 +839,33 @@
   border-color: var(--color-border-secondary);
 }
 
+/* ── saved-sets-save-form — dark navy panel overrides ──────────────────────
+   The save form always renders inside the dark right panel. These rules lock
+   in the correct dark-surface token values explicitly so the input field,
+   label, and save button are always readable regardless of whether the
+   data-theme="dark" cascade resolves at injection time.                    */
+.filter-modal__right .saved-sets-save-form__label {
+  color: var(--color-text-primary);
+}
+.filter-modal__right .saved-sets-save-form .ds-input__field {
+  background: var(--color-surface-input);
+  border-color: var(--color-border-input);
+}
+.filter-modal__right .saved-sets-save-form .ds-input__field:hover {
+  border-color: var(--color-border-input-hover);
+}
+.filter-modal__right .saved-sets-save-form .ds-input__field:focus-within {
+  border-color: var(--color-border-input-active);
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+.filter-modal__right .saved-sets-save-form .ds-input__control {
+  color: var(--color-text-primary);
+  caret-color: var(--color-border-input-active);
+}
+.filter-modal__right .saved-sets-save-form .ds-input__control::placeholder {
+  color: var(--color-text-placeholder);
+}
+
 .filter-modal__selected-title {
   margin: 0;
   font-size: var(--ref-typescale-title-h2-size);
@@ -1633,7 +1660,7 @@
   margin: 0;
   font-size: var(--ref-typescale-label-medium-size);
   font-weight: var(--ref-typeface-weight-bold);
-  color: var(--color-text-on-brand);
+  color: var(--color-text-primary);
 }
 
 .saved-sets-save-form__row {
@@ -1644,10 +1671,6 @@
 
 .saved-sets-save-form__input-wrap {
   flex: 1;
-}
-
-.saved-sets-save-form__input-wrap .ds-input__control {
-  caret-color: var(--color-text-on-brand);
 }
 
 .saved-sets-save-form__hint {
