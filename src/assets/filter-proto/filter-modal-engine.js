@@ -3278,7 +3278,7 @@ function renderSavedSetsPanel() {
     <div class="saved-sets-save-form">
       <p class="saved-sets-save-form__label">Save current filters as new set</p>
       <div class="saved-sets-save-form__row">
-        <div class="ds-input saved-sets-save-form__input-wrap">
+        <div class="ds-input saved-sets-save-form__input-wrap" data-theme="dark">
           <div class="ds-input__field">
             <input
               class="ds-input__control"

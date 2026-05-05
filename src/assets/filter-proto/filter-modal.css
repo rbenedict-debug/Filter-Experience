@@ -799,6 +799,12 @@
   flex-direction: column;
   background: var(--color-surface-accent-navy-bold);
   overflow: hidden;
+  /* Redefine input surface token for this always-dark panel.
+     --color-surface-input resolves to #FFFFFF in light context and the
+     data-theme="dark" cascade does not reliably reach JS-injected content.
+     Setting it here makes every descendant (static or injected) inherit a
+     dark-appropriate value without relying on the cascade. */
+  --color-surface-input: var(--ref-color-neutral-border-subtle-on-dark);
 }
 
 .filter-modal__selected-header {
@@ -840,12 +846,11 @@
 }
 
 /* ── saved-sets-save-form — dark navy panel overrides ──────────────────────
-   The save form always renders inside the dark right panel. These rules lock
-   in the correct dark-surface token values explicitly so the input field,
-   label, and save button are always readable regardless of whether the
-   data-theme="dark" cascade resolves at injection time.                    */
+   --color-surface-input is redefined on .filter-modal__right (above) to a
+   dark-appropriate value, so var(--color-surface-input) here resolves dark.
+   Text uses --color-text-on-brand which is always white regardless of theme. */
 .filter-modal__right .saved-sets-save-form__label {
-  color: var(--color-text-primary);
+  color: var(--color-text-on-brand);
 }
 .filter-modal__right .saved-sets-save-form .ds-input__field {
   background: var(--color-surface-input);
@@ -856,14 +861,18 @@
 }
 .filter-modal__right .saved-sets-save-form .ds-input__field:focus-within {
   border-color: var(--color-border-input-active);
+}
+.filter-modal__right .saved-sets-save-form .saved-sets-save-form__input-wrap:not([data-mouse-focus]) .ds-input__field:focus-within {
   box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
 }
 .filter-modal__right .saved-sets-save-form .ds-input__control {
-  color: var(--color-text-primary);
-  caret-color: var(--color-border-input-active);
+  background: transparent;
+  color: var(--color-text-on-brand);
+  caret-color: var(--color-text-on-brand);
 }
 .filter-modal__right .saved-sets-save-form .ds-input__control::placeholder {
-  color: var(--color-text-placeholder);
+  color: var(--color-text-on-brand);
+  opacity: 0.5;
 }
 
 .filter-modal__selected-title {
