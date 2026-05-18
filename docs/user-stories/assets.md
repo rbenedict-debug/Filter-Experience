@@ -32,6 +32,7 @@ out for each.
 | By Locations | `AST-BL-` |
 | By Users | `AST-BU-` |
 | By Purchase Order | `AST-BPO-` |
+| Fees | `AST-FE-` |
 
 ---
 
@@ -162,3 +163,31 @@ Spec: `.claude/specs/assets/specs-by-purchase-order.md`
 
 Same shape as `AST-BL-1` but for purchase orders (`assets-purchase-orders` context,
 `FILTER_GROUPS_PURCHASE_ORDERS`, `app-by-purchase-order-filter-shell`).
+
+---
+
+## Epic: Fees
+
+Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/fees
+Spec: `.claude/specs/assets/specs-fees.md`
+
+**Inherits all `ANL-SO-1` through `ANL-SO-8` stories** from the Dashboard team's canonical page (same toolbar, filter, saved-view pattern). Only differences:
+- Filter context is `fees`
+- Saved view `sourcePage` is `fees`
+- The Fees filter group uses `cost-range` and `text-match` field types (see filter engine spec)
+- No stats cards
+- No tabs
+
+### AST-FE-1 · Apply filters including cost range and text match
+
+**As an** asset administrator
+**I want** to filter the Fees dashboard by cost range, fee name, fee ID, and transaction ID
+**So that** I can drill into specific fee transactions
+
+**Acceptance criteria**
+
+- [ ] The filter button opens the filter modal with the `fees` context
+- [ ] The cost-range field renders as a min/max numeric input pair
+- [ ] Text-match fields (Fee Name, Fee ID, Ticket Number, Transaction ID) render as text inputs
+- [ ] Applying filters updates the dashboard data
+- [ ] The filter button badge reflects the active filter count

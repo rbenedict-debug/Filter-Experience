@@ -1,12 +1,12 @@
-# Analytics — user stories
+# Dashboard — user stories
 
-Owner: **Analytics engineering team**
+Owner: **Dashboard engineering team**
 Format reference: [`./README.md`](./README.md)
 
 ## Scope
 
 Stories for the new page header, dashboard toolbar, applied filters bar, and saved-view
-integration on the eight analytics pages. The chart data and underlying analytics are
+integration on the five Dashboard pages. The chart data and underlying analytics are
 already in production and unchanged — engineering integrates the new chrome around
 the existing dashboards.
 
@@ -17,28 +17,25 @@ the existing dashboards.
 
 ## How to read this file
 
-Service Overview is the **canonical** analytics page. Its stories (ANL-SO-1 through
-ANL-SO-9) describe the full pattern. **Each of the other analytics pages inherits the
+Service Overview is the **canonical** Dashboard page. Its stories (ANL-SO-1 through
+ANL-SO-9) describe the full pattern. **Each of the other Dashboard pages inherits the
 same stories** with that page's own ID prefix. Only the page-specific deviations are
 written out for each non-canonical page.
 
 | Page | ID prefix |
 |---|---|
 | Service Overview | `ANL-SO-` |
-| Chatbot | `ANL-CB-` |
-| Call Center | `ANL-CC-` |
 | Comparison — Users | `ANL-CMU-` |
 | Comparison — Categories | `ANL-CMC-` |
 | Comparison — Topics | `ANL-CMT-` |
 | Custom Reports | `ANL-CR-` |
-| Fees | `ANL-FE-` |
 
 ---
 
-## Epic: Service Overview (canonical analytics page)
+## Epic: Service Overview (canonical Dashboard page)
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/service-overview
-Spec: `.claude/specs/analytics/specs-service-overview.md`
+Spec: `.claude/specs/dashboard/specs-service-overview.md`
 
 ---
 
@@ -150,74 +147,10 @@ to the base route (`/analytics/service-overview`) with empty filter state.
 
 ---
 
-## Epic: Chatbot
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/chatbot
-Spec: `.claude/specs/analytics/specs-chatbot.md`
-
-**Inherits all `ANL-SO-1` through `ANL-SO-8` stories** with these adjustments:
-- Filter context varies by tab: `chatbot-overview` (Overview tab) or `chatbot-chat-logs` (Chat Logs tab)
-- Saved view `sourcePage` is `chatbot`
-- The Optimization tab has no filter; the toolbar is hidden on that tab
-
-### ANL-CB-1 · Switch tabs and have filters apply per tab
-
-**As an** IT manager
-**I want** to switch between Overview, Optimization, and Chat Logs and have the filter
-modal switch contexts automatically
-**So that** each tab's filter set is relevant to the data shown
-
-**Acceptance criteria**
-
-- [ ] The Chatbot page renders three tabs in the header: Overview, Optimization, Chat Logs
-- [ ] Switching tabs updates the page's `filterContext()` signal
-- [ ] When `filterContext()` changes, the filter shell re-initializes the filter modal with the new context
-- [ ] The Optimization tab does not show the toolbar (no date, filter, save-view, etc.)
-- [ ] The Chat Logs tab uses a table layout (`ds-page-content__main--table`)
-
----
-
-## Epic: Call Center
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/call-center
-Spec: `.claude/specs/analytics/specs-call-center.md`
-
-**Inherits all `ANL-SO-1` through `ANL-SO-8` stories** with these adjustments:
-- Filter context varies by tab — six contexts total (see spec)
-- Saved view `sourcePage` is `call-center`
-- Two of the six tabs (Call Details, Agent Status) use a table layout instead of dashboard
-
-### ANL-CC-1 · Switch among Call Center tabs
-
-**As an** IT manager
-**I want** to switch among the six Call Center tabs (Overview, Queue Management, CSAT, Call Metrics, Call Details, Agent Status) and have the filter context follow
-**So that** the filter modal is always relevant to the data on the current tab
-
-**Acceptance criteria**
-
-- [ ] All six tabs render in the page header
-- [ ] Switching tabs updates `filterContext()` to the corresponding key (e.g. `call-center-csat`)
-- [ ] The filter shell re-initializes on context change
-- [ ] Call Details and Agent Status use the table layout; the others use the dashboard layout
-
-### ANL-CC-2 · Queue Management tab has no date select
-
-**As an** IT manager
-**I want** the Queue Management tab toolbar to omit the date select
-**So that** I'm not confused into thinking I can pick a past date for live queue data
-
-**Acceptance criteria**
-
-- [ ] On the Queue Management tab, the toolbar renders without `ds-dashboard-toolbar__date-select`
-- [ ] All other toolbar buttons (Filter, Save View, Download, Share) remain
-- [ ] On every other tab, the date select is present
-
----
-
 ## Epic: Comparison — Users
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/comparison/users
-Spec: `.claude/specs/analytics/specs-comparison-users.md`
+Spec: `.claude/specs/dashboard/specs-comparison-users.md`
 
 **Inherits all `ANL-SO-1` through `ANL-SO-9` stories** with these adjustments:
 - Filter context is `comparison-users`
@@ -246,7 +179,7 @@ cohort behind the current view
 ## Epic: Comparison — Categories
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/comparison/categories
-Spec: `.claude/specs/analytics/specs-comparison-categories.md`
+Spec: `.claude/specs/dashboard/specs-comparison-categories.md`
 
 **Inherits all `ANL-SO-1` through `ANL-SO-9` stories** plus `ANL-CMU-1`. Only differences:
 - Filter context is `comparison-categories`
@@ -261,7 +194,7 @@ Spec: `.claude/specs/analytics/specs-comparison-categories.md`
 ## Epic: Comparison — Topics
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/comparison/topics
-Spec: `.claude/specs/analytics/specs-comparison-topics.md`
+Spec: `.claude/specs/dashboard/specs-comparison-topics.md`
 
 **Inherits all `ANL-SO-1` through `ANL-SO-9` stories** plus `ANL-CMU-1`. Only differences:
 - Filter context is `comparison-topics`
@@ -276,24 +209,10 @@ Spec: `.claude/specs/analytics/specs-comparison-topics.md`
 ## Epic: Custom Reports
 
 Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/custom-reports
-Spec: `.claude/specs/analytics/specs-custom-reports.md`
+Spec: `.claude/specs/dashboard/specs-custom-reports.md`
 
 **Inherits all `ANL-SO-1` through `ANL-SO-8` stories** (no stats bar, no extra buttons). Only differences:
 - Filter context is `custom-reports`
 - Saved view `sourcePage` is `custom-reports`
 - No stats cards (no `ANL-SO-9` equivalent)
-- No tabs
-
----
-
-## Epic: Fees
-
-Prototype: https://rbenedict-debug.github.io/Filter-Experience/analytics/fees
-Spec: `.claude/specs/analytics/specs-fees.md`
-
-**Inherits all `ANL-SO-1` through `ANL-SO-8` stories**. Only differences:
-- Filter context is `fees`
-- Saved view `sourcePage` is `fees`
-- The Fees filter group uses `cost-range` and `text-match` field types (see filter engine spec)
-- No stats cards
 - No tabs

@@ -80,7 +80,7 @@ adjustments.
    tabs variant and the `ds-page-content__main--table` canvas variant
 2. `.claude/specs/shared/specs-filter-engine.md`
 3. `.claude/specs/shared/specs-saved-views.md`
-4. `.claude/specs/analytics/specs-service-overview.md` — same-pattern reference page
+4. `.claude/specs/dashboard/specs-service-overview.md` — same-pattern reference page
 
 ## Backend dependencies
 

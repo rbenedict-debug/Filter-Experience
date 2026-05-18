@@ -1,4 +1,4 @@
-# Analytics team — handoff
+# Dashboard team — handoff
 
 ## What you're delivering
 
@@ -20,10 +20,7 @@ adding/replacing the chrome around them:
 | Page | Route | Spec |
 |---|---|---|
 | Service Overview | `/analytics/service-overview` | `specs-service-overview.md` |
-| Chatbot | `/analytics/chatbot` | `specs-chatbot.md` |
-| Call Center | `/analytics/call-center` | `specs-call-center.md` |
 | Custom Reports | `/analytics/custom-reports` | `specs-custom-reports.md` |
-| Fees | `/analytics/fees` | `specs-fees.md` |
 | Comparison · Users | `/analytics/comparison/users` | `specs-comparison-users.md` |
 | Comparison · Categories | `/analytics/comparison/categories` | `specs-comparison-categories.md` |
 | Comparison · Topics | `/analytics/comparison/topics` | `specs-comparison-topics.md` |
@@ -62,13 +59,13 @@ new view in the subnav, click it to navigate back to it (state restores).
 
 **3. Per-page specs:**
 
-- [`.claude/specs/analytics/specs-service-overview.md`](../../.claude/specs/analytics/specs-service-overview.md)
+- [`.claude/specs/dashboard/specs-service-overview.md`](../../.claude/specs/dashboard/specs-service-overview.md)
   — read this once. Other per-page specs reference back to it.
 - Then the per-page spec for whichever page you're starting on.
 
 ## User stories
 
-Stories live at [`docs/user-stories/analytics.md`](../user-stories/analytics.md) — one
+Stories live at [`docs/user-stories/dashboard.md`](../user-stories/dashboard.md) — one
 epic per page. The design/PM team owns filling in the bodies; engineering reviews
 acceptance criteria before sprint planning.
 
@@ -79,7 +76,7 @@ guide, and the shared specs. When you start on a specific page, ask Claude to al
 read that page's per-page spec — for example:
 
 ```
-Read .claude/specs/analytics/specs-call-center.md, then implement story ANL-12.
+Read .claude/specs/dashboard/specs-service-overview.md, then implement story ANL-SO-1.
 ```
 
 ## What is **not** in scope for this team
@@ -87,6 +84,7 @@ Read .claude/specs/analytics/specs-call-center.md, then implement story ANL-12.
 - The chart data and chart logic itself — already in production, unchanged
 - The app shell (top nav, sidebar, agent status)
 - Anything under `src/app/features/{tickets,assets,settings}`
+- Call Center, Chatbot, and Fees (owned by Telephony, Chatbot, and Assets teams respectively)
 
 If you find a bug or a gap that crosses into one of these, file it; don't fix it.
 

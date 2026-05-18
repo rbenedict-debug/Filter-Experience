@@ -40,7 +40,7 @@ ID, Ticket Number, Transaction ID). See the Field Types section in
 2. `.claude/specs/shared/specs-filter-engine.md` — pay attention to `cost-range` and
    `text-match` field types since this page uses both
 3. `.claude/specs/shared/specs-saved-views.md`
-4. `.claude/specs/analytics/specs-service-overview.md` — canonical reference
+4. `.claude/specs/dashboard/specs-service-overview.md` — canonical reference
 
 ## Backend dependencies
 

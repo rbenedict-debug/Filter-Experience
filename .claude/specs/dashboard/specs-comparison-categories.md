@@ -41,8 +41,8 @@ data sources and filter group differ.
 1. `.claude/specs/shared/specs-dashboard.md`
 2. `.claude/specs/shared/specs-filter-engine.md`
 3. `.claude/specs/shared/specs-saved-views.md`
-4. `.claude/specs/analytics/specs-comparison-users.md` — same shape, more detail
-5. `.claude/specs/analytics/specs-service-overview.md` — canonical reference
+4. `.claude/specs/dashboard/specs-comparison-users.md` — same shape, more detail
+5. `.claude/specs/dashboard/specs-service-overview.md` — canonical reference
 
 ## Backend dependencies
 

@@ -69,18 +69,20 @@ and how to wire a filter-shell to a parent page:
 
 ---
 
-## Engineering handoff — three teams
+## Engineering handoff — five teams
 
-This prototype is being handed to three engineering teams. Each team owns one feature area
+This prototype is being handed to five engineering teams. Each team owns one feature area
 and reads only the specs that apply to their area:
 
 | Team | Owns | Spec folder | Handoff doc |
 |---|---|---|---|
 | Tickets | `src/app/features/tickets/` | `.claude/specs/tickets/` | `docs/handoff/tickets-team.md` |
-| Analytics | `src/app/features/analytics/` | `.claude/specs/analytics/` | `docs/handoff/analytics-team.md` |
-| Assets | `src/app/features/assets/` | `.claude/specs/assets/` | `docs/handoff/assets-team.md` |
+| Dashboard | `src/app/features/analytics/` (SO, Comparison, Custom Reports) | `.claude/specs/dashboard/` | `docs/handoff/dashboard-team.md` |
+| Telephony | `src/app/features/analytics/` (Call Center) | `.claude/specs/telephony/` | `docs/handoff/telephony-team.md` |
+| Chatbot | `src/app/features/analytics/` (Chatbot) | `.claude/specs/chatbot/` | `docs/handoff/chatbot-team.md` |
+| Assets | `src/app/features/assets/` + Fees | `.claude/specs/assets/` | `docs/handoff/assets-team.md` |
 
-All three teams also read everything in `.claude/specs/shared/`.
+All five teams also read everything in `.claude/specs/shared/`.
 
 ---
 

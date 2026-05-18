@@ -38,7 +38,7 @@ filter and saved-view layer is what's new.
 1. `.claude/specs/shared/specs-dashboard.md`
 2. `.claude/specs/shared/specs-filter-engine.md`
 3. `.claude/specs/shared/specs-saved-views.md`
-4. `.claude/specs/analytics/specs-service-overview.md` — same-pattern reference page
+4. `.claude/specs/dashboard/specs-service-overview.md` — same-pattern reference page
 
 ## Backend dependencies
 

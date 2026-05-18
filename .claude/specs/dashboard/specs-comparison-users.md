@@ -68,7 +68,7 @@ The Notify Users modal is a shared component used only by the three comparison p
 1. `.claude/specs/shared/specs-dashboard.md`
 2. `.claude/specs/shared/specs-filter-engine.md`
 3. `.claude/specs/shared/specs-saved-views.md`
-4. `.claude/specs/analytics/specs-service-overview.md` — same-pattern reference page
+4. `.claude/specs/dashboard/specs-service-overview.md` — same-pattern reference page
 
 ## Backend dependencies
 

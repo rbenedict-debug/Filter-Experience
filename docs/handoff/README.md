@@ -1,15 +1,17 @@
 # Engineering handoff
 
 This repository is a design prototype for the Onflo platform, built by the design team.
-Three engineering teams will take it from here. Each team owns one feature area.
+Five engineering teams will take it from here. Each team owns one feature area.
 
-## The three teams
+## The five teams
 
 | Team | Owns | Start here |
 |---|---|---|
 | Tickets | Inbox, Bookmarks, Drafts, Spam, Saved views | [tickets-team.md](./tickets-team.md) |
-| Analytics | Service Overview, Call Center, Chatbot, Comparison, Custom Reports, Fees | [analytics-team.md](./analytics-team.md) |
-| Assets | Overview, Asset Views, Standard Views, By Locations / Purchase Order / Users, Actions | [assets-team.md](./assets-team.md) |
+| Dashboard | Service Overview, Comparison (Users/Categories/Topics), Custom Reports | [dashboard-team.md](./dashboard-team.md) |
+| Telephony | Call Center | [telephony-team.md](./telephony-team.md) |
+| Chatbot | Chatbot | [chatbot-team.md](./chatbot-team.md) |
+| Assets | Overview, Asset Views, Standard Views, By Locations / Purchase Order / Users, Actions, Fees | [assets-team.md](./assets-team.md) |
 
 Each team's handoff doc tells them exactly which specs to read, where their code lives,
 and where to find their user stories.
@@ -41,7 +43,7 @@ The repo is pre-configured for this:
 
 - `CLAUDE.md` at the root loads design-system rules and points at the shared specs
 - `.claude/specs/shared/` contains cross-cutting patterns every team reads
-- `.claude/specs/{tickets,analytics,assets}/` contains per-team feature specs
+- `.claude/specs/{tickets,dashboard,telephony,chatbot,assets}/` contains per-team feature specs
 - Claude Code automatically loads `CLAUDE.md` and any `@`-imported specs when started
   in this directory
 
@@ -53,7 +55,9 @@ then run `claude` in the project root.
 Stories for each team live in `docs/user-stories/`:
 
 - `docs/user-stories/tickets.md`
-- `docs/user-stories/analytics.md`
+- `docs/user-stories/dashboard.md`
+- `docs/user-stories/telephony.md`
+- `docs/user-stories/chatbot.md`
 - `docs/user-stories/assets.md`
 
 PMs and engineers can read these without opening `.claude/`.

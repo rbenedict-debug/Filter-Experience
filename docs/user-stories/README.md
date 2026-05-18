@@ -33,7 +33,9 @@ Every story follows this shape:
 | Team | Prefix | Example |
 |---|---|---|
 | Tickets | `TICK-` | `TICK-1` |
-| Analytics | `ANL-` | `ANL-1` |
+| Dashboard | `ANL-SO-`, `ANL-CMU-`, `ANL-CMC-`, `ANL-CMT-`, `ANL-CR-` | `ANL-SO-1` |
+| Telephony | `ANL-CC-` | `ANL-CC-1` |
+| Chatbot | `ANL-CB-` | `ANL-CB-1` |
 | Assets | `AST-` | `AST-1` |
 
 Numbers are sequential across all epics within a team — they don't reset per epic.
@@ -41,5 +43,7 @@ Numbers are sequential across all epics within a team — they don't reset per e
 ## Files
 
 - [`tickets.md`](./tickets.md)
-- [`analytics.md`](./analytics.md)
+- [`dashboard.md`](./dashboard.md)
+- [`telephony.md`](./telephony.md)
+- [`chatbot.md`](./chatbot.md)
 - [`assets.md`](./assets.md)

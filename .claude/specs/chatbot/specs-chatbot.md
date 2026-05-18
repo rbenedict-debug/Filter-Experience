@@ -71,7 +71,7 @@ Use `@if (activeTab() !== 'optimization')` to conditionally render the toolbar b
 1. `.claude/specs/shared/specs-dashboard.md` — canonical dashboard layout (incl. tab variant)
 2. `.claude/specs/shared/specs-filter-engine.md` — the filter modal
 3. `.claude/specs/shared/specs-saved-views.md` — saved-view storage and load flow
-4. `.claude/specs/analytics/specs-service-overview.md` — same-pattern reference page
+4. `.claude/specs/dashboard/specs-service-overview.md` — same-pattern reference page
 
 ## Backend dependencies
 
