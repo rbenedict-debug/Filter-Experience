@@ -1544,11 +1544,10 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  font-size: var(--ref-typescale-label-small-size);
-  color: var(--color-text-secondary);
+  font-size: var(--ref-typescale-label-medium-size);
+  color: var(--color-text-inverse);
   min-width: 0;
   padding-top: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
 }
 
 #active-set-name {
@@ -1572,14 +1571,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
   border-radius: var(--radius-full);
   background: transparent;
   cursor: pointer;
-  color: var(--color-icon-disabled);
+  color: var(--color-icon-inverse);
   transition: background var(--motion-duration-short), color var(--motion-duration-short);
 }
 
@@ -1594,7 +1593,7 @@
 }
 
 .active-set-update-btn .ds-icon {
-  font-size: var(--ref-typescale-label-small-size);
+  font-size: var(--ref-typescale-label-medium-size);
 }
 
 /* Right panel needs position:relative so the overlay panel can fill it */

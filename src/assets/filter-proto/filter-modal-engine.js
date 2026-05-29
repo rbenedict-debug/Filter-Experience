@@ -3060,12 +3060,12 @@ function buildSelectedBuckets() {
             <div class="ds-tooltip-wrapper">
               <button
                 class="ds-icon-button ds-icon-button--icon ds-icon-button--sm selected-bucket__remove-btn"
-                aria-label="Remove all ${esc(crumb)} filters"
+                aria-label="Remove ${esc(crumb)} filters"
                 data-remove-bucket="${key}"
               >
                 <span class="ds-icon ds-icon--sm">delete</span>
               </button>
-              <div class="ds-tooltip" role="tooltip">Remove all</div>
+              <div class="ds-tooltip" role="tooltip">Remove filters</div>
             </div>
           </div>
           <div class="selected-bucket__header-bottom">
@@ -3087,7 +3087,7 @@ function buildSelectedBuckets() {
                 </span>
                 <span class="filter-toggle__label">Exclude</span>
               </label>
-              <div class="ds-tooltip" role="tooltip">${excluded ? 'Currently excluding — click to include' : 'Exclude these values'}</div>
+              <div class="ds-tooltip" role="tooltip">${excluded ? 'Include these values' : 'Exclude these values'}</div>
             </div>
             <span class="selected-bucket__count">${items.length} ${items.length === 1 ? 'filter' : 'filters'}</span>
           </div>
@@ -4036,11 +4036,6 @@ function openModal() {
   render();
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
-  // Focus search on open — mark as mouse-focus to suppress the ADA focus ring
-  requestAnimationFrame(() => {
-    searchInput.closest('.ds-input').setAttribute('data-mouse-focus', '');
-    searchInput.focus();
-  });
   window.dispatchEvent(new CustomEvent('filterModalOpen'));
 }
 
