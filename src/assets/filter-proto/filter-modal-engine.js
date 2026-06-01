@@ -1500,10 +1500,10 @@ const FILTER_GROUPS_CUSTOM_REPORTS = [
 // ── Inbox ─────────────────────────────────────────────────────
 const FILTER_GROUPS_INBOX = [
 
-  // ── 1. Date ───────────────────────────────────────────────────
+  // ── 1. Submission Date ────────────────────────────────────────
   {
     id: 'dates',
-    label: 'Date',
+    label: 'Submission Date',
     icon: 'calendar_today',
     type: 'date-preset',
     options: [
@@ -1524,8 +1524,9 @@ const FILTER_GROUPS_INBOX = [
     label: 'Ticket',
     icon: 'confirmation_number',
     tiers: [
-      { id: 'inbox-subject',     label: 'Subject',     type: 'text-match' },
-      { id: 'inbox-description', label: 'Description', type: 'text-match' },
+      { id: 'inbox-subject',       label: 'Subject',     type: 'text-match' },
+      { id: 'inbox-description',   label: 'Description', type: 'text-match' },
+      { id: 'inbox-ticket-number', label: 'Ticket No.',  type: 'text-match' },
       {
         id: 'ticket-type',
         label: 'Ticket Type',
@@ -1538,8 +1539,10 @@ const FILTER_GROUPS_INBOX = [
         ],
       },
       {
+        // Relabeled from "Ticket Status" — values were always priority levels.
+        // Option IDs kept (ts-*) so existing saved sets stay valid.
         id: 'ticket-status',
-        label: 'Ticket Status',
+        label: 'Priority',
         options: [
           { id: 'ts-critical',  label: 'Critical' },
           { id: 'ts-p1-high',   label: 'P1 High' },
@@ -1548,8 +1551,19 @@ const FILTER_GROUPS_INBOX = [
         ],
       },
       {
-        id: 'ticket-age',
-        label: 'Ticket Age',
+        id: 'inbox-status',
+        label: 'Status',
+        options: [
+          { id: 'status-unopened',    label: 'Unopened' },
+          { id: 'status-in-progress', label: 'In Progress' },
+          { id: 'status-pending',     label: 'Pending Details' },
+          { id: 'status-closed',      label: 'Closed' },
+        ],
+      },
+      {
+        // SLA replaces the former "Ticket Age" filter — same time-based range.
+        id: 'sla',
+        label: 'SLA',
         type: 'numeric-range',
         min: 0,
         max: 32,
@@ -1608,52 +1622,67 @@ const FILTER_GROUPS_INBOX = [
     ],
   },
 
-  // ── 3. Customer ───────────────────────────────────────────────
+  // ── 3. Activity ───────────────────────────────────────────────
+  // Lifecycle / triage signals. Label is provisional — flagged for reword.
   {
-    id: 'customer',
-    label: 'Customer',
-    icon: 'person',
+    id: 'activity',
+    label: 'Activity',
+    icon: 'history',
     tiers: [
-      { id: 'inbox-customer-name', label: 'Customer Name', type: 'text-match' },
+      { id: 'date-last-updated', label: 'Last Updated', type: 'date-range' },
       {
-        id: 'customer-type',
-        label: 'Customer Type',
+        id: 'new-activity',
+        label: 'New Activity',
         options: [
-          { id: 'ct-student',   label: 'Student' },
-          { id: 'ct-employee',  label: 'Employee' },
-          { id: 'ct-parent',    label: 'Parent / Guardian' },
-          { id: 'ct-community', label: 'Community Member' },
-          { id: 'ct-other',     label: 'Other' },
-          { id: 'ct-volunteer', label: 'Volunteer' },
-          { id: 'ct-vendor',    label: 'Vendor' },
-          { id: 'ct-board',     label: 'Board Member' },
+          { id: 'newact-yes', label: 'Has new activity' },
+          { id: 'newact-no',  label: 'No new activity' },
         ],
       },
       {
-        id: 'language',
-        label: 'Language',
+        id: 'time-in-status',
+        label: 'Time in Status',
+        type: 'numeric-range',
+        min: 0,
+        max: 30,
+        step: 1,
+        unit: 'days',
+        maxLabel: '30+',
+      },
+      {
+        id: 'reopen-count',
+        label: 'Reopen Count',
+        type: 'numeric-range',
+        min: 0,
+        max: 10,
+        step: 1,
+        unit: '',
+        maxLabel: '10+',
+      },
+      {
+        id: 'duplicate',
+        label: 'Duplicate',
         options: [
-          { id: 'lang-ar', label: 'Arabic' },
-          { id: 'lang-zh', label: 'Chinese (Simplified)' },
-          { id: 'lang-en', label: 'English' },
-          { id: 'lang-fr', label: 'French' },
-          { id: 'lang-hi', label: 'Hindi' },
-          { id: 'lang-pl', label: 'Polish' },
-          { id: 'lang-ru', label: 'Russian' },
-          { id: 'lang-so', label: 'Somali' },
-          { id: 'lang-es', label: 'Spanish' },
-          { id: 'lang-uk', label: 'Ukrainian' },
-          { id: 'lang-ur', label: 'Urdu' },
+          { id: 'dup-yes', label: 'Marked duplicate' },
+          { id: 'dup-no',  label: 'Not duplicate' },
+        ],
+      },
+      {
+        id: 'verified',
+        label: 'Verified',
+        options: [
+          { id: 'ver-yes', label: 'Verified' },
+          { id: 'ver-no',  label: 'Not verified' },
         ],
       },
     ],
   },
 
   // ── 4. Topic ──────────────────────────────────────────────────
+  // Nested category → topics; its own group so the long list doesn't crowd Classification.
   {
     id: 'topic',
     label: 'Topic',
-    icon: 'layers',
+    icon: 'topic',
     tiers: [
       {
         id: 'topic-academics',
@@ -1699,7 +1728,223 @@ const FILTER_GROUPS_INBOX = [
     ],
   },
 
-  // ── 5. Routing ────────────────────────────────────────────────
+  // ── 5. Classification ─────────────────────────────────────────
+  // Category + Department + Ticket Theme.
+  {
+    id: 'classification',
+    label: 'Classification',
+    icon: 'layers',
+    tiers: [
+      {
+        // Made-up placeholder values — swap for real district categories.
+        id: 'inbox-category',
+        label: 'Category',
+        options: [
+          { id: 'cat-general-inquiry', label: 'General Inquiry' },
+          { id: 'cat-technical',       label: 'Technical Issue' },
+          { id: 'cat-account-access',  label: 'Account & Access' },
+          { id: 'cat-billing-fees',    label: 'Billing & Fees' },
+          { id: 'cat-facilities',      label: 'Facilities & Maintenance' },
+          { id: 'cat-safety-conduct',  label: 'Safety & Conduct' },
+          { id: 'cat-feedback',        label: 'Feedback & Suggestions' },
+        ],
+      },
+      {
+        // Reuses the Fees-context department set for cross-app consistency.
+        id: 'inbox-department',
+        label: 'Department',
+        options: [
+          { id: 'dept-technology',     label: 'Technology' },
+          { id: 'dept-library',        label: 'Library & Media' },
+          { id: 'dept-food-services',  label: 'Food Services' },
+          { id: 'dept-athletics',      label: 'Athletics' },
+          { id: 'dept-activities',     label: 'Student Activities' },
+          { id: 'dept-transportation', label: 'Transportation' },
+          { id: 'dept-registrar',      label: 'Registrar' },
+          { id: 'dept-administration', label: 'Administration' },
+        ],
+      },
+      {
+        // Made-up placeholder values — swap for real ticket themes.
+        id: 'ticket-theme',
+        label: 'Ticket Theme',
+        options: [
+          { id: 'theme-recurring',      label: 'Recurring Issue' },
+          { id: 'theme-policy',         label: 'Policy Clarification' },
+          { id: 'theme-time-sensitive', label: 'Time-Sensitive' },
+          { id: 'theme-escalation',     label: 'Escalation' },
+          { id: 'theme-positive',       label: 'Positive Feedback' },
+          { id: 'theme-service-gap',    label: 'Service Gap' },
+        ],
+      },
+    ],
+  },
+
+  // ── 6. Customer ───────────────────────────────────────────────
+  // Includes Location (Campus / Building / Room) — part of customer info.
+  {
+    id: 'customer',
+    label: 'Customer',
+    icon: 'person',
+    tiers: [
+      { id: 'inbox-customer-name', label: 'Customer Name', type: 'text-match' },
+      {
+        id: 'customer-type',
+        label: 'Customer Type',
+        options: [
+          { id: 'ct-student',   label: 'Student' },
+          { id: 'ct-employee',  label: 'Employee' },
+          { id: 'ct-parent',    label: 'Parent / Guardian' },
+          { id: 'ct-community', label: 'Community Member' },
+          { id: 'ct-other',     label: 'Other' },
+          { id: 'ct-volunteer', label: 'Volunteer' },
+          { id: 'ct-vendor',    label: 'Vendor' },
+          { id: 'ct-board',     label: 'Board Member' },
+        ],
+      },
+      {
+        id: 'language',
+        label: 'Language',
+        options: [
+          { id: 'lang-ar', label: 'Arabic' },
+          { id: 'lang-zh', label: 'Chinese (Simplified)' },
+          { id: 'lang-en', label: 'English' },
+          { id: 'lang-fr', label: 'French' },
+          { id: 'lang-hi', label: 'Hindi' },
+          { id: 'lang-pl', label: 'Polish' },
+          { id: 'lang-ru', label: 'Russian' },
+          { id: 'lang-so', label: 'Somali' },
+          { id: 'lang-es', label: 'Spanish' },
+          { id: 'lang-uk', label: 'Ukrainian' },
+          { id: 'lang-ur', label: 'Urdu' },
+        ],
+      },
+      { id: 'inbox-submitted-by', label: 'Submitted By', type: 'text-match' },
+      {
+        id: 'grade-level',
+        label: 'Grade Level',
+        options: [
+          { id: 'grade-prek', label: 'Pre-K' },
+          { id: 'grade-k',    label: 'Kindergarten' },
+          { id: 'grade-1',    label: 'Grade 1' },
+          { id: 'grade-2',    label: 'Grade 2' },
+          { id: 'grade-3',    label: 'Grade 3' },
+          { id: 'grade-4',    label: 'Grade 4' },
+          { id: 'grade-5',    label: 'Grade 5' },
+          { id: 'grade-6',    label: 'Grade 6' },
+          { id: 'grade-7',    label: 'Grade 7' },
+          { id: 'grade-8',    label: 'Grade 8' },
+          { id: 'grade-9',    label: 'Grade 9' },
+          { id: 'grade-10',   label: 'Grade 10' },
+          { id: 'grade-11',   label: 'Grade 11' },
+          { id: 'grade-12',   label: 'Grade 12' },
+        ],
+      },
+      {
+        id: 'campus',
+        label: 'Campus',
+        options: [
+          { id: 'campus-lincoln',    label: 'Lincoln Elementary' },
+          { id: 'campus-central',    label: 'Central Elementary' },
+          { id: 'campus-garfield',   label: 'Garfield Elementary' },
+          { id: 'campus-washington', label: 'Washington Middle School' },
+          { id: 'campus-roosevelt',  label: 'Roosevelt Middle School' },
+          { id: 'campus-jefferson',  label: 'Jefferson High School' },
+          { id: 'campus-district',   label: 'District Office' },
+          { id: 'campus-depot',      label: 'IT Depot' },
+        ],
+      },
+      {
+        id: 'building',
+        label: 'Building',
+        options: [
+          { id: 'bldg-main-lin',   label: 'Lincoln – Main Building' },
+          { id: 'bldg-annex-lin',  label: 'Lincoln – Annex' },
+          { id: 'bldg-main-was',   label: 'Washington – Main Building' },
+          { id: 'bldg-gym-was',    label: 'Washington – Gymnasium' },
+          { id: 'bldg-main-jef',   label: 'Jefferson – Main Building' },
+          { id: 'bldg-stem-jef',   label: 'Jefferson – STEM Wing' },
+          { id: 'bldg-arts-jef',   label: 'Jefferson – Arts Building' },
+          { id: 'bldg-admin-dist', label: 'District – Administration Bldg' },
+        ],
+      },
+      {
+        id: 'room',
+        label: 'Room',
+        options: [
+          { id: 'room-101',        label: 'Room 101 – Kindergarten' },
+          { id: 'room-102',        label: 'Room 102 – Grade 1' },
+          { id: 'room-comp-lab-a', label: 'Computer Lab A' },
+          { id: 'room-comp-lab-b', label: 'Computer Lab B' },
+          { id: 'room-stem-lab',   label: 'STEM Lab' },
+          { id: 'room-sci-lab',    label: 'Science Lab' },
+          { id: 'room-media-ctr',  label: 'Library / Media Center' },
+          { id: 'room-main-office',label: 'Main Office' },
+          { id: 'room-it-dept',    label: 'IT Department' },
+          { id: 'room-conf-a',     label: 'Conference Room A' },
+        ],
+      },
+    ],
+  },
+
+  // ── 7. Asset ──────────────────────────────────────────────────
+  // Reuses the Assets-context type/status sets for cross-app consistency.
+  {
+    id: 'asset',
+    label: 'Asset',
+    icon: 'devices',
+    tiers: [
+      {
+        id: 'asset-type',
+        label: 'Asset Type',
+        options: [
+          { id: 'atype-chromebook',          label: 'Chromebook' },
+          { id: 'atype-ipad',                label: 'iPad' },
+          { id: 'atype-macbook',             label: 'MacBook' },
+          { id: 'atype-windows-laptop',      label: 'Windows Laptop' },
+          { id: 'atype-desktop',             label: 'Desktop Computer' },
+          { id: 'atype-monitor',             label: 'Monitor' },
+          { id: 'atype-interactive-display', label: 'Interactive Display' },
+          { id: 'atype-projector',           label: 'Projector' },
+          { id: 'atype-printer',             label: 'Printer' },
+          { id: 'atype-calculator',          label: 'Graphing Calculator' },
+          { id: 'atype-hotspot',             label: 'Hotspot / MiFi' },
+          { id: 'atype-headset',             label: 'Headset / Headphones' },
+          { id: 'atype-charging-cart',       label: 'Charging Cart' },
+          { id: 'atype-barcode-scanner',     label: 'Barcode Scanner' },
+          { id: 'atype-camera',              label: 'Camera' },
+        ],
+      },
+      {
+        id: 'asset-status',
+        label: 'Asset Status',
+        options: [
+          { id: 'as-missing',         label: 'Missing' },
+          { id: 'as-stolen',          label: 'Stolen' },
+          { id: 'as-in-transit',      label: 'In Transit' },
+          { id: 'as-in-use',          label: 'In Use' },
+          { id: 'as-available',       label: 'Available' },
+          { id: 'as-ready-disposal',  label: 'Ready for Disposal' },
+          { id: 'as-disposed',        label: 'Disposed' },
+          { id: 'as-maintenance',     label: 'Under Maintenance' },
+          { id: 'as-repair',          label: 'Under Repair' },
+          { id: 'as-pending-audit',   label: 'Pending Audit' },
+          { id: 'as-on-loan',         label: 'On Loan' },
+          { id: 'as-decommissioned',  label: 'Decommissioned' },
+        ],
+      },
+      {
+        id: 'loaner-issued',
+        label: 'Loaner Issued',
+        options: [
+          { id: 'loaner-yes', label: 'Loaner issued' },
+          { id: 'loaner-no',  label: 'No loaner' },
+        ],
+      },
+    ],
+  },
+
+  // ── 8. Routing ────────────────────────────────────────────────
   {
     id: 'routing',
     label: 'Routing',
@@ -1750,7 +1995,7 @@ const FILTER_GROUPS_INBOX = [
     ],
   },
 
-  // ── 6. Actions ────────────────────────────────────────────────
+  // ── 9. Actions ────────────────────────────────────────────────
   {
     id: 'actions',
     label: 'Actions',
