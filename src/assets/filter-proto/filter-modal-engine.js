@@ -4966,8 +4966,6 @@ function buildAdvBuilder() {
   const q = state.advancedQuery;
   const empty = (q.children || []).length === 0
     ? `<p class="adv-empty">No conditions yet — add one to start building your filter.</p>` : '';
-  const clearBtn = advancedLeafCount(q) > 0
-    ? `<button type="button" class="ds-button ds-button--text ds-button--sm adv-clear" data-adv-clear>Clear all</button>` : '';
   return `<div class="adv-builder">`
     + `<div class="adv-builder__head">`
     + `<span class="adv-match adv-match--root">${buildAdvConnectorSelect('root', q.connector, 'Match all or any')} the following:</span>`
@@ -4976,7 +4974,6 @@ function buildAdvBuilder() {
     + `<div class="adv-add-row adv-add-row--root">`
     + `<button type="button" class="ds-button ds-button--text ds-button--sm ds-button--leading-icon adv-add" data-adv-add-cond="root"><span class="ds-button__icon ds-button__icon--leading" aria-hidden="true"><span class="ds-icon">add</span></span>Add condition</button>`
     + `<button type="button" class="ds-button ds-button--text ds-button--sm ds-button--leading-icon adv-add" data-adv-add-group><span class="ds-button__icon ds-button__icon--leading" aria-hidden="true"><span class="ds-icon">add</span></span>Add group</button>`
-    + clearBtn
     + `</div></div>`;
 }
 
@@ -5321,8 +5318,6 @@ window.filterModalInit = function(context) {
 
     const advRemoveBtn = e.target.closest('[data-adv-remove]');
     if (advRemoveBtn) { advRemoveNode(advRemoveBtn.dataset.advRemove); return; }
-
-    if (e.target.closest('[data-adv-clear]')) { advClearAll(); return; }
 
     // Field-specific date picker: Apply
     const applyDateFieldBtn = e.target.closest('[data-apply-date-field]');

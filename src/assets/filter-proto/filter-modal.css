@@ -2403,6 +2403,17 @@
   padding: var(--spacing-xl);
 }
 
+/* The close button is styled for the dark navy right panel (inverse/white icon).
+   In advanced mode that panel is hidden and the canvas behind the button is
+   light, so it needs a visible default icon color instead. */
+.filter-modal--advanced .filter-modal__close {
+  color: var(--color-icon-default);
+}
+.filter-modal--advanced .filter-modal__close:hover:not(:disabled) {
+  background: var(--overlay-hover);
+  color: var(--color-text-primary);
+}
+
 /* ── Shared field inputs (text / number / date) ── */
 .ds-adv-input {
   font-family: var(--ref-typeface-brand);
@@ -2531,12 +2542,12 @@
   flex-wrap: wrap;
 }
 
-/* First-level items (condition or group) share the same box treatment so the
-   root level reads consistently. Conditions nested inside a group use a neutral
-   grey surface to set the inner level apart. Both levels use the accordion border. */
+/* First-level items (condition or group) are borderless filled rows. The
+   accordion border is reserved for conditions nested inside a group, so the
+   inner level is the only one that reads as a bordered box. */
 .adv-builder__children > .adv-cond {
   background: var(--color-surface-container);
-  border-color: var(--color-border-accordion);
+  border: none;
 }
 
 .adv-group__children > .adv-cond {
@@ -2654,7 +2665,6 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   background: var(--color-surface-container);
-  border: 1px solid var(--color-border-accordion);
   border-radius: var(--radius-md);
 }
 
