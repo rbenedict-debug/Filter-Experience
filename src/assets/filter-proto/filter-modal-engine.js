@@ -1683,6 +1683,9 @@ const FILTER_GROUPS_INBOX = [
     id: 'topic',
     label: 'Topic',
     icon: 'topic',
+    // Advanced builder: collapse to a single "Topic" field whose value picker
+    // groups topics by category (the tiers below), indented.
+    advUnified: true,
     tiers: [
       {
         id: 'topic-academics',
@@ -2119,10 +2122,18 @@ const state = {
   // Saved filter sets
   activeFilterSetId:   null,      // ID of the currently loaded saved set, or null
   savedSetsOpen:       false,     // whether the saved sets panel is visible
+  // Advanced filter builder (inbox) — 'basic' | 'advanced'
+  filterMode:          'basic',
+  // Advanced query tree: { connector:'AND'|'OR', children:[ condition | group ] }
+  advancedQuery:       { connector: 'AND', children: [] },
 };
+
+// Monotonic id source for advanced condition/group nodes
+let _advIdSeq = 0;
 
 // ── Portal state — floating text-match operator dropdown ──────
 let _tmFloating = null; // { tierId, el: HTMLElement, trigger: HTMLElement }
+let _advFloating = null; // advanced-builder select dropdown: { trigger, el }
 
 // ── Committed snapshot — restored when modal is cancelled ─────
 let _committedSnapshot = null;
@@ -2140,6 +2151,8 @@ function _snapshotSelectionState() {
     datePickerMode:      state.datePickerMode,
     datePresetCustomOpen: state.datePresetCustomOpen,
     activeFilterSetId:   state.activeFilterSetId,
+    filterMode:          state.filterMode,
+    advancedQuery:       JSON.parse(JSON.stringify(state.advancedQuery)),
   };
 }
 
@@ -2155,6 +2168,8 @@ function _restoreSelectionState(snapshot) {
   state.datePickerMode      = snapshot.datePickerMode;
   state.datePresetCustomOpen = snapshot.datePresetCustomOpen;
   state.activeFilterSetId   = snapshot.activeFilterSetId;
+  if (snapshot.filterMode !== undefined) state.filterMode = snapshot.filterMode;
+  if (snapshot.advancedQuery !== undefined) state.advancedQuery = JSON.parse(JSON.stringify(snapshot.advancedQuery));
 }
 
 // ── DOM refs ──────────────────────────────────────────────────
@@ -3443,6 +3458,15 @@ function renderCalendarPanel() {
 }
 
 function render() {
+  const adv = state.filterMode === 'advanced';
+  if (modal) modal.classList.toggle('filter-modal--advanced', adv);
+  updateModeToggle();
+  if (adv) {
+    renderAdvanced();          // handles builder + saved-sets overlay + footer summary
+    updateActiveSetChip();
+    updateSavedSetsToggleBtn();
+    return;
+  }
   renderNav();
   renderOptions();
   renderSelected();
@@ -3472,14 +3496,19 @@ function hasActiveSetChanges() {
   if (!state.activeFilterSetId) return false;
   const set = getSavedSets().find(s => s.id === state.activeFilterSetId);
   if (!set) return false;
+  if (state.filterMode === 'advanced' || set.mode === 'advanced') {
+    const cur   = state.filterMode === 'advanced' ? JSON.stringify(advNormalize(state.advancedQuery)) : null;
+    const saved = set.mode === 'advanced' && set.query ? JSON.stringify(advNormalize(set.query)) : null;
+    return cur !== saved;
+  }
   const currentSelected = [...state.selected]
     .filter(id => !isDynamicId(id))
     .sort();
-  const savedSelected = [...set.selected].sort();
+  const savedSelected = [...(set.selected || [])].sort();
   if (currentSelected.length !== savedSelected.length) return true;
   if (currentSelected.some((id, i) => id !== savedSelected[i])) return true;
   const currentExcluded = [...state.excludedBuckets].sort();
-  const savedExcluded = [...set.excludedBuckets].sort();
+  const savedExcluded = [...(set.excludedBuckets || [])].sort();
   if (currentExcluded.length !== savedExcluded.length) return true;
   return currentExcluded.some((k, i) => k !== savedExcluded[i]);
 }
@@ -3505,7 +3534,7 @@ function updateActiveSetChip() {
 function updateSavedSetsToggleBtn() {
   const btn = document.getElementById('saved-sets-toggle-btn');
   if (!btn) return;
-  const showSave = state.selected.size > 0 &&
+  const showSave = hasAnyFilter() &&
     (!state.activeFilterSetId || hasActiveSetChanges());
   if (showSave) {
     btn.innerHTML = '<span class="ds-icon" aria-hidden="true">bookmark_add</span>Save Filters';
@@ -3514,9 +3543,15 @@ function updateSavedSetsToggleBtn() {
   }
 }
 
-function renderSavedSetsPanel() {
+function hasAnyFilter() {
+  return state.filterMode === 'advanced'
+    ? advancedLeafCount(state.advancedQuery) > 0
+    : state.selected.size > 0;
+}
+
+function buildSavedSetsMarkup() {
   const sets = getSavedSets();
-  const hasFilters = state.selected.size > 0;
+  const hasFilters = hasAnyFilter();
   const hasChanges = hasActiveSetChanges();
 
   const saveForm = `
@@ -3560,7 +3595,9 @@ function renderSavedSetsPanel() {
       }).map(set => {
         const isActive = set.id === state.activeFilterSetId;
         const date = new Date(set.savedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const count = set.selected.length;
+        const count = set.mode === 'advanced'
+          ? (set.query ? advancedLeafCount(set.query) : 0)
+          : (set.selected ? set.selected.length : 0);
         const inlineAction = isActive
           ? (hasChanges
             ? `<button
@@ -3599,10 +3636,13 @@ function renderSavedSetsPanel() {
       </button>
     </div>`;
 
-  savedSetsBody.innerHTML = backBtn + saveForm + `<div class="saved-sets-list">${listHtml}</div>`;
+  return backBtn + saveForm + `<div class="saved-sets-list">${listHtml}</div>`;
+}
 
+function renderSavedSetsPanel() {
+  savedSetsBody.innerHTML = buildSavedSetsMarkup();
   // Auto-focus name input if filters are already selected
-  if (hasFilters) {
+  if (hasAnyFilter()) {
     requestAnimationFrame(() => {
       const input = document.getElementById('save-set-name-input');
       const wrap = input?.closest('.saved-sets-save-form__input-wrap');
@@ -3614,6 +3654,7 @@ function renderSavedSetsPanel() {
 
 function openSavedSetsPanel() {
   state.savedSetsOpen = true;
+  if (state.filterMode === 'advanced') { render(); return; }
   savedSetsPanel.hidden = false;
   document.getElementById('saved-sets-toggle-btn').setAttribute('aria-pressed', 'true');
   renderSavedSetsPanel();
@@ -3621,21 +3662,31 @@ function openSavedSetsPanel() {
 
 function closeSavedSetsPanel() {
   state.savedSetsOpen = false;
-  savedSetsPanel.hidden = true;
-  document.getElementById('saved-sets-toggle-btn').setAttribute('aria-pressed', 'false');
-  document.getElementById('saved-sets-toggle-btn').focus();
+  if (savedSetsPanel) savedSetsPanel.hidden = true;
+  const toggle = document.getElementById('saved-sets-toggle-btn');
+  if (toggle) toggle.setAttribute('aria-pressed', 'false');
+  if (state.filterMode === 'advanced') {
+    render();
+    const advToggle = document.querySelector('[data-adv-saved-toggle]');
+    if (advToggle) advToggle.focus();
+  } else if (toggle) {
+    toggle.focus();
+  }
 }
 
 function saveCurrentSet(name) {
   const trimmed = name.trim();
-  if (!trimmed || state.selected.size === 0) return null;
+  if (!trimmed || !hasAnyFilter()) return null;
+  const adv = state.filterMode === 'advanced';
   const sets = getSavedSets();
   const newSet = {
     id: `fs-${Date.now()}`,
     name: trimmed,
     savedAt: new Date().toISOString(),
-    selected: [...state.selected].filter(id => !isDynamicId(id)),
-    excludedBuckets: [...state.excludedBuckets],
+    mode: adv ? 'advanced' : 'basic',
+    selected: adv ? [] : [...state.selected].filter(id => !isDynamicId(id)),
+    excludedBuckets: adv ? [] : [...state.excludedBuckets],
+    query: adv ? JSON.parse(JSON.stringify(state.advancedQuery)) : null,
   };
   sets.push(newSet);
   persistSets(sets);
@@ -3649,15 +3700,18 @@ function updateCurrentSet() {
   const sets = getSavedSets();
   const idx = sets.findIndex(s => s.id === state.activeFilterSetId);
   if (idx < 0) return;
+  const adv = state.filterMode === 'advanced';
   sets[idx] = {
     ...sets[idx],
     savedAt: new Date().toISOString(),
-    selected: [...state.selected].filter(id => !isDynamicId(id)),
-    excludedBuckets: [...state.excludedBuckets],
+    mode: adv ? 'advanced' : 'basic',
+    selected: adv ? [] : [...state.selected].filter(id => !isDynamicId(id)),
+    excludedBuckets: adv ? [] : [...state.excludedBuckets],
+    query: adv ? JSON.parse(JSON.stringify(state.advancedQuery)) : null,
   };
   persistSets(sets);
   updateActiveSetChip();
-  renderSavedSetsPanel();
+  render();
 }
 
 function loadSavedSet(id) {
@@ -3671,10 +3725,19 @@ function loadSavedSet(id) {
   state.costRangeDraft       = { min: null, max: null };
   state.numericRangeDrafts   = {};
   state.datePresetCustomOpen = false;
-  state.selected             = new Set(set.selected);
-  state.excludedBuckets  = new Set(set.excludedBuckets);
   state.collapsedSelectedBuckets.clear();
   state.expandedSelectedBuckets.clear();
+  if (set.mode === 'advanced' && set.query) {
+    state.filterMode    = 'advanced';
+    state.advancedQuery = JSON.parse(JSON.stringify(set.query));
+    state.selected        = new Set();
+    state.excludedBuckets = new Set();
+  } else {
+    state.filterMode      = 'basic';
+    state.advancedQuery   = { connector: 'AND', children: [] };
+    state.selected        = new Set(set.selected || []);
+    state.excludedBuckets = new Set(set.excludedBuckets || []);
+  }
   state.activeFilterSetId = id;
   closeSavedSetsPanel();
   updateActiveSetChip();
@@ -4296,7 +4359,713 @@ function closeModal() {
   window.dispatchEvent(new CustomEvent('filterModalClose'));
 }
 
+// ══════════════════════════════════════════════════════════════
+// ADVANCED FILTER BUILDER (inbox only)
+// A second, toggleable view of the modal that exposes explicit
+// AND/OR logic, one level of grouping, and per-field operators
+// (has any of / has all of / has none of). Its own query tree —
+// it cannot live in state.selected because "has all of" has no
+// representation there. Gated to contexts whose footer renders the
+// Basic/Advanced toggle (inbox); other contexts never call setFilterMode.
+// ══════════════════════════════════════════════════════════════
+
+// Fields where one ticket can genuinely hold several values, so
+// "has all of" (AND within the field) is meaningful.
+const INBOX_MULTI_VALUE_FIELDS = ['svc-tags', 'inbox-agents', 'action-taken'];
+
+let _advFieldsCache = null;
+let _advFieldsCacheCtx = null;
+
+function advNewId(prefix) { return `${prefix}${++_advIdSeq}`; }
+
+// Build the field catalog for the active context. A "field" is a tier
+// (tiered groups) or the group itself (flat / date-preset groups).
+function buildAdvancedFields() {
+  const fields = [];
+  const listKind = id => INBOX_MULTI_VALUE_FIELDS.includes(id) ? 'list-multi' : 'list-single';
+  activeFilterGroups.forEach(group => {
+    if (group.type === 'date-preset') {
+      fields.push({ id: group.id, label: group.label, groupLabel: group.label, kind: 'date' });
+      return;
+    }
+    if (Array.isArray(group.options)) {
+      fields.push({ id: group.id, label: group.label, groupLabel: group.label, kind: listKind(group.id), options: group.options });
+      return;
+    }
+    if (group.advUnified) {
+      // Whole group collapses to ONE multi-select field; its option-list tiers
+      // become categories (sections) inside the value picker.
+      const cats = (group.tiers || []).filter(t => Array.isArray(t.options));
+      fields.push({
+        id: group.id, label: group.label, groupLabel: group.label, kind: 'list-multi',
+        options: cats.flatMap(t => t.options),
+        optionGroups: cats.map(t => ({ label: t.label, options: t.options })),
+      });
+      return;
+    }
+    (group.tiers || []).forEach(tier => {
+      if (tier.type === 'text-match')        fields.push({ id: tier.id, label: tier.label, groupLabel: group.label, kind: 'text' });
+      else if (tier.type === 'numeric-range') fields.push({ id: tier.id, label: tier.label, groupLabel: group.label, kind: 'numeric', min: tier.min, max: tier.max, step: tier.step, unit: tier.unit });
+      else if (tier.type === 'date-range')    fields.push({ id: tier.id, label: tier.label, groupLabel: group.label, kind: 'date' });
+      else if (Array.isArray(tier.options))   fields.push({ id: tier.id, label: tier.label, groupLabel: group.label, kind: listKind(tier.id), options: tier.options });
+    });
+  });
+  return fields;
+}
+
+function getAdvFields() {
+  if (_advFieldsCacheCtx !== activeContext) {
+    _advFieldsCache = buildAdvancedFields();
+    _advFieldsCacheCtx = activeContext;
+  }
+  return _advFieldsCache;
+}
+
+function getAdvField(id) { return getAdvFields().find(f => f.id === id) || null; }
+
+function advFieldsGrouped() {
+  const out = [];
+  const idx = {};
+  getAdvFields().forEach(f => {
+    if (!(f.groupLabel in idx)) { idx[f.groupLabel] = out.length; out.push({ label: f.groupLabel, fields: [] }); }
+    out[idx[f.groupLabel]].fields.push(f);
+  });
+  return out;
+}
+
+// Map a basic-mode bucket key (tierId/groupId) to the advanced field id that
+// owns it. Identity for normal fields; a unified group's tiers all map to the
+// group id. Keeps the basic⇄advanced bridge working after field unification.
+let _advBucketMap = null, _advBucketMapCtx = null;
+function advFieldIdForBucket(bucketKey) {
+  if (_advBucketMapCtx !== activeContext) {
+    const m = new Map();
+    activeFilterGroups.forEach(group => {
+      if (group.advUnified) (group.tiers || []).forEach(t => { if (Array.isArray(t.options)) m.set(t.id, group.id); });
+    });
+    _advBucketMap = m;
+    _advBucketMapCtx = activeContext;
+  }
+  return _advBucketMap.get(bucketKey) || bucketKey;
+}
+
+function advOperators(kind) {
+  switch (kind) {
+    case 'list-multi':  return [{ v: 'any', l: 'has any of' }, { v: 'all', l: 'has all of' }, { v: 'none', l: 'has none of' }];
+    case 'list-single': return [{ v: 'any', l: 'is any of' }, { v: 'none', l: 'is none of' }];
+    case 'text':        return TEXT_MATCH_OPERATORS.map(o => ({ v: o.value, l: o.label }));
+    case 'numeric':     return [{ v: 'between', l: 'is between' }];
+    case 'date':        return [{ v: 'between', l: 'is between' }];
+    default:            return [{ v: 'any', l: 'is any of' }];
+  }
+}
+
+function advDefaultOp(kind) { const o = advOperators(kind); return o.length ? o[0].v : 'any'; }
+
+function advDefaultValues(kind) {
+  if (kind === 'text')    return { text: '' };
+  if (kind === 'numeric') return { min: null, max: null };
+  if (kind === 'date')    return { from: '', to: '' };
+  return [];
+}
+
+function newCondition(field) {
+  return { type: 'condition', cid: advNewId('c'), field: field.id, op: advDefaultOp(field.kind), values: advDefaultValues(field.kind) };
+}
+
+function findAdvNode(id) {
+  const q = state.advancedQuery;
+  if (id === 'root') return { node: q, parent: null };
+  for (const c of (q.children || [])) {
+    if (c.cid === id || c.gid === id) return { node: c, parent: q };
+    if (c.type === 'group') {
+      for (const cc of (c.children || [])) { if (cc.cid === id) return { node: cc, parent: c }; }
+    }
+  }
+  return { node: null, parent: null };
+}
+
+// ── Emptiness / counting ──────────────────────────────────────
+function advConditionIsEmpty(cond) {
+  const f = getAdvField(cond.field);
+  const kind = f ? f.kind : 'list-single';
+  if (kind === 'text') {
+    if (cond.op === 'blank' || cond.op === 'not-blank') return false;
+    return !(cond.values && String(cond.values.text || '').trim());
+  }
+  if (kind === 'numeric') {
+    const v = cond.values || {};
+    const empty = x => x === null || x === undefined || x === '';
+    return empty(v.min) && empty(v.max);
+  }
+  if (kind === 'date') {
+    const v = cond.values || {};
+    return !v.from && !v.to;
+  }
+  return !(Array.isArray(cond.values) && cond.values.length > 0);
+}
+
+function advancedLeafCount(node) {
+  if (!node) return 0;
+  let n = 0;
+  (node.children || []).forEach(c => {
+    if (c.type === 'group') n += advancedLeafCount(c);
+    else if (!advConditionIsEmpty(c)) n++;
+  });
+  return n;
+}
+
+function advHasDateLeaf(node) {
+  if (!node) return false;
+  return (node.children || []).some(c => {
+    if (c.type === 'group') return advHasDateLeaf(c);
+    const f = getAdvField(c.field);
+    return f && f.kind === 'date' && !advConditionIsEmpty(c);
+  });
+}
+
+// ── Readable expression (applied-bar summary + tooltip) ───────
+function advListSummary(cond) {
+  if (!Array.isArray(cond.values) || cond.values.length === 0) return 'Select values…';
+  return cond.values.map(id => OPTION_META.get(id)?.label || id).join(', ');
+}
+
+function advReadableCondition(cond) {
+  const f = getAdvField(cond.field);
+  const label = f ? f.label : cond.field;
+  const kind = f ? f.kind : 'list-single';
+  const op = advOperators(kind).find(o => o.v === cond.op);
+  const opl = op ? op.l : cond.op;
+  if (kind === 'text') {
+    if (cond.op === 'blank' || cond.op === 'not-blank') return `${label} ${opl}`;
+    return `${label} ${opl} "${cond.values?.text || ''}"`;
+  }
+  if (kind === 'numeric') {
+    const v = cond.values || {};
+    return `${label} is between ${v.min ?? '—'}–${v.max ?? '—'}${f.unit ? ' ' + f.unit : ''}`;
+  }
+  if (kind === 'date') {
+    const v = cond.values || {};
+    return `${label} is between ${v.from || '—'} – ${v.to || '—'}`;
+  }
+  const vals = (cond.values || []).map(id => OPTION_META.get(id)?.label || id).join(', ');
+  return `${label} ${opl} ${vals}`;
+}
+
+function queryToReadable(node) {
+  const word = node.connector === 'OR' ? 'OR' : 'AND';
+  const parts = (node.children || [])
+    .filter(c => c.type === 'group' ? advancedLeafCount(c) > 0 : !advConditionIsEmpty(c))
+    .map(c => c.type === 'group' ? `(${queryToReadable(c)})` : advReadableCondition(c));
+  return parts.join(` ${word} `);
+}
+
+// Normalize a query for equality checks — drop volatile node ids and
+// sort list values so dirty-detection compares meaning, not identity.
+function advNormCond(c) {
+  const v = Array.isArray(c.values) ? [...c.values].sort() : c.values;
+  return { type: 'condition', field: c.field, op: c.op, values: v };
+}
+function advNormalize(node) {
+  return {
+    connector: node.connector,
+    children: (node.children || []).map(c =>
+      c.type === 'group'
+        ? { type: 'group', connector: c.connector, children: (c.children || []).map(advNormCond) }
+        : advNormCond(c)),
+  };
+}
+
+// ── Basic ⇄ Advanced bridge ───────────────────────────────────
+// Seed the builder from the current basic selection: one condition
+// per selected list bucket, AND'd. (Field-type drafts — numeric /
+// text / date — are not seeded yet; list selections cover the common case.)
+function basicSelectionToQuery() {
+  const buckets = new Map(); // advFieldId -> { vals: [], excluded: bool }
+  state.selected.forEach(id => {
+    const meta = OPTION_META.get(id);
+    if (!meta) return;
+    const bucketKey = getBucketKey(meta);
+    const fieldId = advFieldIdForBucket(bucketKey);
+    const f = getAdvField(fieldId);
+    if (!f || (f.kind !== 'list-single' && f.kind !== 'list-multi')) return;
+    if (!buckets.has(fieldId)) buckets.set(fieldId, { vals: [], excluded: false });
+    const b = buckets.get(fieldId);
+    b.vals.push(id);
+    if (state.excludedBuckets.has(bucketKey)) b.excluded = true;
+  });
+  const children = [];
+  buckets.forEach(({ vals, excluded }, fieldId) => {
+    children.push({ type: 'condition', cid: advNewId('c'), field: fieldId, op: excluded ? 'none' : 'any', values: vals });
+  });
+  return { connector: 'AND', children };
+}
+
+// A query is "simple" (losslessly representable in basic) when it is a
+// flat AND of list any/none conditions on distinct fields.
+function isSimpleQuery(q) {
+  if (!q || q.connector !== 'AND') return false;
+  const seen = new Set();
+  for (const c of (q.children || [])) {
+    if (c.type === 'group') return false;
+    const f = getAdvField(c.field);
+    if (!f || (f.kind !== 'list-single' && f.kind !== 'list-multi')) return false;
+    if (c.op !== 'any' && c.op !== 'none') return false;
+    if (seen.has(c.field)) return false;
+    seen.add(c.field);
+  }
+  return true;
+}
+
+// Best-effort collapse of the query back into basic selection.
+// Lossless for simple queries; drops grouping / OR / has-all-of / field types otherwise.
+function queryToBasicSelection(q) {
+  state.selected = new Set();
+  state.excludedBuckets = new Set();
+  (q.children || []).forEach(c => {
+    if (c.type !== 'condition') return;
+    const f = getAdvField(c.field);
+    if (!f || (f.kind !== 'list-single' && f.kind !== 'list-multi')) return;
+    (c.values || []).forEach(id => state.selected.add(id));
+    // Exclusion maps back to each value's own basic bucket (a unified field's
+    // values can span several tiers), not the advanced field id.
+    if (c.op === 'none') {
+      (c.values || []).forEach(id => {
+        const meta = OPTION_META.get(id);
+        if (meta) state.excludedBuckets.add(getBucketKey(meta));
+      });
+    }
+  });
+}
+
+function setFilterMode(mode) {
+  if (mode === state.filterMode) return;
+  if (mode === 'advanced') {
+    if (!state.advancedQuery || state.advancedQuery.children.length === 0) {
+      state.advancedQuery = basicSelectionToQuery();
+    }
+    state.filterMode = 'advanced';
+  } else {
+    if (isSimpleQuery(state.advancedQuery)) {
+      queryToBasicSelection(state.advancedQuery);
+    } else if (advancedLeafCount(state.advancedQuery) > 0) {
+      const ok = window.confirm('Switching to Basic will simplify your filter and drop OR / grouping logic. Continue?');
+      if (!ok) return;
+      queryToBasicSelection(state.advancedQuery);
+    }
+    state.filterMode = 'basic';
+  }
+  state.savedSetsOpen = false;
+  render();
+}
+
+// ── Mutators ──────────────────────────────────────────────────
+function advSetField(cid, fieldId) {
+  const { node } = findAdvNode(cid);
+  if (!node) return;
+  const field = getAdvField(fieldId);
+  if (!field) return;
+  node.field = fieldId;
+  node.op = advDefaultOp(field.kind);
+  node.values = advDefaultValues(field.kind);
+  renderAdvanced();
+}
+
+function advSetOp(cid, op) {
+  const { node } = findAdvNode(cid);
+  if (!node) return;
+  node.op = op;
+  renderAdvanced();
+}
+
+function advSetConnector(nodeId, connector) {
+  if (nodeId === 'root') { state.advancedQuery.connector = connector; }
+  else {
+    const g = state.advancedQuery.children.find(c => c.type === 'group' && c.gid === nodeId);
+    if (g) g.connector = connector;
+  }
+  renderAdvanced();
+}
+
+function advToggleValue(cid, optId, checked) {
+  const { node } = findAdvNode(cid);
+  if (!node || !Array.isArray(node.values)) return;
+  if (checked) { if (!node.values.includes(optId)) node.values.push(optId); }
+  else { node.values = node.values.filter(v => v !== optId); }
+  // In-place update — don't re-render (keeps the value panel open and scrolled).
+  const row = document.querySelector(`[data-adv-cond="${cid}"]`);
+  const sum = row && row.querySelector('.adv-cond__value-summary');
+  if (sum) {
+    sum.textContent = advListSummary(node);
+    sum.classList.toggle('is-placeholder', node.values.length === 0);
+  }
+  updateAdvFooter();
+}
+
+function advSetText(cid, val)   { const { node } = findAdvNode(cid); if (node) { node.values = { text: val }; updateAdvFooter(); } }
+function advSetNumeric(cid, bound, val) { const { node } = findAdvNode(cid); if (node) { node.values = { ...(node.values || {}) }; node.values[bound] = val === '' ? null : Number(val); updateAdvFooter(); } }
+function advSetDate(cid, bound, val)    { const { node } = findAdvNode(cid); if (node) { node.values = { ...(node.values || {}) }; node.values[bound] = val; updateAdvFooter(); } }
+
+function advAddCondition(parentId) {
+  const cond = newCondition(getAdvFields()[0]);
+  if (parentId === 'root') { state.advancedQuery.children.push(cond); }
+  else {
+    const g = state.advancedQuery.children.find(c => c.type === 'group' && c.gid === parentId);
+    if (g) g.children.push(cond);
+  }
+  renderAdvanced();
+}
+
+function advAddGroup() {
+  state.advancedQuery.children.push({ type: 'group', gid: advNewId('g'), connector: 'OR', children: [newCondition(getAdvFields()[0])] });
+  renderAdvanced();
+}
+
+function advRemoveNode(id) {
+  const q = state.advancedQuery;
+  const i = q.children.findIndex(c => c.cid === id || c.gid === id);
+  if (i >= 0) { q.children.splice(i, 1); renderAdvanced(); return; }
+  for (const c of q.children) {
+    if (c.type === 'group') {
+      const ci = c.children.findIndex(cc => cc.cid === id);
+      if (ci >= 0) { c.children.splice(ci, 1); renderAdvanced(); return; }
+    }
+  }
+}
+
+function advClearAll() { state.advancedQuery = { connector: 'AND', children: [] }; renderAdvanced(); }
+
+// ── Advanced select dropdowns (DS ds-menu, replaces native <select>) ──
+// Mirrors the text-match operator dropdown: a button trigger that opens a
+// floating, branded ds-menu below it instead of the OS-native select popup.
+function closeAdvDropdown() {
+  if (!_advFloating) return;
+  _advFloating.el.remove();
+  _advFloating.trigger?.setAttribute('aria-expanded', 'false');
+  _advFloating = null;
+}
+
+// items: array of { section } headers and/or { value, label } options.
+function openAdvDropdown(triggerEl, items, currentValue, onSelect, opts = {}) {
+  closeAdvDropdown();
+  const rect = triggerEl.getBoundingClientRect();
+  const menu = document.createElement('div');
+  menu.className = 'ds-menu adv-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.style.cssText = `position:fixed;top:${rect.bottom + 4}px;left:${rect.left}px;`
+    + `min-width:${Math.max(rect.width, 180)}px;max-width:340px;z-index:9999;overflow-y:auto;max-height:288px;`
+    + (opts.searchable ? 'padding-top:0;' : ''); // sticky search sits flush; no top-padding gap above it
+
+  // Optional sticky search for long, sectioned lists (the field picker).
+  let searchInput = null;
+  if (opts.searchable) {
+    const search = document.createElement('div');
+    search.className = 'ds-menu__search';
+    search.style.cssText = 'position:sticky;top:0;';
+    search.innerHTML = `<div class="ds-input ds-search" role="search" style="width:100%;">`
+      + `<div class="ds-input__field">`
+      + `<span class="ds-icon ds-icon--sm ds-input__icon" aria-hidden="true">search</span>`
+      + `<input class="ds-input__control" type="search" aria-label="Search fields" placeholder="Search…" autocomplete="off" spellcheck="false">`
+      + `</div></div>`;
+    menu.appendChild(search);
+    searchInput = search.querySelector('input');
+    // Suppress the ADA focus ring on pointer / auto-focus-on-open; keyboard
+    // re-focus (after a blur) restores it, matching the modal's other inputs.
+    const inputWrap = search.querySelector('.ds-input');
+    if (inputWrap) {
+      inputWrap.setAttribute('data-mouse-focus', '');
+      inputWrap.addEventListener('pointerdown', () => inputWrap.setAttribute('data-mouse-focus', ''));
+      searchInput.addEventListener('blur', () => inputWrap.removeAttribute('data-mouse-focus'));
+    }
+  }
+
+  // Build items. Section-grouped items are tracked per section; "loose" items
+  // (no preceding section header) are tracked separately so search filters them
+  // too. Items inside a section are indented automatically.
+  const sections = [];
+  const looseItems = [];
+  let current = null;
+  items.forEach(it => {
+    if (it.section !== undefined) {
+      const h = document.createElement('div');
+      h.className = 'ds-menu__section-label';
+      h.textContent = it.section;
+      menu.appendChild(h);
+      current = { labelEl: h, name: it.section.toLowerCase(), items: [] };
+      sections.push(current);
+      return;
+    }
+    // A field flagged top-level (date-preset / unified single-field group) is
+    // its own level-1 option: clear the current section so it renders flush and
+    // is tracked as a loose item, rather than indented under the prior section.
+    if (it.topLevel) current = null;
+    const indent = current != null;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.search = it.label.toLowerCase();
+    btn.addEventListener('mousedown', e => e.preventDefault()); // keep focus on the trigger / search
+
+    if (opts.multiSelect) {
+      // Value picker: a checkbox per row; toggling keeps the menu open.
+      const checked = !!opts.selectedValues && opts.selectedValues.has(it.value);
+      btn.className = 'ds-menu__item' + (indent ? ' ds-menu__item--indent' : '');
+      btn.setAttribute('role', 'menuitemcheckbox');
+      btn.setAttribute('aria-checked', String(checked));
+      const box = document.createElement('span');
+      box.className = 'ds-icon ds-icon--sm adv-menu__check' + (checked ? ' ds-icon--filled' : '');
+      box.setAttribute('aria-hidden', 'true');
+      box.textContent = checked ? 'check_box' : 'check_box_outline_blank';
+      btn.appendChild(box);
+      btn.appendChild(document.createTextNode(it.label));
+      btn.addEventListener('click', () => {
+        const nowChecked = btn.getAttribute('aria-checked') !== 'true';
+        btn.setAttribute('aria-checked', String(nowChecked));
+        box.textContent = nowChecked ? 'check_box' : 'check_box_outline_blank';
+        box.classList.toggle('ds-icon--filled', nowChecked);
+        if (opts.selectedValues) { nowChecked ? opts.selectedValues.add(it.value) : opts.selectedValues.delete(it.value); }
+        if (opts.onToggle) opts.onToggle(it.value, nowChecked);
+      });
+    } else {
+      // Single select (field / operator / connector): leading check on current.
+      const sel = it.value === currentValue;
+      btn.className = 'ds-menu__item' + (indent ? ' ds-menu__item--indent' : '') + (sel ? ' ds-menu__item--selected' : '');
+      btn.setAttribute('role', 'option');
+      btn.setAttribute('aria-selected', String(sel));
+      if (sel) {
+        // Leading check on the current selection (DS single-select pattern).
+        btn.innerHTML = `<span class="ds-menu__item-check"><span class="ds-icon ds-icon--filled" style="font-size:18px;" aria-hidden="true">check</span></span>`;
+        btn.appendChild(document.createTextNode(it.label));
+      } else {
+        btn.textContent = it.label;
+      }
+      btn.addEventListener('click', () => { closeAdvDropdown(); onSelect(it.value); });
+    }
+    menu.appendChild(btn);
+    (current ? current.items : looseItems).push(btn);
+  });
+
+  if (searchInput) {
+    // Filter options live. A query matching a section name reveals all of that
+    // section's items (parity with basic-mode search); loose items and
+    // non-matching sections fall back to per-label matching.
+    const applyFilter = () => {
+      const q = searchInput.value.trim().toLowerCase();
+      looseItems.forEach(btn => {
+        btn.style.display = (!q || btn.dataset.search.includes(q)) ? '' : 'none';
+      });
+      sections.forEach(sec => {
+        const sectionMatch = !!q && sec.name.includes(q);
+        let visible = false;
+        sec.items.forEach(btn => {
+          const match = !q || sectionMatch || btn.dataset.search.includes(q);
+          btn.style.display = match ? '' : 'none';
+          if (match) visible = true;
+        });
+        sec.labelEl.style.display = visible ? '' : 'none';
+      });
+    };
+    searchInput.addEventListener('input', applyFilter);
+    searchInput.addEventListener('keydown', e => {
+      // Enter selects the first match in single-select menus; in multi-select
+      // it would ambiguously toggle, so it's a no-op there.
+      if (e.key === 'Enter' && !opts.multiSelect) {
+        const first = Array.from(menu.querySelectorAll('.ds-menu__item')).find(b => b.style.display !== 'none');
+        if (first) { e.preventDefault(); first.click(); }
+      }
+    });
+  }
+
+  document.body.appendChild(menu);
+  triggerEl.setAttribute('aria-expanded', 'true');
+  _advFloating = { trigger: triggerEl, el: menu };
+  if (searchInput) requestAnimationFrame(() => searchInput.focus({ preventScroll: true }));
+}
+
+// ── Markup ────────────────────────────────────────────────────
+// Branded select trigger — a button styled like a DS field that opens a
+// floating ds-menu (see openAdvDropdown). Replaces the native <select>.
+function buildAdvTrigger(extraClass, dataAttr, ariaLabel, displayLabel, isPlaceholder) {
+  return `<button type="button" class="adv-trigger ${extraClass}" ${dataAttr}`
+    + ` aria-haspopup="listbox" aria-expanded="false" aria-label="${esc(ariaLabel)}">`
+    + `<span class="adv-trigger__label${isPlaceholder ? ' is-placeholder' : ''}">${esc(displayLabel)}</span>`
+    + `<span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span></button>`;
+}
+
+function buildAdvConnectorSelect(nodeId, connector, label) {
+  const word = connector === 'OR' ? 'any' : 'all';
+  return `Match ${buildAdvTrigger('adv-trigger--connector', `data-adv-conn-trigger="${esc(nodeId)}"`, label, word, false)} of`;
+}
+
+function buildAdvFieldSelect(cid, selectedId) {
+  const field = getAdvField(selectedId);
+  return buildAdvTrigger('adv-cond__field', `data-adv-field-trigger="${esc(cid)}"`, 'Field', field ? field.label : 'Select field…', !field);
+}
+
+function buildAdvOpSelect(cid, kind, selectedOp) {
+  const op = advOperators(kind).find(o => o.v === selectedOp) || advOperators(kind)[0];
+  return buildAdvTrigger('adv-cond__op', `data-adv-op-trigger="${esc(cid)}"`, 'Operator', op ? op.l : '', false);
+}
+
+function buildAdvValueControl(cond, field) {
+  const kind = field ? field.kind : 'list-single';
+  if (kind === 'list-single' || kind === 'list-multi') {
+    const empty = !cond.values || cond.values.length === 0;
+    // Opens the shared floating ds-menu (multi-select) via the
+    // data-adv-val-trigger handler. Content varies by field: a flat list, or
+    // category sections (field.optionGroups) for a unified field like Topic.
+    return `<div class="adv-cond__value adv-cond__value--list">`
+      + `<button type="button" class="adv-cond__value-trigger" data-adv-val-trigger="${cond.cid}" aria-haspopup="listbox" aria-expanded="false" aria-label="Select values">`
+      + `<span class="adv-cond__value-summary${empty ? ' is-placeholder' : ''}">${esc(advListSummary(cond))}</span>`
+      + `<span class="ds-icon ds-icon--sm" aria-hidden="true">arrow_drop_down</span></button>`
+      + `</div>`;
+  }
+  if (kind === 'text') {
+    if (cond.op === 'blank' || cond.op === 'not-blank') return `<div class="adv-cond__value adv-cond__value--text"></div>`;
+    return `<div class="adv-cond__value adv-cond__value--text"><input type="text" class="adv-cond__text-input ds-adv-input" data-adv-text="${cond.cid}" value="${esc(cond.values?.text || '')}" placeholder="Enter text…" aria-label="Match text"></div>`;
+  }
+  if (kind === 'numeric') {
+    const v = cond.values || {};
+    const bound = (n, b, ph) => `<input type="number" class="adv-cond__num ds-adv-input" data-adv-num="${cond.cid}" data-bound="${b}" value="${n ?? ''}" placeholder="${ph}"${field.min != null ? ` min="${field.min}"` : ''}${field.max != null ? ` max="${field.max}"` : ''} aria-label="${ph}">`;
+    return `<div class="adv-cond__value adv-cond__value--numeric">${bound(v.min, 'min', 'Min')}<span class="adv-cond__dash">–</span>${bound(v.max, 'max', 'Max')}${field.unit ? `<span class="adv-cond__unit">${esc(field.unit)}</span>` : ''}</div>`;
+  }
+  if (kind === 'date') {
+    const v = cond.values || {};
+    return `<div class="adv-cond__value adv-cond__value--date"><input type="date" class="adv-cond__date ds-adv-input" data-adv-date="${cond.cid}" data-bound="from" value="${esc(v.from || '')}" aria-label="From date"><span class="adv-cond__dash">–</span><input type="date" class="adv-cond__date ds-adv-input" data-adv-date="${cond.cid}" data-bound="to" value="${esc(v.to || '')}" aria-label="To date"></div>`;
+  }
+  return `<div class="adv-cond__value"></div>`;
+}
+
+function buildAdvConditionRow(cond) {
+  const field = getAdvField(cond.field) || getAdvFields()[0];
+  const kind = field ? field.kind : 'list-single';
+  return `<div class="adv-cond" data-adv-cond="${cond.cid}">`
+    + buildAdvFieldSelect(cond.cid, cond.field)
+    + buildAdvOpSelect(cond.cid, kind, cond.op)
+    + buildAdvValueControl(cond, field)
+    + `<div class="ds-tooltip-wrapper"><button type="button" class="adv-remove" data-adv-remove="${cond.cid}" aria-label="Remove condition"><span class="ds-icon ds-icon--sm" aria-hidden="true">close</span></button><div class="ds-tooltip" role="tooltip">Remove</div></div></div>`;
+}
+
+function buildAdvChildren(node) {
+  const word = node.connector === 'OR' ? 'OR' : 'AND';
+  return (node.children || []).map((c, i) => {
+    const connector = i > 0 ? `<div class="adv-connector" aria-hidden="true">${word}</div>` : '';
+    const body = c.type === 'group' ? buildAdvGroupBox(c) : buildAdvConditionRow(c);
+    return connector + body;
+  }).join('');
+}
+
+function buildAdvGroupBox(group) {
+  return `<div class="adv-group" data-adv-group="${group.gid}">`
+    + `<div class="adv-group__head"><span class="adv-match">${buildAdvConnectorSelect(group.gid, group.connector, 'Match all or any in group')}:</span>`
+    + `<div class="ds-tooltip-wrapper"><button type="button" class="adv-remove" data-adv-remove="${group.gid}" aria-label="Remove group"><span class="ds-icon ds-icon--sm" aria-hidden="true">delete</span></button><div class="ds-tooltip" role="tooltip">Remove group</div></div></div>`
+    + `<div class="adv-group__children">${buildAdvChildren(group)}</div>`
+    + `<div class="adv-add-row"><button type="button" class="ds-button ds-button--text ds-button--sm ds-button--leading-icon adv-add" data-adv-add-cond="${group.gid}"><span class="ds-button__icon ds-button__icon--leading" aria-hidden="true"><span class="ds-icon">add</span></span>Add condition</button></div></div>`;
+}
+
+function buildAdvBuilder() {
+  const q = state.advancedQuery;
+  const empty = (q.children || []).length === 0
+    ? `<p class="adv-empty">No conditions yet — add one to start building your filter.</p>` : '';
+  const clearBtn = advancedLeafCount(q) > 0
+    ? `<button type="button" class="ds-button ds-button--text ds-button--sm adv-clear" data-adv-clear>Clear all</button>` : '';
+  return `<div class="adv-builder">`
+    + `<div class="adv-builder__head">`
+    + `<span class="adv-match adv-match--root">${buildAdvConnectorSelect('root', q.connector, 'Match all or any')} the following:</span>`
+    + `</div>`
+    + `<div class="adv-builder__children">${empty}${buildAdvChildren(q)}</div>`
+    + `<div class="adv-add-row adv-add-row--root">`
+    + `<button type="button" class="ds-button ds-button--text ds-button--sm ds-button--leading-icon adv-add" data-adv-add-cond="root"><span class="ds-button__icon ds-button__icon--leading" aria-hidden="true"><span class="ds-icon">add</span></span>Add condition</button>`
+    + `<button type="button" class="ds-button ds-button--text ds-button--sm ds-button--leading-icon adv-add" data-adv-add-group><span class="ds-button__icon ds-button__icon--leading" aria-hidden="true"><span class="ds-icon">add</span></span>Add group</button>`
+    + clearBtn
+    + `</div></div>`;
+}
+
+function ensureAdvContainer() {
+  let el = document.getElementById('filter-advanced');
+  if (!el) {
+    const body = modal && modal.querySelector('.filter-modal__body');
+    if (!body) return null;
+    el = document.createElement('div');
+    el.id = 'filter-advanced';
+    el.className = 'filter-modal__advanced';
+    body.appendChild(el);
+  }
+  return el;
+}
+
+function updateAdvFooter() {
+  if (!footerSummary) return;
+  const n = advancedLeafCount(state.advancedQuery);
+  footerSummary.textContent = n ? `${n} condition${n !== 1 ? 's' : ''}` : '';
+}
+
+function renderAdvanced() {
+  const el = ensureAdvContainer();
+  if (!el) return;
+  closeAdvDropdown(); // triggers are about to be re-rendered; drop any open menu
+  if (state.savedSetsOpen) {
+    el.innerHTML = `<div class="filter-modal__advanced-saved">${buildSavedSetsMarkup()}</div>`;
+    if (hasAnyFilter()) {
+      requestAnimationFrame(() => {
+        const input = el.querySelector('#save-set-name-input');
+        const wrap = input?.closest('.saved-sets-save-form__input-wrap');
+        if (wrap) wrap.setAttribute('data-mouse-focus', '');
+        input?.focus();
+      });
+    }
+    footerSummary.textContent = '';
+    return;
+  }
+  el.innerHTML = buildAdvBuilder();
+  updateAdvFooter();
+}
+
+function updateModeToggle() {
+  // Single footer toggle: the label names the destination — "Advanced" while
+  // in basic mode, "Basic" once the advanced builder is open (clear way back).
+  const label = state.filterMode === 'advanced' ? 'Basic' : 'Advanced';
+  document.querySelectorAll('[data-filter-mode-toggle]').forEach(btn => {
+    btn.textContent = label;
+  });
+}
+
+function renderAdvancedAppliedBar() {
+  const bar = document.getElementById('filter-applied-bar');
+  const cardsEl = document.getElementById('filter-applied-cards');
+  if (!bar) return;
+  const n = advancedLeafCount(state.advancedQuery);
+  if (n === 0) { bar.hidden = true; if (cardsEl) cardsEl.innerHTML = ''; return; }
+  const readable = queryToReadable(state.advancedQuery);
+  cardsEl.innerHTML = `
+    <div class="ds-card-item ds-card-item--interactive"
+         role="button" tabindex="0"
+         aria-label="Advanced filter, ${n} condition${n !== 1 ? 's' : ''}. Click to edit."
+         data-adv-reopen="1">
+      <div class="ds-card-item__leading" aria-hidden="true">
+        <span class="ds-icon ds-icon--filled ds-icon--xs">account_tree</span>
+      </div>
+      <div class="ds-card-item__body">
+        <span class="ds-card-item__primary">Advanced filter</span>
+        <span class="ds-card-item__secondary">${esc(readable)}</span>
+      </div>
+      <span class="filter-applied-card__tooltip" role="tooltip">${esc(readable)}</span>
+      <div class="ds-card-item__action">
+        <button class="filter-applied-card__remove" type="button" aria-label="Clear advanced filter" data-adv-clear-applied="1">
+          <span class="ds-icon ds-icon--sm" aria-hidden="true">close</span>
+        </button>
+      </div>
+    </div>`;
+  bar.hidden = false;
+  cardsEl.querySelectorAll('.ds-card-item').forEach(card => {
+    const secondary = card.querySelector('.ds-card-item__secondary');
+    const tooltip = card.querySelector('.filter-applied-card__tooltip');
+    if (!tooltip || !secondary) return;
+    if (secondary.scrollHeight <= secondary.clientHeight) tooltip.remove();
+  });
+}
+
 function renderAppliedBar() {
+  if (state.filterMode === 'advanced') { renderAdvancedAppliedBar(); return; }
   const bar      = document.getElementById('filter-applied-bar');
   const cardsEl  = document.getElementById('filter-applied-cards');
 
@@ -4369,7 +5138,7 @@ function renderAppliedBar() {
 function updateFilterBadge() {
   const badge = document.getElementById('filter-count-badge');
   const btn   = document.getElementById('filter-toggle-btn');
-  const count = state.selected.size;
+  const count = state.filterMode === 'advanced' ? advancedLeafCount(state.advancedQuery) : state.selected.size;
   if (count > 0) {
     if (badge) { badge.textContent = count > 99 ? '99+' : String(count); badge.hidden = false; }
     if (btn) btn.setAttribute('aria-label', `Toggle filters, ${count} applied`);
@@ -4384,8 +5153,15 @@ function applyFilters() {
   updateFilterBadge();
   _committedSnapshot = null; // commit — don't restore on close
   closeModal();
-  const hasDateFilter = Array.from(state.selected).some(id => id.startsWith('dp-') || id.startsWith('custom-dr-') || id.startsWith('dr-'));
-  window.dispatchEvent(new CustomEvent('filterApplied', { detail: { count: state.selected.size, hasDateFilter } }));
+  let count, hasDateFilter;
+  if (state.filterMode === 'advanced') {
+    count = advancedLeafCount(state.advancedQuery);
+    hasDateFilter = advHasDateLeaf(state.advancedQuery);
+  } else {
+    count = state.selected.size;
+    hasDateFilter = Array.from(state.selected).some(id => id.startsWith('dp-') || id.startsWith('custom-dr-') || id.startsWith('dr-'));
+  }
+  window.dispatchEvent(new CustomEvent('filterApplied', { detail: { count, hasDateFilter } }));
 }
 
 
@@ -4420,6 +5196,8 @@ window.filterModalInit = function(context) {
     state.activeDateInput           = 'start';
     state.activeFilterSetId         = null;
     state.savedSetsOpen             = false;
+    state.filterMode                = 'basic';
+    state.advancedQuery             = { connector: 'AND', children: [] };
     _committedSnapshot              = null;
   }
   // Assign DOM refs
@@ -4446,6 +5224,106 @@ window.filterModalInit = function(context) {
 
   // Event delegation on modal body
   modal.addEventListener('click', e => {
+    // ── Advanced builder controls ──────────────────────────────
+    const filterModeToggle = e.target.closest('[data-filter-mode-toggle]');
+    if (filterModeToggle) { setFilterMode(state.filterMode === 'advanced' ? 'basic' : 'advanced'); return; }
+
+    const valTrigger = e.target.closest('[data-adv-val-trigger]');
+    if (valTrigger) {
+      const cid = valTrigger.dataset.advValTrigger;
+      const isOpen = _advFloating?.trigger === valTrigger;
+      closeAdvDropdown();
+      if (!isOpen) {
+        const { node } = findAdvNode(cid);
+        const field = getAdvField(node?.field);
+        if (field && (field.kind === 'list-single' || field.kind === 'list-multi')) {
+          const items = [];
+          if (field.optionGroups) {
+            // Unified field (e.g. Topic): category sections with indented options.
+            field.optionGroups.forEach(g => {
+              items.push({ section: g.label });
+              g.options.forEach(o => items.push({ value: o.id, label: o.label }));
+            });
+          } else {
+            (field.options || []).forEach(o => items.push({ value: o.id, label: o.label }));
+          }
+          openAdvDropdown(valTrigger, items, null, null, {
+            searchable: true,
+            multiSelect: true,
+            selectedValues: new Set(node.values || []),
+            onToggle: (val, checked) => advToggleValue(cid, val, checked),
+          });
+        }
+      }
+      return;
+    }
+
+    // Field / operator / connector dropdowns — DS ds-menu (replaces native <select>)
+    const connTrigger = e.target.closest('[data-adv-conn-trigger]');
+    if (connTrigger) {
+      const nodeId = connTrigger.dataset.advConnTrigger;
+      const isOpen = _advFloating?.trigger === connTrigger;
+      closeAdvDropdown();
+      if (!isOpen) {
+        const cur = nodeId === 'root'
+          ? state.advancedQuery.connector
+          : state.advancedQuery.children.find(c => c.type === 'group' && c.gid === nodeId)?.connector;
+        openAdvDropdown(connTrigger,
+          [{ value: 'AND', label: 'all' }, { value: 'OR', label: 'any' }],
+          cur || 'AND', v => advSetConnector(nodeId, v));
+      }
+      return;
+    }
+
+    const fieldTrigger = e.target.closest('[data-adv-field-trigger]');
+    if (fieldTrigger) {
+      const cid = fieldTrigger.dataset.advFieldTrigger;
+      const isOpen = _advFloating?.trigger === fieldTrigger;
+      closeAdvDropdown();
+      if (!isOpen) {
+        const items = [];
+        advFieldsGrouped().forEach(g => {
+          // A group yielding a single field with the same label (a unified
+          // Topic, or a date-preset group) renders as a top-level item — no
+          // redundant one-item section header. topLevel marks it as a level-1
+          // option so it breaks out of any preceding section (like Submission
+          // Date) instead of being absorbed into it.
+          if (g.fields.length === 1 && g.fields[0].label === g.label) {
+            items.push({ value: g.fields[0].id, label: g.fields[0].label, topLevel: true });
+          } else {
+            items.push({ section: g.label });
+            g.fields.forEach(f => items.push({ value: f.id, label: f.label }));
+          }
+        });
+        openAdvDropdown(fieldTrigger, items, findAdvNode(cid).node?.field, v => advSetField(cid, v), { searchable: true });
+      }
+      return;
+    }
+
+    const opTrigger = e.target.closest('[data-adv-op-trigger]');
+    if (opTrigger) {
+      const cid = opTrigger.dataset.advOpTrigger;
+      const isOpen = _advFloating?.trigger === opTrigger;
+      closeAdvDropdown();
+      if (!isOpen) {
+        const node  = findAdvNode(cid).node;
+        const field = node ? getAdvField(node.field) : null;
+        const items = advOperators(field ? field.kind : 'list-single').map(o => ({ value: o.v, label: o.l }));
+        openAdvDropdown(opTrigger, items, node?.op, v => advSetOp(cid, v));
+      }
+      return;
+    }
+
+    const addCondBtn = e.target.closest('[data-adv-add-cond]');
+    if (addCondBtn) { advAddCondition(addCondBtn.dataset.advAddCond); return; }
+
+    if (e.target.closest('[data-adv-add-group]')) { advAddGroup(); return; }
+
+    const advRemoveBtn = e.target.closest('[data-adv-remove]');
+    if (advRemoveBtn) { advRemoveNode(advRemoveBtn.dataset.advRemove); return; }
+
+    if (e.target.closest('[data-adv-clear]')) { advClearAll(); return; }
+
     // Field-specific date picker: Apply
     const applyDateFieldBtn = e.target.closest('[data-apply-date-field]');
     if (applyDateFieldBtn && !applyDateFieldBtn.hasAttribute('disabled')) {
@@ -4714,6 +5592,18 @@ window.filterModalInit = function(context) {
       return;
     }
   });
+
+  // Advanced builder — text / numeric / date inputs (in-place, no re-render).
+  // (Field / operator / connector / value pickers use DS ds-menu dropdowns,
+  // handled in the click delegation above.)
+  modal.addEventListener('input', e => {
+    const txt = e.target.closest('[data-adv-text]');
+    if (txt) { advSetText(txt.dataset.advText, txt.value); return; }
+    const num = e.target.closest('[data-adv-num]');
+    if (num) { advSetNumeric(num.dataset.advNum, num.dataset.bound, num.value); return; }
+    const dt = e.target.closest('[data-adv-date]');
+    if (dt) { advSetDate(dt.dataset.advDate, dt.dataset.bound, dt.value); return; }
+  });
   
   // Click delegation for the floating calendar panel (outside the modal element)
   document.addEventListener('click', e => {
@@ -4918,6 +5808,20 @@ window.filterModalInit = function(context) {
     closeAllTmDropdowns();
   });
 
+  // Same for the advanced-builder select dropdowns
+  document.addEventListener('pointerdown', e => {
+    if (!_advFloating) return;
+    if (e.target.closest('[data-adv-conn-trigger],[data-adv-field-trigger],[data-adv-op-trigger],[data-adv-val-trigger]')) return;
+    if (_advFloating.el.contains(e.target)) return;
+    closeAdvDropdown();
+  });
+
+  // The advanced menu is position:fixed, so it detaches from its trigger if
+  // anything behind it scrolls. Close it then (but ignore scrolling inside the menu).
+  document.addEventListener('scroll', e => {
+    if (_advFloating && !_advFloating.el.contains(e.target)) closeAdvDropdown();
+  }, true);
+
   // Mouse-focus suppression — prevents ADA ring on pointer interactions
   optionsEl.addEventListener('pointerdown', e => {
     const selectWrap = e.target.closest('.ds-select');
@@ -5102,6 +6006,10 @@ window.filterModalInit = function(context) {
   
   // Applied filters bar — remove-section and click-to-edit
   document.getElementById('filter-applied-cards').addEventListener('click', e => {
+    // Advanced: clear the entire advanced filter
+    if (e.target.closest('[data-adv-clear-applied]')) { advClearAll(); applyFilters(); return; }
+    // Advanced: click the summary card → reopen the modal (still in advanced mode)
+    if (e.target.closest('[data-adv-reopen]')) { openModal(); return; }
     // Remove entire bucket when the X button is clicked
     const removeBtn = e.target.closest('[data-remove-bucket]');
     if (removeBtn) {
@@ -5125,6 +6033,7 @@ window.filterModalInit = function(context) {
     const card = e.target.closest('.ds-card-item[role="button"]');
     if (card && e.target === card) {
       e.preventDefault();
+      if (card.hasAttribute('data-adv-reopen')) { openModal(); return; }
       setActiveGroup(card.dataset.groupId);
       openModal();
     }
@@ -5138,6 +6047,7 @@ window.filterModalInit = function(context) {
   // Close on Escape — closes open tm dropdowns first, then the modal
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    if (_advFloating) { closeAdvDropdown(); return; }
     const openDropdown = document.querySelector('.ds-select__dropdown.is-open');
     if (openDropdown) { closeAllTmDropdowns(); return; }
     if (!overlay.hidden) closeModal();
@@ -5176,7 +6086,9 @@ window.filterModalInit = function(context) {
     state.activeDateInput           = 'start';
     state.activeFilterSetId         = null;
     state.savedSetsOpen             = false;
-  
+    state.filterMode                = 'basic';
+    state.advancedQuery             = { connector: 'AND', children: [] };
+
     // Reset search input
     searchInput.value = '';
   
@@ -5376,6 +6288,8 @@ window.filterModalGetState = function() {
     textMatchDrafts:    JSON.parse(JSON.stringify(snap.textMatchDrafts)),
     dateRangeDraft:     { ...snap.dateRangeDraft },
     datePickerMode:     snap.datePickerMode,
+    filterMode:         snap.filterMode,
+    advancedQuery:      JSON.parse(JSON.stringify(snap.advancedQuery)),
     context:            activeContext,
   };
 };
@@ -5394,6 +6308,8 @@ window.filterModalSetState = function(savedState) {
     datePickerMode:       savedState.datePickerMode ?? 'single',
     datePresetCustomOpen: false,
     activeFilterSetId:    null,
+    filterMode:           savedState.filterMode ?? 'basic',
+    advancedQuery:        savedState.advancedQuery ?? { connector: 'AND', children: [] },
   });
 };
 
@@ -5425,6 +6341,8 @@ window.filterModalReset = function() {
   state.datePresetCustomOpen = false;
   state.activeFilterSetId    = null;
   state.savedSetsOpen        = false;
+  state.filterMode           = 'basic';
+  state.advancedQuery        = { connector: 'AND', children: [] };
   _committedSnapshot         = null;
   renderAppliedBar();
   window.dispatchEvent(new CustomEvent('filterApplied', {

@@ -2379,3 +2379,305 @@
 }
 
 /* ds-select and ds-input handle all visual styling for the operator and value fields */
+
+
+/* ============================================================
+   ADVANCED FILTER BUILDER (inbox)
+   A second, toggleable view of the modal for explicit AND/OR
+   logic, one level of grouping, and per-field operators.
+   ============================================================ */
+
+/* ── Mode swap: hide the two basic panels, show the builder ── */
+.filter-modal__advanced { display: none; }
+
+.filter-modal--advanced .filter-modal__left,
+.filter-modal--advanced .filter-modal__right { display: none; }
+
+.filter-modal--advanced .filter-modal__advanced {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  background: var(--color-surface-page);
+  overflow: auto;
+  padding: var(--spacing-xl);
+}
+
+/* ── Shared field inputs (text / number / date) ── */
+.ds-adv-input {
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  line-height: var(--ref-typescale-label-medium-line-height);
+  color: var(--color-text-primary);
+  background: var(--color-surface-input);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  height: 38px;
+  transition: border-color var(--motion-duration-short) ease, box-shadow var(--motion-duration-short) ease;
+}
+
+.ds-adv-input:hover { border-color: var(--color-border-input-hover); }
+
+.ds-adv-input:focus-visible {
+  outline: none;
+  border-color: var(--color-border-input-active);
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+
+.ds-adv-input::placeholder { color: var(--color-text-placeholder); }
+
+/* ── Builder shell ── */
+.adv-builder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.adv-builder__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.adv-builder__children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.adv-match {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  color: var(--color-text-primary);
+  font-size: var(--ref-typescale-body-medium-size);
+}
+
+/* DS-styled select trigger — replaces the native <select> for field / operator /
+   connector. Opens a floating .ds-menu below (see openAdvDropdown). Visual
+   treatment matches the modal's input fields and the value-list trigger. */
+.adv-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  height: 38px;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  line-height: var(--ref-typescale-label-medium-line-height);
+  color: var(--color-text-primary);
+  background: var(--color-surface-input);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--motion-duration-short) ease, box-shadow var(--motion-duration-short) ease;
+}
+
+.adv-trigger:hover { border-color: var(--color-border-input-hover); }
+.adv-trigger:focus-visible {
+  outline: none;
+  border-color: var(--color-border-input-active);
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+
+.adv-trigger__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.adv-trigger__label.is-placeholder { color: var(--color-text-placeholder); }
+.adv-trigger .ds-icon { flex: 0 0 auto; color: var(--color-text-secondary); }
+
+/* Connector trigger ("Match [all] of") — standard height (inherited from
+   .adv-trigger); compact width that hugs the short "all"/"any" value. */
+.adv-trigger--connector {
+  padding: 2px 6px 2px 10px;
+  gap: 2px;
+}
+
+.adv-empty {
+  margin: 0;
+  padding: var(--spacing-sm) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--ref-typescale-body-medium-size);
+}
+
+/* ── Connector label between siblings (AND / OR) ── */
+.adv-connector {
+  font-size: var(--ref-typescale-label-small-size);
+  font-weight: var(--ref-typeface-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  padding: 2px 0 2px 4px;
+}
+
+/* ── Condition row ── */
+.adv-cond {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+/* First-level items (condition or group) share the same box treatment so the
+   root level reads consistently. Conditions nested inside a group use a neutral
+   grey surface to set the inner level apart. Both levels use the accordion border. */
+.adv-builder__children > .adv-cond {
+  background: var(--color-surface-container);
+  border-color: var(--color-border-accordion);
+}
+
+.adv-group__children > .adv-cond {
+  background: var(--color-surface-subtle);
+  border-color: var(--color-border-accordion);
+}
+
+.adv-cond__field { flex: 1 1 170px; min-width: 140px; }
+.adv-cond__op    { flex: 0 1 160px; min-width: 120px; }
+
+.adv-cond__value {
+  flex: 1 1 240px;
+  min-width: 180px;
+  position: relative;
+}
+
+.adv-cond__value--list { display: flex; flex-direction: column; gap: 4px; }
+.adv-cond__value--text,
+.adv-cond__value--numeric,
+.adv-cond__value--date {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.adv-cond__text-input { flex: 1 1 auto; width: 100%; }
+.adv-cond__num,
+.adv-cond__date { flex: 1 1 0; min-width: 0; }
+.adv-cond__dash { color: var(--color-text-secondary); flex: 0 0 auto; }
+.adv-cond__unit {
+  color: var(--color-text-secondary);
+  font-size: var(--ref-typescale-label-small-size);
+  flex: 0 0 auto;
+}
+
+/* List value trigger + checklist panel */
+.adv-cond__value-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  height: 38px;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--ref-typeface-brand);
+  font-size: var(--ref-typescale-label-medium-size);
+  color: var(--color-text-primary);
+  background: var(--color-surface-input);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--motion-duration-short) ease, box-shadow var(--motion-duration-short) ease;
+}
+
+.adv-cond__value-trigger:hover { border-color: var(--color-border-input-hover); }
+.adv-cond__value-trigger:focus-visible {
+  outline: none;
+  border-color: var(--color-border-input-active);
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+
+.adv-cond__value-summary {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.adv-cond__value-summary.is-placeholder { color: var(--color-text-placeholder); }
+
+/* Multi-select value picker rows — the shared adv-menu (openAdvDropdown,
+   opts.multiSelect). Checkbox icon mirrors the DS menu multi-select pattern:
+   check_box_outline_blank → check_box, recolored on aria-checked. */
+.adv-menu .ds-menu__item[role="menuitemcheckbox"] {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+.adv-menu__check {
+  flex: 0 0 auto;
+  color: var(--color-border-input);
+}
+.adv-menu .ds-menu__item[aria-checked="true"] .adv-menu__check {
+  color: var(--color-surface-brand-bold);
+}
+
+/* ── Remove button (condition / group) ── */
+.adv-remove {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-icon-subtle);
+  cursor: pointer;
+}
+.adv-remove:hover { background: var(--overlay-hover); color: var(--color-icon-default); }
+.adv-remove:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-border-ada-focus-ring);
+}
+
+/* The remove button now sits inside a ds-tooltip-wrapper; keep the wrapper from
+   flexing so the button holds its fixed size at the row / group-head end. */
+.adv-cond > .ds-tooltip-wrapper,
+.adv-group__head > .ds-tooltip-wrapper { flex: 0 0 auto; }
+
+/* ── Nested group (one level) ── */
+.adv-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-border-accordion);
+  border-radius: var(--radius-md);
+}
+
+.adv-group__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.adv-group__children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* ── Add / clear row ── */
+.adv-add-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* ── Saved-sets overlay rendered inside the advanced canvas ── */
+.filter-modal__advanced-saved { max-width: 520px; }
