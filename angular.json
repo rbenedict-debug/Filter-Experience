@@ -32,9 +32,7 @@
               }
             ],
             "styles": [
-              "node_modules/@onflo/design-system/tokens/css/index.css",
-              "node_modules/@onflo/design-system/dist/components.css",
-              "node_modules/@onflo/design-system/dist/layout.css",
+              "node_modules/@onflo/design-system/dist/onflo.css",
               "src/assets/filter-proto/filter-modal.css",
               "src/styles.scss"
             ],
